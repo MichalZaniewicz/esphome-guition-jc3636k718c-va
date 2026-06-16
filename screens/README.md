@@ -56,6 +56,22 @@ handler. It reads/writes only the shared core globals above.
       stays in the core so reset/factory work without the game screens.
 - [x] extract Space Wars -> `screens/space-wars.yaml`
 - [x] extract Cool Cars -> `screens/cool-cars.yaml`
-- [x] verified on device (compiles; both games toggle on/off from the `files:` list)
-- [ ] (optional) extract Timer -> `screens/timer.yaml`
-- [ ] consider merging `beta` -> `main` (update README/wiki for the packages layout)
+- [x] extract Player -> `screens/player.yaml` (volume + overlay stay in core)
+- [x] timer carousel-screen toggle -> `screens/timer.yaml` (voice timers/alarm/badge stay in core)
+- [x] carousel order via the `screen_order` substitution; screens register `g_present`,
+      absent ones are skipped (clock kept as a safety fallback)
+- [x] dynamic settings registry: screens add their own entries (label + g_mode) at boot;
+      the shared "Games" entry (reset scores) is added once, only when a game is present.
+      The roller list is applied at boot with `lv_roller_set_options(id(roller)->obj, ...)`.
+- [x] verified on device (compiles; screens toggle from `files:`, order from `screen_order`,
+      settings list adapts)
+- [ ] consider merging `beta` -> `main` (do NOT until the user says; then update README/wiki)
+
+## Adding a new screen (recipe)
+
+A screen package adds: its `globals` / `script`s / game-tick `interval` / `lvgl.pages`
+entry; an `esphome.on_boot` step that sets `id(g_present)[<id>] = true`; a 50ms nav
+handler that shows its page when `g_nav_req && g_base == <id>`. To give it a carousel
+slot, add its name to the core `name -> id` map in the order builder and to `screen_order`.
+To add a settings entry, append a label + g_mode to `g_set_labels`/`g_set_items` in on_boot
+(guard it for shared entries).
