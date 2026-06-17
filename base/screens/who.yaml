@@ -48,13 +48,13 @@ globals:
 
 # 6 ring avatars + 1 big (focused) avatar. Small footprint (PSRAM), like album art.
 online_image:
-  - { id: who_img0, url: "http://x/", format: JPEG, type: RGB565, resize: 64x64, on_download_finished: [lvgl.image.update: { id: who_ph0, src: who_img0 }] }
-  - { id: who_img1, url: "http://x/", format: JPEG, type: RGB565, resize: 64x64, on_download_finished: [lvgl.image.update: { id: who_ph1, src: who_img1 }] }
-  - { id: who_img2, url: "http://x/", format: JPEG, type: RGB565, resize: 64x64, on_download_finished: [lvgl.image.update: { id: who_ph2, src: who_img2 }] }
-  - { id: who_img3, url: "http://x/", format: JPEG, type: RGB565, resize: 64x64, on_download_finished: [lvgl.image.update: { id: who_ph3, src: who_img3 }] }
-  - { id: who_img4, url: "http://x/", format: JPEG, type: RGB565, resize: 64x64, on_download_finished: [lvgl.image.update: { id: who_ph4, src: who_img4 }] }
-  - { id: who_img5, url: "http://x/", format: JPEG, type: RGB565, resize: 64x64, on_download_finished: [lvgl.image.update: { id: who_ph5, src: who_img5 }] }
-  - { id: who_big,  url: "http://x/", format: JPEG, type: RGB565, resize: 120x120, on_download_finished: [lvgl.image.update: { id: who_bigph, src: who_big }] }
+  - { id: who_img0, url: "http://x/", format: PNG, type: RGB565, resize: 64x64, on_download_finished: [lvgl.image.update: { id: who_ph0, src: who_img0 }] }
+  - { id: who_img1, url: "http://x/", format: PNG, type: RGB565, resize: 64x64, on_download_finished: [lvgl.image.update: { id: who_ph1, src: who_img1 }] }
+  - { id: who_img2, url: "http://x/", format: PNG, type: RGB565, resize: 64x64, on_download_finished: [lvgl.image.update: { id: who_ph2, src: who_img2 }] }
+  - { id: who_img3, url: "http://x/", format: PNG, type: RGB565, resize: 64x64, on_download_finished: [lvgl.image.update: { id: who_ph3, src: who_img3 }] }
+  - { id: who_img4, url: "http://x/", format: PNG, type: RGB565, resize: 64x64, on_download_finished: [lvgl.image.update: { id: who_ph4, src: who_img4 }] }
+  - { id: who_img5, url: "http://x/", format: PNG, type: RGB565, resize: 64x64, on_download_finished: [lvgl.image.update: { id: who_ph5, src: who_img5 }] }
+  - { id: who_big,  url: "http://x/", format: PNG, type: RGB565, resize: 96x96, on_download_finished: [lvgl.image.update: { id: who_bigph, src: who_big }] }
 
 script:
   - id: who_load_big      # point the big avatar at the focused person's picture
