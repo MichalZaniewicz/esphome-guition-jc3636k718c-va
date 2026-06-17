@@ -3,6 +3,16 @@
 All notable changes to this project are documented here. The format is based on
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [2.1.0] - 2026-06-17
+
+### Added
+- **Thermostat screen** (optional). A round dial for a Home Assistant `climate.*` entity:
+  the knob sets the target temperature (committed ~0.6 s after you stop turning), tap toggles
+  on/off, and the accent colour follows the action (heating / cooling / idle). Shows the
+  current temperature, humidity and HVAC mode. Set it with the `climate_entity` substitution.
+- **Configurable wake word** via a `wake_word` substitution (default `alexa`; built-in:
+  `okay_nabu`, `hey_jarvis`, `hey_mycroft`).
+
 ## [2.0.0] - 2026-06-17
 
 Modular screens release. The firmware is now split into an always-on core plus optional
@@ -50,5 +60,6 @@ from GitHub at compile time.
 - Fonts, images and sounds fetched from GitHub at compile time (nothing to copy locally
   except the config and the partition table).
 
+[2.1.0]: https://github.com/MichalZaniewicz/esphome-guition-jc3636k718c-va/releases/tag/v2.1.0
 [2.0.0]: https://github.com/MichalZaniewicz/esphome-guition-jc3636k718c-va/releases/tag/v2.0.0
 [1.0.0]: https://github.com/MichalZaniewicz/esphome-guition-jc3636k718c-va/releases/tag/v1.0.0
