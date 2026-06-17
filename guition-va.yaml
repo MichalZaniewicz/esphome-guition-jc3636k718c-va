@@ -29,6 +29,8 @@ substitutions:
   room_hum_entity: sensor.room_humidity
   # Weather screen forecast: an HA helper sensor (see base/screens/weather.ha-helper.yaml)
   forecast_entity: sensor.va_weekly_forecast
+  # Thermostat screen: the climate.* entity it controls
+  climate_entity: climate.living_room
 
   # Control tiles (swipe up): 4 toggles, each entity + icon + name. Works on any HA domain.
   # tileN_icon = a name from the built-in set: bulb lamp led power plug switch fan ac heater
@@ -49,7 +51,7 @@ substitutions:
 
   # Carousel order, left to right. Reorder/remove names freely; screens you did not
   # include in "files:" below are skipped automatically.
-  screen_order: "clock,player,timer,cars,space,weather,demo"
+  screen_order: "clock,player,timer,cars,space,weather,thermostat,demo"
 
 packages:
   core:
@@ -65,6 +67,7 @@ packages:
       - base/screens/cool-cars.yaml    # optional: Cool Cars game
       - base/screens/space-wars.yaml   # optional: Space Wars game
       - base/screens/weather.yaml      # optional: weather (today + 7-day, knob scrolls days)
+      - base/screens/thermostat.yaml   # optional: thermostat (climate.* entity; knob sets target, tap on/off)
       - base/screens/demo.yaml         # optional: commented example screen (TAP ME!) + Widgets settings
     refresh: 0s        # always pull the latest beta (set to e.g. 1d once it stabilizes)
 

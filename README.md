@@ -73,6 +73,7 @@ base/                      # pulled as a remote package at compile time (no need
     cool-cars.yaml         #   "Cool Cars" game
     space-wars.yaml        #   "Space Wars" game
     weather.yaml           #   weather (today + 7-day radial dial)
+    thermostat.yaml        #   thermostat (climate.* dial; knob sets target, tap on/off)
     demo.yaml              #   commented example screen
     weather.ha-helper.yaml #   HA template sensor that feeds the weather screen
 assets/                    # fetched from GitHub at compile time (no need to copy locally)

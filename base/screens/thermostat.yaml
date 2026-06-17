@@ -1,0 +1,259 @@
+# Thermostat - optional carousel screen (base id 7).
+# A round dial for a Home Assistant climate.* entity (${climate_entity}):
+#   * big centre = the target temperature; turn the KNOB to change it (by the entity's
+#     target_temp_step). The new value is sent to HA ~0.6 s after you stop turning.
+#   * "now ..." = the current room temperature; "RH ..%" = humidity (if the entity has it).
+#   * top label + the target colour show the action: heating (orange) / cooling (blue) /
+#     idle (teal) / off (grey). Bottom chip = the HVAC mode.
+#   * TAP toggles the climate on/off.
+#
+# Set ${climate_entity} in your config. Remove this screen by dropping the file from the
+# package "files:" list.
+
+esphome:
+  on_boot:
+    - priority: 655
+      then:
+        - lambda: 'id(g_present)[7] = true;'   # register the thermostat screen
+
+globals:
+  - id: g_th_cur        # current temperature (-127 = no reading yet)
+    type: float
+    restore_value: no
+    initial_value: '-127.0'
+  - id: g_th_target     # target temperature (synced from HA; edited locally by the knob)
+    type: float
+    restore_value: no
+    initial_value: '20.0'
+  - id: g_th_action     # hvac_action: heating / cooling / idle / off (may be empty)
+    type: std::string
+    restore_value: no
+  - id: g_th_mode       # hvac mode (the entity state): off / heat / cool / auto / heat_cool
+    type: std::string
+    restore_value: no
+  - id: g_th_hum        # current humidity % (-1 = none)
+    type: int
+    restore_value: no
+    initial_value: '-1'
+  - id: g_th_min
+    type: float
+    restore_value: no
+    initial_value: '7.0'
+  - id: g_th_max
+    type: float
+    restore_value: no
+    initial_value: '35.0'
+  - id: g_th_step
+    type: float
+    restore_value: no
+    initial_value: '0.5'
+  - id: g_th_pending    # true = local edit not yet sent; blocks HA from overwriting the target
+    type: bool
+    restore_value: no
+    initial_value: 'false'
+  - id: g_th_lasttap    # last g_tap_seq we handled (one tap = one on/off toggle)
+    type: int
+    restore_value: no
+    initial_value: '0'
+
+script:
+  # Sends the edited target to HA, but only ~0.6 s after the last knob turn (mode: restart).
+  - id: th_commit
+    mode: restart
+    then:
+      - delay: 600ms
+      - homeassistant.action:
+          action: climate.set_temperature
+          data:
+            entity_id: ${climate_entity}
+            temperature: !lambda 'char b[8]; snprintf(b, sizeof(b), "%.1f", id(g_th_target)); return std::string(b);'
+      - lambda: 'id(g_th_pending) = false;'
+  # Redraws the dial from the state globals.
+  - id: th_render
+    then:
+      - lvgl.label.update:
+          id: th_target
+          text: !lambda 'char b[12]; snprintf(b, sizeof(b), "%.1f°", id(g_th_target)); return std::string(b);'
+      - lvgl.label.update:
+          id: th_cur
+          text: !lambda |-
+            if (id(g_th_cur) < -100) return std::string("now --");
+            char b[16]; snprintf(b, sizeof(b), "now %.1f°", id(g_th_cur)); return std::string(b);
+      - lvgl.widget.update: { id: th_hum, hidden: !lambda 'return id(g_th_hum) < 0;' }
+      - lvgl.label.update:
+          id: th_hum
+          text: !lambda |-
+            if (id(g_th_hum) < 0) return std::string("");
+            char b[12]; snprintf(b, sizeof(b), "RH %d%%", id(g_th_hum)); return std::string(b);
+      - lvgl.label.update:
+          id: th_mode
+          text: !lambda |-
+            std::string m = id(g_th_mode);
+            if (m == "heat_cool") return std::string("Auto");
+            if (m.empty()) return std::string("-");
+            if (m[0] >= 'a' && m[0] <= 'z') m[0] -= 32; return m;
+      - lvgl.arc.update:
+          id: th_arc
+          value: !lambda |-
+            float r = id(g_th_max) - id(g_th_min);
+            if (r <= 0) return 0.0f;
+            float p = 100.0f * (id(g_th_target) - id(g_th_min)) / r;
+            if (p < 0) p = 0; if (p > 100) p = 100;
+            return p;
+      - lvgl.label.update:
+          id: th_action
+          text: !lambda |-
+            std::string m = id(g_th_mode), a = id(g_th_action);
+            if (m == "off" || m.empty()) return std::string("OFF");
+            if (a.find("heat") != std::string::npos || (a.empty() && m == "heat")) return std::string("HEATING");
+            if (a.find("cool") != std::string::npos || (a.empty() && m == "cool")) return std::string("COOLING");
+            if (a == "idle") return std::string("IDLE");
+            if (!a.empty()) { if (a[0] >= 'a' && a[0] <= 'z') a[0] -= 32; return a; }
+            if (m[0] >= 'a' && m[0] <= 'z') m[0] -= 32; return m;
+      # accent colour for the action label + target by heat/cool/off/idle
+      - if:
+          condition:
+            lambda: 'return id(g_th_mode) != "off" && !id(g_th_mode).empty() && (id(g_th_action).find("heat") != std::string::npos || (id(g_th_action).empty() && id(g_th_mode) == "heat"));'
+          then:
+            - lvgl.label.update: { id: th_action, text_color: 0xFF6B30 }
+            - lvgl.label.update: { id: th_target, text_color: 0xFF6B30 }
+          else:
+            - if:
+                condition:
+                  lambda: 'return id(g_th_mode) != "off" && !id(g_th_mode).empty() && (id(g_th_action).find("cool") != std::string::npos || (id(g_th_action).empty() && id(g_th_mode) == "cool"));'
+                then:
+                  - lvgl.label.update: { id: th_action, text_color: 0x3FA9D6 }
+                  - lvgl.label.update: { id: th_target, text_color: 0x3FA9D6 }
+                else:
+                  - if:
+                      condition: { lambda: 'return id(g_th_mode) == "off" || id(g_th_mode).empty();' }
+                      then:
+                        - lvgl.label.update: { id: th_action, text_color: 0x6F9A92 }
+                        - lvgl.label.update: { id: th_target, text_color: 0x6F9A92 }
+                      else:
+                        - lvgl.label.update: { id: th_action, text_color: 0x9FC7BE }
+                        - lvgl.label.update: { id: th_target, text_color: 0xFFFFFF }
+
+sensor:
+  - platform: homeassistant
+    id: th_cur_s
+    entity_id: ${climate_entity}
+    attribute: current_temperature
+    on_value:
+      - lambda: 'id(g_th_cur) = x;'
+      - script.execute: th_render
+  - platform: homeassistant
+    id: th_tgt_s
+    entity_id: ${climate_entity}
+    attribute: temperature
+    on_value:
+      - lambda: 'if (!id(g_th_pending)) id(g_th_target) = x;'   # don't clobber a value being edited
+      - script.execute: th_render
+  - platform: homeassistant
+    id: th_hum_s
+    entity_id: ${climate_entity}
+    attribute: current_humidity
+    on_value:
+      - lambda: 'id(g_th_hum) = (int) roundf(x);'
+      - script.execute: th_render
+  - platform: homeassistant
+    id: th_min_s
+    entity_id: ${climate_entity}
+    attribute: min_temp
+    on_value: [ lambda: 'id(g_th_min) = x;' ]
+  - platform: homeassistant
+    id: th_max_s
+    entity_id: ${climate_entity}
+    attribute: max_temp
+    on_value: [ lambda: 'id(g_th_max) = x;' ]
+  - platform: homeassistant
+    id: th_step_s
+    entity_id: ${climate_entity}
+    attribute: target_temp_step
+    on_value: [ lambda: 'if (x > 0) id(g_th_step) = x;' ]
+
+text_sensor:
+  - platform: homeassistant
+    id: th_mode_s
+    entity_id: ${climate_entity}          # the entity state IS the hvac mode
+    on_value:
+      - lambda: 'id(g_th_mode) = x;'
+      - script.execute: th_render
+  - platform: homeassistant
+    id: th_action_s
+    entity_id: ${climate_entity}
+    attribute: hvac_action
+    on_value:
+      - lambda: 'id(g_th_action) = x;'
+      - script.execute: th_render
+
+interval:
+  # Carousel nav: when selected, show the page and take the knob.
+  - interval: 50ms
+    then:
+      - if:
+          condition: { lambda: 'return id(g_nav_req) && id(g_base)==7;' }
+          then:
+            - lambda: 'id(g_nav_req) = false; id(g_knob_capture) = true; id(g_th_lasttap) = id(g_tap_seq);'
+            - if: { condition: { lambda: 'return id(g_nav_anim)==0;' }, then: [lvgl.page.show: { id: page_thermostat, animation: move_left,   time: 250ms }] }
+            - if: { condition: { lambda: 'return id(g_nav_anim)==1;' }, then: [lvgl.page.show: { id: page_thermostat, animation: move_right,  time: 250ms }] }
+            - if: { condition: { lambda: 'return id(g_nav_anim)==2;' }, then: [lvgl.page.show: { id: page_thermostat, animation: move_top,    time: 250ms }] }
+            - if: { condition: { lambda: 'return id(g_nav_anim)==3;' }, then: [lvgl.page.show: { id: page_thermostat, animation: move_bottom, time: 250ms }] }
+            - script.execute: th_render
+  # Knob (adjust target, debounced commit) + tap (on/off) while this screen is on top.
+  - interval: 120ms
+    then:
+      - if:
+          condition: { lambda: 'return id(g_base)==7 && id(g_knob_delta) != 0;' }
+          then:
+            - lambda: |-
+                id(g_th_target) += id(g_knob_delta) * id(g_th_step);
+                id(g_knob_delta) = 0;
+                if (id(g_th_target) < id(g_th_min)) id(g_th_target) = id(g_th_min);
+                if (id(g_th_target) > id(g_th_max)) id(g_th_target) = id(g_th_max);
+                id(g_th_pending) = true;
+            - script.execute: th_commit
+            - script.execute: th_render
+      - if:
+          condition: { lambda: 'return id(g_base)==7 && id(g_tap_seq) != id(g_th_lasttap);' }
+          then:
+            - lambda: 'id(g_th_lasttap) = id(g_tap_seq);'
+            - if:
+                condition: { lambda: 'return id(g_th_mode) == "off";' }
+                then:
+                  - homeassistant.action:
+                      action: climate.turn_on
+                      data:
+                        entity_id: ${climate_entity}
+                else:
+                  - homeassistant.action:
+                      action: climate.turn_off
+                      data:
+                        entity_id: ${climate_entity}
+
+lvgl:
+  pages:
+    - id: page_thermostat
+      bg_color: 0x0B1020
+      widgets:
+        - arc:
+            id: th_arc
+            align: CENTER
+            width: 300
+            height: 300
+            arc_width: 12
+            adjustable: false
+            min_value: 0
+            max_value: 100
+            value: 50
+            start_angle: 135
+            end_angle: 45
+            arc_color: 0x21304A
+            indicator:
+              arc_color: 0x2FE6CF
+              arc_width: 12
+        - label: { id: th_action, align: CENTER, y: -86, text: "", text_font: font_artist, text_color: 0x9FC7BE }
+        - label: { id: th_target, align: CENTER, y: -14, text: "--", text_font: montserrat_48, text_color: 0xFFFFFF }
+        - label: { id: th_cur, align: CENTER, y: 30, text: "now --", text_font: font_med, text_color: 0x9FC7BE }
+        - label: { id: th_hum, align: CENTER, y: 58, text: "", text_font: font_artist, text_color: 0x3FA9D6, hidden: true }
+        - label: { id: th_mode, align: CENTER, y: 92, text: "", text_font: font_artist, text_color: 0xCFEAE4 }

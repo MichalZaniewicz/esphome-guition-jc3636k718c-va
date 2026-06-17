@@ -24,6 +24,7 @@ substitutions:
   weather_entity: weather.home
   room_temp_entity: sensor.room_temperature
   room_hum_entity: sensor.room_humidity
+  climate_entity: climate.home   # thermostat screen target (a climate.* entity)
   # Control tiles (swipe up): 4 toggleable HA entities, each with an icon + a name. Any domain.
   # tileN_icon = a name from the built-in set: bulb lamp led power plug switch fan ac heater
   # thermometer lock unlock door blinds tv speaker bell wifi home flash. The same icon may
@@ -42,7 +43,7 @@ substitutions:
   tile4_name: "Tile 4"
   forecast_entity: sensor.va_weekly_forecast   # weather screen forecast (HA helper, see base/screens/weather.ha-helper.yaml)
   # Carousel screen order (left-to-right). Screens not included in the build are skipped.
-  screen_order: "clock,player,timer,cars,space,weather,demo"
+  screen_order: "clock,player,timer,cars,space,weather,thermostat,demo"
 
 esphome:
   name: ${name}
@@ -130,6 +131,7 @@ esphome:
               else if (tok == "space") id = 4;
               else if (tok == "weather") id = 5;
               else if (tok == "demo") id = 6;
+              else if (tok == "thermostat") id = 7;
               if (id >= 0 && id < 8 && id(g_present)[id]) id(g_order)[id(g_order_n)++] = id;
               if (comma == std::string::npos) break;
               pos = comma + 1;

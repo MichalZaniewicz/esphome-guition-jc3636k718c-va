@@ -66,6 +66,8 @@ handler. It reads/writes only the shared core globals above.
 - [x] timer carousel-screen toggle -> `base/screens/timer.yaml` (voice timers/alarm/badge stay in core)
 - [x] new Weather screen -> `base/screens/weather.yaml` (radial 7-day dial, knob highlights the day;
       forecast from the HA helper `base/screens/weather.ha-helper.yaml`)
+- [x] new Thermostat screen -> `base/screens/thermostat.yaml` (climate.* dial; knob sets the target with a
+      debounced commit, tap toggles on/off, accent colour by heating/cooling/idle)
 - [x] settings ownership: home-screen widget toggles moved to a "Home" submenu (core); "Display"
       keeps only global brightness/night/screen-off
 - [x] carousel order via the `screen_order` substitution; screens register `g_present`,
