@@ -18,10 +18,20 @@ substitutions:
   weather_entity: weather.home
   room_temp_entity: sensor.room_temperature
   room_hum_entity: sensor.room_humidity
-  # Control-tile entities (swipe up). Change to your own.
-  lamp_entity: light.desk_lamp
-  neon_entity: switch.neon
-  led_entity: light.led_strip
+  # Control tiles (swipe up): 4 toggleable HA entities, each with an MDI icon glyph + a name.
+  # Works on any domain (uses homeassistant.toggle). The icons compile from these glyphs.
+  tile1_entity: light.desk_lamp
+  tile1_icon: "󰌵"
+  tile1_name: "Lamp"
+  tile2_entity: switch.neon
+  tile2_icon: "󰉁"
+  tile2_name: "Neon"
+  tile3_entity: light.led_strip
+  tile3_icon: "󰟙"
+  tile3_name: "LED strip"
+  tile4_entity: light.desk_lamp
+  tile4_icon: "󰊴"
+  tile4_name: "Tile 4"
   # Carousel screen order (left-to-right). Screens not included in the build are skipped.
   forecast_entity: sensor.va_weekly_forecast   # HA helper sensor (see screens/weather.ha-helper.yaml)
   screen_order: "clock,player,timer,cars,space,weather,demo"
@@ -394,14 +404,6 @@ globals:
     type: int
     restore_value: no
     initial_value: '0'
-  - id: g_neon_on      # state: neon is on (for game mode)
-    type: bool
-    restore_value: no
-    initial_value: 'false'
-  - id: g_led_on       # state: LED strip is on (for game mode)
-    type: bool
-    restore_value: no
-    initial_value: 'false'
   - id: g_show_weather # Display: show weather on the home screen (persistent)
     type: bool
     restore_value: yes
@@ -1073,13 +1075,6 @@ script:
     then:
       - lambda: 'id(g_timer_active) = false; id(g_timer_paused) = false; id(g_timer_secs) = 0;'
       - script.execute: timer_render
-  # "Game mode" tile: lit (purple) when neon AND strip are on, otherwise dark
-  - id: game_render
-    then:
-      - if:
-          condition: { lambda: 'return id(g_neon_on) && id(g_led_on);' }
-          then: [lvgl.widget.update: { id: tile_game, bg_color: 0x4B36A0 }]
-          else: [lvgl.widget.update: { id: tile_game, bg_color: 0x242426 }]
   # Shows/hides home-screen elements per Display settings
   - id: disp_apply
     then:
@@ -1998,10 +1993,10 @@ font:
     size: 34
     bpp: 4
     glyphs:
-      - "󰌵"
-      - "󰉁"
-      - "󰟙"
-      - "󰊴"
+      - "${tile1_icon}"
+      - "${tile2_icon}"
+      - "${tile3_icon}"
+      - "${tile4_icon}"
       - "󰖐"
       - "󰖑"
       - "󰖓"
@@ -2026,35 +2021,27 @@ text_sensor:
   - platform: wifi_info     # IP for the Info screen (settings)
     ip_address:
       id: wifi_ip
-  # Light states -> tile color on the controls screen (on=color, off=dark)
+  # Control-tile states -> tile colour (on = accent, off = dark)
   - platform: homeassistant
-    id: st_lamp
-    entity_id: ${lamp_entity}
+    id: st_tile1
+    entity_id: ${tile1_entity}
     on_value:
-      - if:
-          condition: { lambda: 'return x == "on";' }
-          then: [lvgl.widget.update: { id: tile_lamp, bg_color: 0x9A6A12 }]
-          else: [lvgl.widget.update: { id: tile_lamp, bg_color: 0x242426 }]
+      - if: { condition: { lambda: 'return x == "on";' }, then: [lvgl.widget.update: { id: tile1, bg_color: 0x2A6BD4 }], else: [lvgl.widget.update: { id: tile1, bg_color: 0x242426 }] }
   - platform: homeassistant
-    id: st_neon
-    entity_id: ${neon_entity}
+    id: st_tile2
+    entity_id: ${tile2_entity}
     on_value:
-      - lambda: 'id(g_neon_on) = (x == "on");'
-      - if:
-          condition: { lambda: 'return id(g_neon_on);' }
-          then: [lvgl.widget.update: { id: tile_neon, bg_color: 0xB01A56 }]
-          else: [lvgl.widget.update: { id: tile_neon, bg_color: 0x242426 }]
-      - script.execute: game_render
+      - if: { condition: { lambda: 'return x == "on";' }, then: [lvgl.widget.update: { id: tile2, bg_color: 0x2A6BD4 }], else: [lvgl.widget.update: { id: tile2, bg_color: 0x242426 }] }
   - platform: homeassistant
-    id: st_led
-    entity_id: ${led_entity}
+    id: st_tile3
+    entity_id: ${tile3_entity}
     on_value:
-      - lambda: 'id(g_led_on) = (x == "on");'
-      - if:
-          condition: { lambda: 'return id(g_led_on);' }
-          then: [lvgl.widget.update: { id: tile_led, bg_color: 0x148F77 }]
-          else: [lvgl.widget.update: { id: tile_led, bg_color: 0x242426 }]
-      - script.execute: game_render
+      - if: { condition: { lambda: 'return x == "on";' }, then: [lvgl.widget.update: { id: tile3, bg_color: 0x2A6BD4 }], else: [lvgl.widget.update: { id: tile3, bg_color: 0x242426 }] }
+  - platform: homeassistant
+    id: st_tile4
+    entity_id: ${tile4_entity}
+    on_value:
+      - if: { condition: { lambda: 'return x == "on";' }, then: [lvgl.widget.update: { id: tile4, bg_color: 0x2A6BD4 }], else: [lvgl.widget.update: { id: tile4, bg_color: 0x242426 }] }
   # Weather: state (rainy/sunny/...) -> MDI icon on the home screen
   - platform: homeassistant
     id: wx_state
@@ -2697,12 +2684,12 @@ lvgl:
               - script.execute: timer_halt
             widgets:
               - label: { align: CENTER, text: "", text_font: montserrat_22, text_color: 0xFF6B60 }
-    # --- CONTROLS page (swipe up): light tiles + game mode ---
+    # --- CONTROLS page (swipe up): 4 configurable HA toggles (entity/icon/name in substitutions) ---
     - id: page_controls
       bg_color: 0x000000
       widgets:
         - button:
-            id: tile_lamp
+            id: tile1
             align: CENTER
             x: -61
             y: -61
@@ -2713,12 +2700,12 @@ lvgl:
             bg_opa: COVER
             border_width: 0
             on_click:
-              - homeassistant.action: { action: light.toggle, data: { entity_id: "${lamp_entity}" } }
+              - homeassistant.action: { action: homeassistant.toggle, data: { entity_id: "${tile1_entity}" } }
             widgets:
-              - label: { align: CENTER, y: -16, text: "󰌵", text_font: icons34, text_color: 0xFFFFFF }
-              - label: { align: CENTER, y: 26, width: 100, long_mode: wrap, text_align: CENTER, text: "Lamp", text_font: font_artist, text_color: 0xFFFFFF }
+              - label: { align: CENTER, y: -16, text: "${tile1_icon}", text_font: icons34, text_color: 0xFFFFFF }
+              - label: { align: CENTER, y: 26, width: 100, long_mode: wrap, text_align: CENTER, text: "${tile1_name}", text_font: font_artist, text_color: 0xFFFFFF }
         - button:
-            id: tile_neon
+            id: tile2
             align: CENTER
             x: 61
             y: -61
@@ -2729,12 +2716,12 @@ lvgl:
             bg_opa: COVER
             border_width: 0
             on_click:
-              - homeassistant.action: { action: switch.toggle, data: { entity_id: "${neon_entity}" } }
+              - homeassistant.action: { action: homeassistant.toggle, data: { entity_id: "${tile2_entity}" } }
             widgets:
-              - label: { align: CENTER, y: -16, text: "󰉁", text_font: icons34, text_color: 0xFFFFFF }
-              - label: { align: CENTER, y: 26, width: 100, long_mode: wrap, text_align: CENTER, text: "Neon", text_font: font_artist, text_color: 0xFFFFFF }
+              - label: { align: CENTER, y: -16, text: "${tile2_icon}", text_font: icons34, text_color: 0xFFFFFF }
+              - label: { align: CENTER, y: 26, width: 100, long_mode: wrap, text_align: CENTER, text: "${tile2_name}", text_font: font_artist, text_color: 0xFFFFFF }
         - button:
-            id: tile_led
+            id: tile3
             align: CENTER
             x: -61
             y: 61
@@ -2745,12 +2732,12 @@ lvgl:
             bg_opa: COVER
             border_width: 0
             on_click:
-              - homeassistant.action: { action: light.toggle, data: { entity_id: "${led_entity}" } }
+              - homeassistant.action: { action: homeassistant.toggle, data: { entity_id: "${tile3_entity}" } }
             widgets:
-              - label: { align: CENTER, y: -16, text: "󰟙", text_font: icons34, text_color: 0xFFFFFF }
-              - label: { align: CENTER, y: 26, width: 100, long_mode: wrap, text_align: CENTER, text: "LED strip", text_font: font_artist, text_color: 0xFFFFFF }
+              - label: { align: CENTER, y: -16, text: "${tile3_icon}", text_font: icons34, text_color: 0xFFFFFF }
+              - label: { align: CENTER, y: 26, width: 100, long_mode: wrap, text_align: CENTER, text: "${tile3_name}", text_font: font_artist, text_color: 0xFFFFFF }
         - button:
-            id: tile_game
+            id: tile4
             align: CENTER
             x: 61
             y: 61
@@ -2761,14 +2748,7 @@ lvgl:
             bg_opa: COVER
             border_width: 0
             on_click:
-              - if:
-                  condition: { lambda: 'return id(g_neon_on) && id(g_led_on);' }
-                  then:
-                    - homeassistant.action: { action: light.turn_off, data: { entity_id: "${led_entity}" } }
-                    - homeassistant.action: { action: switch.turn_off, data: { entity_id: "${neon_entity}" } }
-                  else:
-                    - homeassistant.action: { action: light.turn_on, data: { entity_id: "${led_entity}" } }
-                    - homeassistant.action: { action: switch.turn_on, data: { entity_id: "${neon_entity}" } }
+              - homeassistant.action: { action: homeassistant.toggle, data: { entity_id: "${tile4_entity}" } }
             widgets:
-              - label: { align: CENTER, y: -16, text: "󰊴", text_font: icons34, text_color: 0xFFFFFF }
-              - label: { align: CENTER, y: 26, width: 100, long_mode: wrap, text_align: CENTER, text: "Game mode", text_font: font_artist, text_color: 0xFFFFFF }
+              - label: { align: CENTER, y: -16, text: "${tile4_icon}", text_font: icons34, text_color: 0xFFFFFF }
+              - label: { align: CENTER, y: 26, width: 100, long_mode: wrap, text_align: CENTER, text: "${tile4_name}", text_font: font_artist, text_color: 0xFFFFFF }
