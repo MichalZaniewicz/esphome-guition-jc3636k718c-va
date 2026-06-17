@@ -587,6 +587,10 @@ globals:
     type: bool
     restore_value: yes
     initial_value: 'true'
+  - id: g_hold_talk    # press-and-hold the screen to start the assistant
+    type: bool
+    restore_value: yes
+    initial_value: 'true'
   - id: g_set_idx      # selected item in the settings list (roller)
     type: int
     restore_value: no
@@ -980,7 +984,7 @@ script:
                   - lvgl.widget.show: asys_roller
                   - lvgl.roller.update: { id: asys_roller, animated: true, selected_index: !lambda 'return id(g_sub_idx);' }
                   - lvgl.widget.show: disp_switch
-                  - lvgl.widget.update: { id: disp_switch, state: { checked: !lambda 'return id(g_sub_idx) == 0 ? id(g_ww_on) : id(g_beep_ww);' } }
+                  - lvgl.widget.update: { id: disp_switch, state: { checked: !lambda 'return id(g_sub_idx) == 0 ? id(g_ww_on) : id(g_sub_idx) == 1 ? id(g_beep_ww) : id(g_hold_talk);' } }
                 else: [ lvgl.widget.hide: asys_roller ]
             - if:
                 condition: { lambda: 'return id(g_mode) == 15;' }
@@ -1403,7 +1407,7 @@ binary_sensor:
                       else if (id(g_mode) == 5) { if (id(g_set_idx) < id(g_set_n) - 1) id(g_set_idx)++; }
                       else if (id(g_mode) == 17) { if (id(g_wgrp_idx) < id(g_wgrp_n) - 1) id(g_wgrp_idx)++; }
                       else if (id(g_mode) == 30) { if (id(g_wopt_idx) < id(g_wcur_n) - 1) id(g_wopt_idx)++; }
-                      else { int mx = (id(g_mode) == 15) ? 3 : (id(g_mode) == 13) ? 1 : (id(g_mode) == 16) ? 3 : (id(g_mode) == 12) ? 1 : 0; if (id(g_sub_idx) < mx) id(g_sub_idx)++; }
+                      else { int mx = (id(g_mode) == 15) ? 3 : (id(g_mode) == 13) ? 2 : (id(g_mode) == 16) ? 3 : (id(g_mode) == 12) ? 1 : 0; if (id(g_sub_idx) < mx) id(g_sub_idx)++; }
                   - script.execute: ui_render
                 else:
                   - if:
@@ -1644,9 +1648,9 @@ touchscreen:
                 - script.execute: show_base
           # game: START/Play buttons on the game screen handle start/restart (not a global tap)
           # prev/play/next are handled by the buttons on the player screen (transport)
-          - if:   # hold -> start the assistant (works on every screen)
+          - if:   # hold -> start the assistant (works on every screen; toggle in Settings > Assistant)
               condition:
-                lambda: 'return id(g_gesture) == 1;'
+                lambda: 'return id(g_gesture) == 1 && id(g_hold_talk);'
               then:
                 - if:
                     condition: voice_assistant.is_running
@@ -1816,6 +1820,7 @@ touchscreen:
                     else: [micro_wake_word.stop: {}]
                 - script.execute: ui_render
           - if: { condition: { lambda: 'return id(g_gesture) == 0 && id(g_sub_idx) == 1;' }, then: [ lambda: 'id(g_beep_ww) = !id(g_beep_ww);', script.execute: ui_render ] }
+          - if: { condition: { lambda: 'return id(g_gesture) == 0 && id(g_sub_idx) == 2;' }, then: [ lambda: 'id(g_hold_talk) = !id(g_hold_talk);', script.execute: ui_render ] }
           - if: { condition: { lambda: 'return id(g_gesture) == 3 || id(g_gesture) == 1;' }, then: [ lambda: 'id(g_mode) = 5;', script.execute: ui_render ] }
     # === SYSTEM (15) ===
     - if:
@@ -1890,7 +1895,7 @@ touchscreen:
               condition: { lambda: 'return id(g_gesture) == 0;' }
               then:
                 - lambda: |-
-                    id(g_bright)=100; id(g_night)=false; id(g_show_weather)=false; id(g_show_climate)=false; id(g_ww_on)=true; id(g_set_min)=60; id(g_beep_ww)=true; id(g_night_from)=22; id(g_night_to)=7; id(g_blank_idx)=0; id(g_factory_reset)=true;
+                    id(g_bright)=100; id(g_night)=false; id(g_show_weather)=false; id(g_show_climate)=false; id(g_ww_on)=true; id(g_set_min)=60; id(g_beep_ww)=true; id(g_hold_talk)=true; id(g_night_from)=22; id(g_night_to)=7; id(g_blank_idx)=0; id(g_factory_reset)=true;
                 - button.press: btn_restart
           - if: { condition: { lambda: 'return id(g_gesture) == 3 || id(g_gesture) == 1;' }, then: [ lambda: 'id(g_mode) = 15;', script.execute: ui_render ] }
     # === INFO (7) === any gesture = return to the settings list
@@ -2709,6 +2714,7 @@ lvgl:
             options:
               - "Wake word"
               - "Beep wake word"
+              - "Hold to talk"
             selected_index: 0
             hidden: true
         - roller:
