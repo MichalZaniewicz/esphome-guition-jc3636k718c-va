@@ -14,7 +14,7 @@ It started as "my kid needs a physical timer" and turned into a whole puck. 🙂
 ## Demo
 
 <div align="center">
-  <video src="https://github.com/user-attachments/assets/33c2a708-5f8b-4bab-a165-285cbfd919d9" controls width="400"></video>
+  <video src="https://github.com/user-attachments/assets/e945f4ec-b80f-4740-9130-ed93bd2ab31b" controls width="400"></video>
 </div>
 
 ## What it does
