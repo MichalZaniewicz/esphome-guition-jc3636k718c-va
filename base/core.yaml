@@ -117,6 +117,11 @@ esphome:
               if (s == "wifi") return "\U000f05a9";
               if (s == "home") return "\U000f02dc";
               if (s == "flash") return "\U000f0241";
+              if (s == "air" || s == "pm" || s == "airquality") return "\U000f0d44";
+              if (s == "plant" || s == "sprout" || s == "moisture") return "\U000f0e66";
+              if (s == "plex") return "\U000f06ba";
+              if (s == "server") return "\U000f048b";
+              if (s == "shield" || s == "alarm" || s == "security") return "\U000f068a";
               return s;
             };
             id(g_tile1_glyph) = ic("${tile1_icon}");
@@ -2144,6 +2149,11 @@ font:
       - "\U000f05a9"
       - "\U000f02dc"
       - "\U000f0241"
+      - "\U000f0d44"
+      - "\U000f0e66"
+      - "\U000f06ba"
+      - "\U000f048b"
+      - "\U000f068a"
       - "󰖐"
       - "󰖑"
       - "󰖓"
