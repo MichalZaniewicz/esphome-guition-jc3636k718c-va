@@ -62,9 +62,22 @@ substitutions:
   glance6_entity: sensor.va_glance_unused6
   glance6_name: ""
   glance6_icon: ""
+  # Who's home screen: up to 6 person.* entities (avatar from entity_picture + name). Unused = skipped.
+  person1_entity: person.you
+  person1_name: "You"
+  person2_entity: person.va_unused2
+  person2_name: ""
+  person3_entity: person.va_unused3
+  person3_name: ""
+  person4_entity: person.va_unused4
+  person4_name: ""
+  person5_entity: person.va_unused5
+  person5_name: ""
+  person6_entity: person.va_unused6
+  person6_name: ""
   forecast_entity: sensor.va_weekly_forecast   # weather screen forecast (HA helper, see base/screens/weather.ha-helper.yaml)
   # Carousel screen order (left-to-right). Screens not included in the build are skipped.
-  screen_order: "clock,player,timer,cars,space,weather,thermostat,sensors,demo"
+  screen_order: "clock,player,timer,cars,space,weather,thermostat,sensors,who,demo"
 
 esphome:
   name: ${name}
@@ -154,6 +167,7 @@ esphome:
               else if (tok == "demo") id = 6;
               else if (tok == "thermostat") id = 7;
               else if (tok == "sensors") id = 8;
+              else if (tok == "who") id = 9;
               if (id >= 0 && id < 16 && id(g_present)[id]) id(g_order)[id(g_order_n)++] = id;
               if (comma == std::string::npos) break;
               pos = comma + 1;

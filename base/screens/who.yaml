@@ -1,0 +1,260 @@
+# Who's home - optional carousel screen (base id 9).
+# A circular "person dial": each household member (person.*) sits on a ring; turn the KNOB to
+# rotate the carousel so the selected person comes to the TOP and is enlarged, with their name
+# in the centre and their location below (Home / zone / Away, colour-coded). Avatars are the
+# HA entity_picture (fetched like album art); people without a picture fall back to an initial.
+#
+# Configure up to 6 people with personN_entity / personN_name; leave a slot at its default
+# (a non-existent person) and it's skipped. Remove the screen by dropping this file.
+
+esphome:
+  on_boot:
+    - priority: 655
+      then:
+        - lambda: |-
+            id(g_present)[9] = true;
+            const char* nm[6] = { "${person1_name}", "${person2_name}", "${person3_name}", "${person4_name}", "${person5_name}", "${person6_name}" };
+            for (int i = 0; i < 6; i++) {
+              id(g_who_name)[i] = nm[i];
+              std::string s = nm[i];
+              std::string in = s.empty() ? std::string("?") : s.substr(0, 1);
+              if (!in.empty() && in[0] >= 'a' && in[0] <= 'z') in[0] -= 32;
+              id(g_who_initial)[i] = in;
+            }
+
+globals:
+  - id: g_who_state
+    type: std::string[6]
+    restore_value: no
+  - id: g_who_pic        # entity_picture URL (absolute)
+    type: std::string[6]
+    restore_value: no
+  - id: g_who_name
+    type: std::string[6]
+    restore_value: no
+  - id: g_who_initial
+    type: std::string[6]
+    restore_value: no
+  - id: g_who_present    # got a state from HA
+    type: bool[6]
+    restore_value: no
+  - id: g_who_haspic     # entity_picture present
+    type: bool[6]
+    restore_value: no
+  - id: g_who_sel        # selected person (shown big at top)
+    type: int
+    restore_value: no
+    initial_value: '0'
+
+# 6 ring avatars + 1 big (focused) avatar. Small footprint (PSRAM), like album art.
+online_image:
+  - { id: who_img0, url: "http://x/", format: JPEG, type: RGB565, resize: 64x64, on_download_finished: [lvgl.image.update: { id: who_ph0, src: who_img0 }] }
+  - { id: who_img1, url: "http://x/", format: JPEG, type: RGB565, resize: 64x64, on_download_finished: [lvgl.image.update: { id: who_ph1, src: who_img1 }] }
+  - { id: who_img2, url: "http://x/", format: JPEG, type: RGB565, resize: 64x64, on_download_finished: [lvgl.image.update: { id: who_ph2, src: who_img2 }] }
+  - { id: who_img3, url: "http://x/", format: JPEG, type: RGB565, resize: 64x64, on_download_finished: [lvgl.image.update: { id: who_ph3, src: who_img3 }] }
+  - { id: who_img4, url: "http://x/", format: JPEG, type: RGB565, resize: 64x64, on_download_finished: [lvgl.image.update: { id: who_ph4, src: who_img4 }] }
+  - { id: who_img5, url: "http://x/", format: JPEG, type: RGB565, resize: 64x64, on_download_finished: [lvgl.image.update: { id: who_ph5, src: who_img5 }] }
+  - { id: who_big,  url: "http://x/", format: JPEG, type: RGB565, resize: 120x120, on_download_finished: [lvgl.image.update: { id: who_bigph, src: who_big }] }
+
+script:
+  - id: who_load_big      # point the big avatar at the focused person's picture
+    then:
+      - lambda: |-
+          int s = id(g_who_sel);
+          if (s >= 0 && s < 6 && id(g_who_haspic)[s] && !id(g_who_pic)[s].empty()) {
+            id(who_big)->set_url(id(g_who_pic)[s].c_str());
+            id(who_big)->update();
+          }
+  - id: who_render
+    then:
+      - lambda: |-
+          // ensure selection is on a present person
+          int n = 0, first = -1;
+          for (int i = 0; i < 6; i++) if (id(g_who_present)[i]) { n++; if (first < 0) first = i; }
+          if (n > 0 && !id(g_who_present)[id(g_who_sel)]) id(g_who_sel) = first;
+      # empty state
+      - if:
+          condition: { lambda: 'int n=0; for(int i=0;i<6;i++) if(id(g_who_present)[i]) n++; return n==0;' }
+          then:
+            - lvgl.widget.show: who_empty
+            - lvgl.widget.hide: who_name
+            - lvgl.widget.hide: who_loc
+            - lvgl.widget.hide: who_bigph
+            - lvgl.widget.hide: who_bigini
+            - lvgl.widget.hide: who_bigring
+          else:
+            - lvgl.widget.hide: who_empty
+            - lvgl.widget.show: who_name
+            - lvgl.widget.show: who_loc
+            - lvgl.widget.show: who_bigring
+            # centre: focused name + location (colour by state)
+            - lvgl.label.update: { id: who_name, text: !lambda 'return id(g_who_name)[id(g_who_sel)];' }
+            - lvgl.label.update:
+                id: who_loc
+                text: !lambda |-
+                  std::string s = id(g_who_state)[id(g_who_sel)];
+                  if (s == "home") return std::string("Home");
+                  if (s == "not_home" || s.empty()) return std::string("Away");
+                  if (!s.empty() && s[0] >= 'a' && s[0] <= 'z') s[0] -= 32;
+                  return s;
+            - if:
+                condition: { lambda: 'return id(g_who_state)[id(g_who_sel)] == "home";' }
+                then:
+                  - lvgl.label.update: { id: who_loc, text_color: 0x35C759 }
+                  - lvgl.widget.update: { id: who_bigring, border_color: 0x35C759 }
+                else:
+                  - if:
+                      condition: { lambda: 'std::string s=id(g_who_state)[id(g_who_sel)]; return s=="not_home" || s.empty();' }
+                      then:
+                        - lvgl.label.update: { id: who_loc, text_color: 0x6F9A92 }
+                        - lvgl.widget.update: { id: who_bigring, border_color: 0x3A3A3D }
+                      else:
+                        - lvgl.label.update: { id: who_loc, text_color: 0xFFB020 }
+                        - lvgl.widget.update: { id: who_bigring, border_color: 0xFFB020 }
+            # big focused avatar: photo or initials
+            - if:
+                condition: { lambda: 'return id(g_who_haspic)[id(g_who_sel)];' }
+                then:
+                  - lvgl.widget.show: who_bigph
+                  - lvgl.widget.hide: who_bigini
+                else:
+                  - lvgl.widget.hide: who_bigph
+                  - lvgl.widget.show: who_bigini
+                  - lvgl.label.update: { id: who_bigini_l, text: !lambda 'return id(g_who_initial)[id(g_who_sel)];' }
+            # ring: the OTHER present people spread around (selected hides under the big avatar).
+            # Positions via lvgl.widget.update x/y (relative to CENTER), like the weather dial.
+            - lvgl.widget.update: { id: who_ph0, hidden: !lambda 'return !(id(g_who_present)[0] && 0!=id(g_who_sel) && id(g_who_haspic)[0]);',  x: !lambda 'int n=0;for(int k=0;k<6;k++)if(id(g_who_present)[k])n++;if(n<1)n=1;return (int)lroundf(118.0f*sinf((float)(0-id(g_who_sel))*6.2831853f/n));', y: !lambda 'int n=0;for(int k=0;k<6;k++)if(id(g_who_present)[k])n++;if(n<1)n=1;return (int)lroundf(-118.0f*cosf((float)(0-id(g_who_sel))*6.2831853f/n));' }
+            - lvgl.widget.update: { id: who_ci0, hidden: !lambda 'return !(id(g_who_present)[0] && 0!=id(g_who_sel) && !id(g_who_haspic)[0]);', x: !lambda 'int n=0;for(int k=0;k<6;k++)if(id(g_who_present)[k])n++;if(n<1)n=1;return (int)lroundf(118.0f*sinf((float)(0-id(g_who_sel))*6.2831853f/n));', y: !lambda 'int n=0;for(int k=0;k<6;k++)if(id(g_who_present)[k])n++;if(n<1)n=1;return (int)lroundf(-118.0f*cosf((float)(0-id(g_who_sel))*6.2831853f/n));' }
+            - lvgl.label.update: { id: who_in0, text: !lambda 'return id(g_who_initial)[0];' }
+            - lvgl.widget.update: { id: who_ph1, hidden: !lambda 'return !(id(g_who_present)[1] && 1!=id(g_who_sel) && id(g_who_haspic)[1]);',  x: !lambda 'int n=0;for(int k=0;k<6;k++)if(id(g_who_present)[k])n++;if(n<1)n=1;return (int)lroundf(118.0f*sinf((float)(1-id(g_who_sel))*6.2831853f/n));', y: !lambda 'int n=0;for(int k=0;k<6;k++)if(id(g_who_present)[k])n++;if(n<1)n=1;return (int)lroundf(-118.0f*cosf((float)(1-id(g_who_sel))*6.2831853f/n));' }
+            - lvgl.widget.update: { id: who_ci1, hidden: !lambda 'return !(id(g_who_present)[1] && 1!=id(g_who_sel) && !id(g_who_haspic)[1]);', x: !lambda 'int n=0;for(int k=0;k<6;k++)if(id(g_who_present)[k])n++;if(n<1)n=1;return (int)lroundf(118.0f*sinf((float)(1-id(g_who_sel))*6.2831853f/n));', y: !lambda 'int n=0;for(int k=0;k<6;k++)if(id(g_who_present)[k])n++;if(n<1)n=1;return (int)lroundf(-118.0f*cosf((float)(1-id(g_who_sel))*6.2831853f/n));' }
+            - lvgl.label.update: { id: who_in1, text: !lambda 'return id(g_who_initial)[1];' }
+            - lvgl.widget.update: { id: who_ph2, hidden: !lambda 'return !(id(g_who_present)[2] && 2!=id(g_who_sel) && id(g_who_haspic)[2]);',  x: !lambda 'int n=0;for(int k=0;k<6;k++)if(id(g_who_present)[k])n++;if(n<1)n=1;return (int)lroundf(118.0f*sinf((float)(2-id(g_who_sel))*6.2831853f/n));', y: !lambda 'int n=0;for(int k=0;k<6;k++)if(id(g_who_present)[k])n++;if(n<1)n=1;return (int)lroundf(-118.0f*cosf((float)(2-id(g_who_sel))*6.2831853f/n));' }
+            - lvgl.widget.update: { id: who_ci2, hidden: !lambda 'return !(id(g_who_present)[2] && 2!=id(g_who_sel) && !id(g_who_haspic)[2]);', x: !lambda 'int n=0;for(int k=0;k<6;k++)if(id(g_who_present)[k])n++;if(n<1)n=1;return (int)lroundf(118.0f*sinf((float)(2-id(g_who_sel))*6.2831853f/n));', y: !lambda 'int n=0;for(int k=0;k<6;k++)if(id(g_who_present)[k])n++;if(n<1)n=1;return (int)lroundf(-118.0f*cosf((float)(2-id(g_who_sel))*6.2831853f/n));' }
+            - lvgl.label.update: { id: who_in2, text: !lambda 'return id(g_who_initial)[2];' }
+            - lvgl.widget.update: { id: who_ph3, hidden: !lambda 'return !(id(g_who_present)[3] && 3!=id(g_who_sel) && id(g_who_haspic)[3]);',  x: !lambda 'int n=0;for(int k=0;k<6;k++)if(id(g_who_present)[k])n++;if(n<1)n=1;return (int)lroundf(118.0f*sinf((float)(3-id(g_who_sel))*6.2831853f/n));', y: !lambda 'int n=0;for(int k=0;k<6;k++)if(id(g_who_present)[k])n++;if(n<1)n=1;return (int)lroundf(-118.0f*cosf((float)(3-id(g_who_sel))*6.2831853f/n));' }
+            - lvgl.widget.update: { id: who_ci3, hidden: !lambda 'return !(id(g_who_present)[3] && 3!=id(g_who_sel) && !id(g_who_haspic)[3]);', x: !lambda 'int n=0;for(int k=0;k<6;k++)if(id(g_who_present)[k])n++;if(n<1)n=1;return (int)lroundf(118.0f*sinf((float)(3-id(g_who_sel))*6.2831853f/n));', y: !lambda 'int n=0;for(int k=0;k<6;k++)if(id(g_who_present)[k])n++;if(n<1)n=1;return (int)lroundf(-118.0f*cosf((float)(3-id(g_who_sel))*6.2831853f/n));' }
+            - lvgl.label.update: { id: who_in3, text: !lambda 'return id(g_who_initial)[3];' }
+            - lvgl.widget.update: { id: who_ph4, hidden: !lambda 'return !(id(g_who_present)[4] && 4!=id(g_who_sel) && id(g_who_haspic)[4]);',  x: !lambda 'int n=0;for(int k=0;k<6;k++)if(id(g_who_present)[k])n++;if(n<1)n=1;return (int)lroundf(118.0f*sinf((float)(4-id(g_who_sel))*6.2831853f/n));', y: !lambda 'int n=0;for(int k=0;k<6;k++)if(id(g_who_present)[k])n++;if(n<1)n=1;return (int)lroundf(-118.0f*cosf((float)(4-id(g_who_sel))*6.2831853f/n));' }
+            - lvgl.widget.update: { id: who_ci4, hidden: !lambda 'return !(id(g_who_present)[4] && 4!=id(g_who_sel) && !id(g_who_haspic)[4]);', x: !lambda 'int n=0;for(int k=0;k<6;k++)if(id(g_who_present)[k])n++;if(n<1)n=1;return (int)lroundf(118.0f*sinf((float)(4-id(g_who_sel))*6.2831853f/n));', y: !lambda 'int n=0;for(int k=0;k<6;k++)if(id(g_who_present)[k])n++;if(n<1)n=1;return (int)lroundf(-118.0f*cosf((float)(4-id(g_who_sel))*6.2831853f/n));' }
+            - lvgl.label.update: { id: who_in4, text: !lambda 'return id(g_who_initial)[4];' }
+            - lvgl.widget.update: { id: who_ph5, hidden: !lambda 'return !(id(g_who_present)[5] && 5!=id(g_who_sel) && id(g_who_haspic)[5]);',  x: !lambda 'int n=0;for(int k=0;k<6;k++)if(id(g_who_present)[k])n++;if(n<1)n=1;return (int)lroundf(118.0f*sinf((float)(5-id(g_who_sel))*6.2831853f/n));', y: !lambda 'int n=0;for(int k=0;k<6;k++)if(id(g_who_present)[k])n++;if(n<1)n=1;return (int)lroundf(-118.0f*cosf((float)(5-id(g_who_sel))*6.2831853f/n));' }
+            - lvgl.widget.update: { id: who_ci5, hidden: !lambda 'return !(id(g_who_present)[5] && 5!=id(g_who_sel) && !id(g_who_haspic)[5]);', x: !lambda 'int n=0;for(int k=0;k<6;k++)if(id(g_who_present)[k])n++;if(n<1)n=1;return (int)lroundf(118.0f*sinf((float)(5-id(g_who_sel))*6.2831853f/n));', y: !lambda 'int n=0;for(int k=0;k<6;k++)if(id(g_who_present)[k])n++;if(n<1)n=1;return (int)lroundf(-118.0f*cosf((float)(5-id(g_who_sel))*6.2831853f/n));' }
+            - lvgl.label.update: { id: who_in5, text: !lambda 'return id(g_who_initial)[5];' }
+
+text_sensor:
+  - platform: homeassistant
+    id: who_s0
+    entity_id: ${person1_entity}
+    on_value: [ lambda: 'id(g_who_state)[0]=x; id(g_who_present)[0]=true;', script.execute: who_render ]
+  - platform: homeassistant
+    id: who_p0
+    entity_id: ${person1_entity}
+    attribute: entity_picture
+    on_value: [ lambda: 'std::string u=x; if(!u.empty() && u.rfind("http",0)!=0) u=std::string("${ha_base_url}")+u; id(g_who_pic)[0]=u; id(g_who_haspic)[0]=!u.empty(); if(!u.empty()){ id(who_img0)->set_url(u.c_str()); id(who_img0)->update(); }', script.execute: who_render ]
+  - platform: homeassistant
+    id: who_s1
+    entity_id: ${person2_entity}
+    on_value: [ lambda: 'id(g_who_state)[1]=x; id(g_who_present)[1]=true;', script.execute: who_render ]
+  - platform: homeassistant
+    id: who_p1
+    entity_id: ${person2_entity}
+    attribute: entity_picture
+    on_value: [ lambda: 'std::string u=x; if(!u.empty() && u.rfind("http",0)!=0) u=std::string("${ha_base_url}")+u; id(g_who_pic)[1]=u; id(g_who_haspic)[1]=!u.empty(); if(!u.empty()){ id(who_img1)->set_url(u.c_str()); id(who_img1)->update(); }', script.execute: who_render ]
+  - platform: homeassistant
+    id: who_s2
+    entity_id: ${person3_entity}
+    on_value: [ lambda: 'id(g_who_state)[2]=x; id(g_who_present)[2]=true;', script.execute: who_render ]
+  - platform: homeassistant
+    id: who_p2
+    entity_id: ${person3_entity}
+    attribute: entity_picture
+    on_value: [ lambda: 'std::string u=x; if(!u.empty() && u.rfind("http",0)!=0) u=std::string("${ha_base_url}")+u; id(g_who_pic)[2]=u; id(g_who_haspic)[2]=!u.empty(); if(!u.empty()){ id(who_img2)->set_url(u.c_str()); id(who_img2)->update(); }', script.execute: who_render ]
+  - platform: homeassistant
+    id: who_s3
+    entity_id: ${person4_entity}
+    on_value: [ lambda: 'id(g_who_state)[3]=x; id(g_who_present)[3]=true;', script.execute: who_render ]
+  - platform: homeassistant
+    id: who_p3
+    entity_id: ${person4_entity}
+    attribute: entity_picture
+    on_value: [ lambda: 'std::string u=x; if(!u.empty() && u.rfind("http",0)!=0) u=std::string("${ha_base_url}")+u; id(g_who_pic)[3]=u; id(g_who_haspic)[3]=!u.empty(); if(!u.empty()){ id(who_img3)->set_url(u.c_str()); id(who_img3)->update(); }', script.execute: who_render ]
+  - platform: homeassistant
+    id: who_s4
+    entity_id: ${person5_entity}
+    on_value: [ lambda: 'id(g_who_state)[4]=x; id(g_who_present)[4]=true;', script.execute: who_render ]
+  - platform: homeassistant
+    id: who_p4
+    entity_id: ${person5_entity}
+    attribute: entity_picture
+    on_value: [ lambda: 'std::string u=x; if(!u.empty() && u.rfind("http",0)!=0) u=std::string("${ha_base_url}")+u; id(g_who_pic)[4]=u; id(g_who_haspic)[4]=!u.empty(); if(!u.empty()){ id(who_img4)->set_url(u.c_str()); id(who_img4)->update(); }', script.execute: who_render ]
+  - platform: homeassistant
+    id: who_s5
+    entity_id: ${person6_entity}
+    on_value: [ lambda: 'id(g_who_state)[5]=x; id(g_who_present)[5]=true;', script.execute: who_render ]
+  - platform: homeassistant
+    id: who_p5
+    entity_id: ${person6_entity}
+    attribute: entity_picture
+    on_value: [ lambda: 'std::string u=x; if(!u.empty() && u.rfind("http",0)!=0) u=std::string("${ha_base_url}")+u; id(g_who_pic)[5]=u; id(g_who_haspic)[5]=!u.empty(); if(!u.empty()){ id(who_img5)->set_url(u.c_str()); id(who_img5)->update(); }', script.execute: who_render ]
+
+interval:
+  - interval: 50ms
+    then:
+      - if:
+          condition: { lambda: 'return id(g_nav_req) && id(g_base)==9;' }
+          then:
+            - lambda: 'id(g_nav_req) = false; id(g_knob_capture) = true;'
+            - if: { condition: { lambda: 'return id(g_nav_anim)==0;' }, then: [lvgl.page.show: { id: page_who, animation: move_left,   time: 250ms }] }
+            - if: { condition: { lambda: 'return id(g_nav_anim)==1;' }, then: [lvgl.page.show: { id: page_who, animation: move_right,  time: 250ms }] }
+            - if: { condition: { lambda: 'return id(g_nav_anim)==2;' }, then: [lvgl.page.show: { id: page_who, animation: move_top,    time: 250ms }] }
+            - if: { condition: { lambda: 'return id(g_nav_anim)==3;' }, then: [lvgl.page.show: { id: page_who, animation: move_bottom, time: 250ms }] }
+            - script.execute: who_load_big
+            - script.execute: who_render
+  - interval: 120ms
+    then:
+      - if:
+          condition: { lambda: 'return id(g_base)==9;' }
+          then:
+            - lambda: |-
+                int n = 0; for (int i = 0; i < 6; i++) if (id(g_who_present)[i]) n++;
+                id(g_knob_capture) = (n > 1);
+            - if:
+                condition: { lambda: 'return id(g_knob_delta) != 0;' }
+                then:
+                  - lambda: |-
+                      int d = id(g_knob_delta); id(g_knob_delta) = 0;
+                      int cnt = 0; for (int i = 0; i < 6; i++) if (id(g_who_present)[i]) cnt++;
+                      if (cnt > 0) {
+                        int step = (d > 0) ? 1 : -1; int n = (d > 0) ? d : -d;
+                        for (int k = 0; k < n; k++) { do { id(g_who_sel) = (id(g_who_sel) + step + 6) % 6; } while (!id(g_who_present)[id(g_who_sel)]); }
+                      }
+                  - script.execute: who_load_big
+                  - script.execute: who_render
+
+lvgl:
+  pages:
+    - id: page_who
+      bg_color: 0x0B1020
+      widgets:
+        # ring avatars (positions/visibility set in who_render); photo + initials-circle per slot
+        - image: { id: who_ph0, align: CENTER, x: 0, y: -118, src: who_img0, hidden: true }
+        - image: { id: who_ph1, align: CENTER, x: 0, y: -118, src: who_img1, hidden: true }
+        - image: { id: who_ph2, align: CENTER, x: 0, y: -118, src: who_img2, hidden: true }
+        - image: { id: who_ph3, align: CENTER, x: 0, y: -118, src: who_img3, hidden: true }
+        - image: { id: who_ph4, align: CENTER, x: 0, y: -118, src: who_img4, hidden: true }
+        - image: { id: who_ph5, align: CENTER, x: 0, y: -118, src: who_img5, hidden: true }
+        - obj: { id: who_ci0, align: CENTER, x: 0, y: -118, width: 50, height: 50, radius: 25, bg_color: 0x2A6BD4, border_width: 0, hidden: true, widgets: [ label: { id: who_in0, align: CENTER, text: "", text_font: font_med, text_color: 0xFFFFFF } ] }
+        - obj: { id: who_ci1, align: CENTER, x: 0, y: -118, width: 50, height: 50, radius: 25, bg_color: 0xB0511A, border_width: 0, hidden: true, widgets: [ label: { id: who_in1, align: CENTER, text: "", text_font: font_med, text_color: 0xFFFFFF } ] }
+        - obj: { id: who_ci2, align: CENTER, x: 0, y: -118, width: 50, height: 50, radius: 25, bg_color: 0x148F77, border_width: 0, hidden: true, widgets: [ label: { id: who_in2, align: CENTER, text: "", text_font: font_med, text_color: 0xFFFFFF } ] }
+        - obj: { id: who_ci3, align: CENTER, x: 0, y: -118, width: 50, height: 50, radius: 25, bg_color: 0x9A6A12, border_width: 0, hidden: true, widgets: [ label: { id: who_in3, align: CENTER, text: "", text_font: font_med, text_color: 0xFFFFFF } ] }
+        - obj: { id: who_ci4, align: CENTER, x: 0, y: -118, width: 50, height: 50, radius: 25, bg_color: 0x7A3FA0, border_width: 0, hidden: true, widgets: [ label: { id: who_in4, align: CENTER, text: "", text_font: font_med, text_color: 0xFFFFFF } ] }
+        - obj: { id: who_ci5, align: CENTER, x: 0, y: -118, width: 50, height: 50, radius: 25, bg_color: 0xB01A56, border_width: 0, hidden: true, widgets: [ label: { id: who_in5, align: CENTER, text: "", text_font: font_med, text_color: 0xFFFFFF } ] }
+        # big focused avatar at top (accent ring behind), photo or initials
+        - obj: { id: who_bigring, align: CENTER, x: 0, y: -110, width: 96, height: 96, radius: 48, bg_color: 0x0B1020, border_width: 3, border_color: 0x35C759 }
+        - image: { id: who_bigph, align: CENTER, x: 0, y: -110, src: who_big, hidden: true }
+        - obj: { id: who_bigini, align: CENTER, x: 0, y: -110, width: 88, height: 88, radius: 44, bg_color: 0x2A6BD4, border_width: 0, hidden: true, widgets: [ label: { id: who_bigini_l, align: CENTER, text: "", text_font: montserrat_34, text_color: 0xFFFFFF } ] }
+        # centre: name + location
+        - label: { id: who_name, align: CENTER, y: 14, text: "", text_font: font_sel, text_color: 0xFFFFFF }
+        - label: { id: who_loc, align: CENTER, y: 52, text: "", text_font: font_med, text_color: 0x35C759 }
+        - label: { id: who_empty, align: CENTER, text: "Set person entities", text_font: font_med, text_color: 0x466761, hidden: true }
