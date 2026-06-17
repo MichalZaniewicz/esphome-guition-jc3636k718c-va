@@ -77,11 +77,18 @@ script:
           id: wx_p_temp
           text: !lambda |-
             int d = id(g_wx_day);
+            bool f = id(g_wx_fahrenheit);                 // unit toggle lives in the core (Settings -> Widgets)
+            char u = f ? 'F' : 'C';
             if (d >= id(g_wx_n)) {
-              if (id(g_wx_now) > -100) { char b[8]; snprintf(b, sizeof(b), "%d°", id(g_wx_now)); return std::string(b); }
+              if (id(g_wx_now) > -100) {
+                int n = id(g_wx_now); if (f) n = n * 9 / 5 + 32;
+                char b[12]; snprintf(b, sizeof(b), "%d°%c", n, u); return std::string(b);
+              }
               return std::string("--");
             }
-            char b[16]; snprintf(b, sizeof(b), "%d° / %d°", id(g_wx_hi)[d], id(g_wx_lo)[d]);
+            int hi = id(g_wx_hi)[d], lo = id(g_wx_lo)[d];
+            if (f) { hi = hi * 9 / 5 + 32; lo = lo * 9 / 5 + 32; }
+            char b[24]; snprintf(b, sizeof(b), "%d / %d °%c", hi, lo, u);
             return std::string(b);
       # centre: condition text
       - lvgl.label.update:

@@ -648,6 +648,10 @@ globals:
     type: int
     restore_value: no
     initial_value: '0'
+  - id: g_wx_fahrenheit  # weather screen: show temps in F instead of C (Settings -> Widgets)
+    type: bool
+    restore_value: yes
+    initial_value: 'false'
 
 # Shows the volume arc for ~2 s while turning the knob, then hides it (mode: restart)
 script:
@@ -848,7 +852,14 @@ script:
                   - lvgl.widget.show: wid_roller
                   - lvgl.roller.update: { id: wid_roller, animated: true, selected_index: !lambda 'return id(g_sub_idx);' }
                   - lvgl.widget.show: disp_switch
-                  - lvgl.widget.update: { id: disp_switch, state: { checked: !lambda 'return id(g_sub_idx) == 0 ? id(g_demo_border) : id(g_demo_led);' } }
+                  - lvgl.widget.update:
+                      id: disp_switch
+                      state:
+                        checked: !lambda |-
+                          int i = id(g_sub_idx);
+                          if (i == 0) return id(g_demo_border);
+                          if (i == 1) return id(g_demo_led);
+                          return id(g_wx_fahrenheit);
                 else: [ lvgl.widget.hide: wid_roller ]
             - if:   # Assistant (13): both items = toggles (0=wake word, 1=beep)
                 condition: { lambda: 'return id(g_mode) == 13;' }
@@ -1280,7 +1291,7 @@ binary_sensor:
                   - lambda: |-
                       if (id(g_mode) == 11) { if (id(g_disp_idx) < 4) id(g_disp_idx)++; }
                       else if (id(g_mode) == 5) { if (id(g_set_idx) < id(g_set_n) - 1) id(g_set_idx)++; }
-                      else { int mx = (id(g_mode) == 15) ? 3 : (id(g_mode) == 13) ? 1 : (id(g_mode) == 16) ? 3 : (id(g_mode) == 12) ? 1 : (id(g_mode) == 17) ? 1 : 0; if (id(g_sub_idx) < mx) id(g_sub_idx)++; }
+                      else { int mx = (id(g_mode) == 15) ? 3 : (id(g_mode) == 13) ? 1 : (id(g_mode) == 16) ? 3 : (id(g_mode) == 12) ? 1 : (id(g_mode) == 17) ? 2 : 0; if (id(g_sub_idx) < mx) id(g_sub_idx)++; }
                   - script.execute: ui_render
                 else:
                   - if:
@@ -1649,6 +1660,7 @@ touchscreen:
         then:
           - if: { condition: { lambda: 'return id(g_gesture) == 0 && id(g_sub_idx) == 0;' }, then: [ lambda: 'id(g_demo_border) = !id(g_demo_border);', script.execute: ui_render ] }
           - if: { condition: { lambda: 'return id(g_gesture) == 0 && id(g_sub_idx) == 1;' }, then: [ lambda: 'id(g_demo_led) = !id(g_demo_led);', script.execute: ui_render ] }
+          - if: { condition: { lambda: 'return id(g_gesture) == 0 && id(g_sub_idx) == 2;' }, then: [ lambda: 'id(g_wx_fahrenheit) = !id(g_wx_fahrenheit);', script.execute: ui_render ] }
           - if: { condition: { lambda: 'return id(g_gesture) == 3 || id(g_gesture) == 1;' }, then: [ lambda: 'id(g_mode) = 5;', script.execute: ui_render ] }
     # === ASSISTANT (13) === tap: 0=toggle wake word, 1=toggle beep; right/hold=back
     - if:
@@ -2472,6 +2484,7 @@ lvgl:
             options:
               - "Border"
               - "Demo LED"
+              - "Weather °F"
             selected_index: 0
             hidden: true
         - roller:
