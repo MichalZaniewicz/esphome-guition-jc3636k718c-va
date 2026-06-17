@@ -3,6 +3,21 @@
 All notable changes to this project are documented here. The format is based on
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [2.1.3] - 2026-06-17
+
+### Added
+- **Boot splash**. A short "HELLO!" greeting on startup (~5 s) with a spinning arc on the screen
+  and the LED ring animating, then it cross-fades to the clock. Touch is ignored until it hands off.
+- **Hold to talk** toggle (Settings -> Assistant). Press and hold anywhere on the screen to start
+  the assistant; this can now be turned off (the wake word keeps working regardless).
+
+### Fixed
+- Clock could show UTC (off by the timezone offset) after a restart until the next time sync. The
+  device now re-applies its resolved timezone every second, so the clock never drifts to UTC.
+- OTA updates could roll back to the previous firmware if the device was restarted shortly after
+  flashing (on esp-idf the bootloader only keeps a new image once the boot is marked good). The
+  image is now committed as soon as the boot splash finishes, and the safe-mode window is shortened.
+
 ## [2.1.2] - 2026-06-17
 
 ### Changed

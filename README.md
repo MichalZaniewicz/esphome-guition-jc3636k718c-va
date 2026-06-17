@@ -20,7 +20,9 @@ It started as "my kid needs a physical timer" and turned into a whole puck. 🙂
 ## What it does
 
 - **Voice assistant** - on-device wake word ("Alexa") via `micro_wake_word`, full
-  Home Assistant Assist pipeline (STT / LLM / TTS), wake beep + music ducking.
+  Home Assistant Assist pipeline (STT / LLM / TTS), wake beep + music ducking. You can also
+  press and hold the screen to talk (toggleable in Settings).
+- **Boot splash** - a short "HELLO!" greeting with a spinning ring on startup, then the clock.
 - **Music player** - `speaker` media player visible in HA / Music Assistant, with
   album art, title/artist, transport buttons and a progress bar.
 - **Timers** - set by knob or by voice; big countdown with a depleting ring,
