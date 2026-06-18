@@ -50,7 +50,7 @@ Everything is navigated with **swipes + taps on the screen** and the **rotary kn
 | <img src="assets/screens/timer.png" width="170"> | **Timer**<br>Set by knob or voice; big countdown with a depleting ring, pause/stop, and an alarm when it finishes. |
 | <img src="assets/screens/cool-cars.png" width="170"> | **Cool Cars**<br>A lane-racing arcade game - the knob steers, dodge traffic and grab coins. |
 | <img src="assets/screens/space-wars.png" width="170"> | **Space Wars**<br>A vertical space shooter - the knob steers, auto-fire, survive the waves. |
-| <img src="assets/screens/snake.png" width="170"> | **Snake 360**<br>A free 360-degree snake - turn the knob to steer the head and the body trails behind, across the whole round screen. Eat fruit (up to 3 at once) to grow, dodge the ring, your own tail and the skulls. Speeds up as you score; keeps a top-10. |
+| <img src="assets/screens/snake.png" width="170"> | **Snake 360**<br>A smooth-steering 360-degree snake - turn the knob to steer the head and the body trails behind, across the whole round screen. |
 | <img src="assets/screens/settings.png" width="170"> | **Settings** (swipe down)<br>Display, Home, Widgets, Ring, Assistant, System; turn the knob to scroll, tap to enter. |
 | <img src="assets/screens/demo.png" width="170"> | **Demo**<br>A small, heavily commented example screen (tap flips black ↔ white) to copy when building your own. |
 

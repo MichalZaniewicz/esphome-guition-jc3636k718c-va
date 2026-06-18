@@ -2,7 +2,7 @@
 # Generates base/screens/snake.yaml (modular carousel screen, base id 9). Run from anywhere:
 #   python scripts/gen_snake.py
 #
-# Free 360-degree snake. The head glides every tick (knob rotates its heading); the body is a TRAIL
+# Smooth-steering 360-degree snake. The head glides every tick (knob rotates its heading); the body is a TRAIL
 # of dots the head lays down every SEG_DIST of travel. Dots do NOT move once placed - each tick only
 # the head moves and (when the head advanced one spacing) one dot is added at the head / dropped at
 # the tail. Per-tick render cost is constant regardless of length, which keeps the main loop fast
@@ -135,7 +135,7 @@ f"""  - id: img_sn_fruit{k}
     transparency: alpha_channel""" for k in range(NFRUIT))
 
 
-YAML = f"""# Snake - optional carousel screen (base id 9). Free 360-degree snake steered by the knob.
+YAML = f"""# Snake - optional carousel screen (base id 9). Smooth-steering 360-degree snake steered by the knob.
 # Remove it: drop this file from your config's package "files:" list. Nothing else to edit.
 # Scores (g_sn_top / g_sn_best) + the "Reset scores" settings action live here - fully self-contained.
 #

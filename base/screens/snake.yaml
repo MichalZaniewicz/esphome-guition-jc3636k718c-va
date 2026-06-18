@@ -1,4 +1,4 @@
-# Snake - optional carousel screen (base id 9). Free 360-degree snake steered by the knob.
+# Snake - optional carousel screen (base id 9). Smooth-steering 360-degree snake steered by the knob.
 # Remove it: drop this file from your config's package "files:" list. Nothing else to edit.
 # Scores (g_sn_top / g_sn_best) + the "Reset scores" settings action live here - fully self-contained.
 #

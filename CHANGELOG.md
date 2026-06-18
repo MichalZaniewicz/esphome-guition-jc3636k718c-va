@@ -6,7 +6,7 @@ All notable changes to this project are documented here. The format is based on
 ## [2.1.4] - 2026-06-18
 
 ### Added
-- **Snake 360 screen** (optional). A free 360-degree snake: turn the knob to steer the head's heading
+- **Snake 360 screen** (optional). A smooth-steering 360-degree snake: turn the knob to steer the head's heading
   and the body trails behind it, across the whole round screen bounded by a green ring (the snake
   passes under the score). Eat fruit to grow and score - up to 3 fruit (random sprites from a set
   of 12) are kept on the board and replenished over time, sooner when only one is left. Up to two
