@@ -3,6 +3,11 @@
 All notable changes to this project are documented here. The format is based on
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [2.1.6] - 2026-06-18
+
+### Changed
+- Control tiles: the lit tile now has a soft amber glow, and tile names get a little letter spacing.
+
 ## [2.1.5] - 2026-06-18
 
 ### Changed
