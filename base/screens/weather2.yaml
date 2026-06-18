@@ -300,8 +300,8 @@ lvgl:
         - label: { id: wx2_d5, align: CENTER, x: 0, y: 0, text: "", text_font: icons_wx, text_color: 0xDCE6F2, hidden: true }
         - label: { id: wx2_d6, align: CENTER, x: 0, y: 0, text: "", text_font: icons_wx, text_color: 0xDCE6F2, hidden: true }
         # centre hero: animated icons (sunny/partly) OR static glyph (others)
-        - animimg: { id: wx2_a_sun, align: CENTER, x: 0, y: -58, duration: 800ms, repeat_count: 1000000, auto_start: false, hidden: true, src: [ img_wx_sun0, img_wx_sun1, img_wx_sun2, img_wx_sun3, img_wx_sun4, img_wx_sun5, img_wx_sun6, img_wx_sun7 ] }
-        - animimg: { id: wx2_a_partly, align: CENTER, x: 0, y: -58, duration: 800ms, repeat_count: 1000000, auto_start: false, hidden: true, src: [ img_wx_partly0, img_wx_partly1, img_wx_partly2, img_wx_partly3, img_wx_partly4, img_wx_partly5, img_wx_partly6, img_wx_partly7 ] }
+        - animimg: { id: wx2_a_sun, align: CENTER, x: 0, y: -58, duration: 800ms, repeat_count: 65535, auto_start: false, hidden: true, src: [ img_wx_sun0, img_wx_sun1, img_wx_sun2, img_wx_sun3, img_wx_sun4, img_wx_sun5, img_wx_sun6, img_wx_sun7 ] }
+        - animimg: { id: wx2_a_partly, align: CENTER, x: 0, y: -58, duration: 800ms, repeat_count: 65535, auto_start: false, hidden: true, src: [ img_wx_partly0, img_wx_partly1, img_wx_partly2, img_wx_partly3, img_wx_partly4, img_wx_partly5, img_wx_partly6, img_wx_partly7 ] }
         - label: { id: wx2_bigicon, align: CENTER, x: 0, y: -58, text: "", text_font: icons_wx_big, text_color: 0x9FC7BE, hidden: true }
         - label: { id: wx2_day, align: CENTER, x: 0, y: -10, text: "", text_font: font_artist, text_color: 0x9AA6B2 }
         - label: { id: wx2_temp, align: CENTER, x: 0, y: 24, text: "--", text_font: montserrat_34, text_color: 0xFFFFFF }
