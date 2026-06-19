@@ -117,6 +117,7 @@ script:
           then:
             - lvgl.label.update: { id: th_action, text_color: 0xFF6B30 }
             - lvgl.label.update: { id: th_target, text_color: 0xFF6B30 }
+            - lvgl.arc.update: { id: th_arc, indicator: { arc_color: 0xFF6B30 } }
           else:
             - if:
                 condition:
@@ -124,15 +125,26 @@ script:
                 then:
                   - lvgl.label.update: { id: th_action, text_color: 0x3FA9D6 }
                   - lvgl.label.update: { id: th_target, text_color: 0x3FA9D6 }
+                  - lvgl.arc.update: { id: th_arc, indicator: { arc_color: 0x3FA9D6 } }
                 else:
                   - if:
                       condition: { lambda: 'return id(g_th_mode) == "off" || id(g_th_mode).empty();' }
                       then:
                         - lvgl.label.update: { id: th_action, text_color: 0x6F9A92 }
                         - lvgl.label.update: { id: th_target, text_color: 0x6F9A92 }
+                        - lvgl.arc.update: { id: th_arc, indicator: { arc_color: 0x44506A } }
                       else:
                         - lvgl.label.update: { id: th_action, text_color: 0x9FC7BE }
                         - lvgl.label.update: { id: th_target, text_color: 0xFFFFFF }
+                        - lvgl.arc.update: { id: th_arc, indicator: { arc_color: 0x2FE6CF } }
+      - lambda: |-      # position the target head-dot on the gauge
+          float r = id(g_th_max) - id(g_th_min);
+          float p = (r > 0) ? 100.0f * (id(g_th_target) - id(g_th_min)) / r : 0.0f;
+          if (p < 0) p = 0; if (p > 100) p = 100;
+          float a = (135.0f + p / 100.0f * 270.0f) * 0.01745329f;
+          int x = 180 + (int) lroundf(144.0f * cosf(a)) - 9;
+          int y = 180 + (int) lroundf(144.0f * sinf(a)) - 9;
+          lv_obj_set_pos(id(th_dot), x, y);
 
 sensor:
   - platform: homeassistant
@@ -236,6 +248,18 @@ lvgl:
     - id: page_thermostat
       bg_color: 0x0B1020
       widgets:
+        - obj:   # faint outer ring for depth
+            id: th_ring_out
+            align: CENTER
+            width: 332
+            height: 332
+            radius: 166
+            bg_opa: TRANSP
+            border_width: 2
+            border_color: 0x1B2740
+            border_opa: 70%
+            clickable: false
+            scrollable: false
         - arc:
             id: th_arc
             align: CENTER
@@ -252,6 +276,21 @@ lvgl:
             indicator:
               arc_color: 0x2FE6CF
               arc_width: 12
+        - obj:   # head-dot: white bead marking the target on the gauge (positioned in th_render)
+            id: th_dot
+            x: 0
+            y: 0
+            width: 18
+            height: 18
+            radius: 9
+            bg_color: 0xFFFFFF
+            bg_opa: COVER
+            border_width: 0
+            shadow_color: 0xFFFFFF
+            shadow_width: 10
+            shadow_opa: 55%
+            clickable: false
+            scrollable: false
         - label: { id: th_action, align: CENTER, y: -86, text: "", text_font: font_artist, text_color: 0x9FC7BE }
         - label: { id: th_target, align: CENTER, y: -14, text: "--", text_font: montserrat_48, text_color: 0xFFFFFF }
         - label: { id: th_cur, align: CENTER, y: 30, text: "now --", text_font: font_med, text_color: 0x9FC7BE }
