@@ -17,6 +17,10 @@ esphome:
       then:
         - lambda: 'id(g_wf_present)[1] = true; id(g_wf_name)[1] = "Neon";'
 
+globals:
+  - { id: g_nf_last_min, type: int,  restore_value: no, initial_value: '-1' }   # perf: only redraw on minute change
+  - { id: g_nf_upd_min,  type: bool, restore_value: no, initial_value: 'false' }
+
 font:
   # Huge bold digits - only 0-9 needed, so it stays tiny in flash
   - file: { type: gfonts, family: "Roboto", weight: 900 }
@@ -161,7 +165,7 @@ interval:
       - if:
           condition: { lambda: 'return id(g_wf_req) && id(g_watchface) == 1;' }
           then:
-            - lambda: 'id(g_wf_req) = false;'
+            - lambda: 'id(g_wf_req) = false; id(g_nf_last_min) = -1;'   # force a full redraw on entry
             - lvgl.page.show: { id: page_home_neon, animation: fade_in, time: 250ms }
             - script.execute: neon_render
   # Refresh while this is the active home face
@@ -174,45 +178,54 @@ interval:
 script:
   - id: neon_render
     then:
-      - lvgl.label.update: { id: nf_hh, text: !lambda 'return id(ha_time).now().is_valid() ? id(ha_time).now().strftime("%H") : std::string("00");' }
-      - lvgl.label.update: { id: nf_mm, text: !lambda 'return id(ha_time).now().is_valid() ? id(ha_time).now().strftime("%M") : std::string("00");' }
-      - lvgl.label.update: { id: nf_wx_ic, text: !lambda 'return id(g_nf_glyph).empty() ? std::string("󰖕") : id(g_nf_glyph);' }
-      - lvgl.label.update: { id: nf_wx_cond, text: !lambda 'return id(g_nf_cond);' }
-      - lvgl.label.update:
-          id: nf_wx_temp
-          text: !lambda |-
-            if (!id(wx_temp).has_state()) return std::string("--°");
-            char b[10]; snprintf(b, sizeof(b), "%d°", (int) roundf(id(wx_temp).state)); return std::string(b);
-      - lvgl.label.update:
-          id: nf_date
-          text: !lambda |-
-            auto t = id(ha_time).now();
-            if (!t.is_valid()) return std::string("");
-            static const char* d[8] = {"","Sun","Mon","Tue","Wed","Thu","Fri","Sat"};
-            std::string day = (t.day_of_week >= 1 && t.day_of_week <= 7) ? std::string(d[t.day_of_week]) : std::string("");
-            return t.strftime("%d %b") + "   " + day;
-      - lvgl.label.update:
-          id: nf_ct_val
-          text: !lambda 'if (!id(room_temp).has_state()) return std::string("--"); char b[12]; snprintf(b, sizeof(b), "%.1f\xC2\xB0", id(room_temp).state); return std::string(b);'
-      - lvgl.label.update:
-          id: nf_hum_val
-          text: !lambda 'if (!id(room_hum).has_state()) return std::string("--"); char b[8]; snprintf(b, sizeof(b), "%d%%", (int) roundf(id(room_hum).state)); return std::string(b);'
-      # Battery: mirror core's lbl_batt text + colour (reuses its LVGL battery symbols)
-      - lambda: 'lv_label_set_text(id(nf_bt), lv_label_get_text(id(lbl_batt)));'
+      # Cheap tick: figure out if the minute actually changed (heavy redraws only then)
+      - lambda: |-
+          id(g_nf_upd_min) = false;
+          auto t = id(ha_time).now();
+          if (!t.is_valid()) return;
+          int mn = t.hour * 60 + t.minute;
+          if (mn != id(g_nf_last_min)) { id(g_nf_last_min) = mn; id(g_nf_upd_min) = true; }
       - if:
-          condition: { lambda: 'return id(g_charging);' }
-          then: [ lvgl.label.update: { id: nf_bt, text_color: 0x35c759 } ]
-          else: [ lvgl.label.update: { id: nf_bt, text_color: 0x6f9a92 } ]
-      # Weather / climate visibility obey the Display toggles (same as the classic face)
-      - if:
-          condition: { lambda: 'return id(g_show_weather);' }
-          then: [ lvgl.widget.show: nf_wx_ic, lvgl.widget.show: nf_wx_temp, lvgl.widget.show: nf_wx_cond ]
-          else: [ lvgl.widget.hide: nf_wx_ic, lvgl.widget.hide: nf_wx_temp, lvgl.widget.hide: nf_wx_cond ]
-      - if:
-          condition: { lambda: 'return id(g_show_climate);' }
-          then: [ lvgl.widget.show: nf_ct_ic, lvgl.widget.show: nf_ct_val, lvgl.widget.show: nf_hum_ic, lvgl.widget.show: nf_hum_val ]
-          else: [ lvgl.widget.hide: nf_ct_ic, lvgl.widget.hide: nf_ct_val, lvgl.widget.hide: nf_hum_ic, lvgl.widget.hide: nf_hum_val ]
-      # Timer badge (active screen/voice timer - minutes left)
+          condition: { lambda: 'return id(g_nf_upd_min);' }
+          then:
+            - lvgl.label.update: { id: nf_hh, text: !lambda 'return id(ha_time).now().strftime("%H");' }
+            - lvgl.label.update: { id: nf_mm, text: !lambda 'return id(ha_time).now().strftime("%M");' }
+            - lvgl.label.update: { id: nf_wx_ic, text: !lambda 'return id(g_nf_glyph).empty() ? std::string("󰖕") : id(g_nf_glyph);' }
+            - lvgl.label.update: { id: nf_wx_cond, text: !lambda 'return id(g_nf_cond);' }
+            - lvgl.label.update:
+                id: nf_wx_temp
+                text: !lambda |-
+                  if (!id(wx_temp).has_state()) return std::string("--Â°");
+                  char b[10]; snprintf(b, sizeof(b), "%dÂ°", (int) roundf(id(wx_temp).state)); return std::string(b);
+            - lvgl.label.update:
+                id: nf_date
+                text: !lambda |-
+                  auto t = id(ha_time).now();
+                  static const char* d[8] = {"","Sun","Mon","Tue","Wed","Thu","Fri","Sat"};
+                  std::string day = (t.day_of_week >= 1 && t.day_of_week <= 7) ? std::string(d[t.day_of_week]) : std::string("");
+                  return t.strftime("%d %b") + "   " + day;
+            - lvgl.label.update:
+                id: nf_ct_val
+                text: !lambda 'if (!id(room_temp).has_state()) return std::string("--"); char b[12]; snprintf(b, sizeof(b), "%.1fÂ°", id(room_temp).state); return std::string(b);'
+            - lvgl.label.update:
+                id: nf_hum_val
+                text: !lambda 'if (!id(room_hum).has_state()) return std::string("--"); char b[8]; snprintf(b, sizeof(b), "%d%%", (int) roundf(id(room_hum).state)); return std::string(b);'
+            # Battery: mirror core's lbl_batt text + colour
+            - lambda: 'lv_label_set_text(id(nf_bt), lv_label_get_text(id(lbl_batt)));'
+            - if:
+                condition: { lambda: 'return id(g_charging);' }
+                then: [ lvgl.label.update: { id: nf_bt, text_color: 0x35c759 } ]
+                else: [ lvgl.label.update: { id: nf_bt, text_color: 0x6f9a92 } ]
+            # Weather / climate visibility obey the Display toggles
+            - if:
+                condition: { lambda: 'return id(g_show_weather);' }
+                then: [ lvgl.widget.show: nf_wx_ic, lvgl.widget.show: nf_wx_temp, lvgl.widget.show: nf_wx_cond ]
+                else: [ lvgl.widget.hide: nf_wx_ic, lvgl.widget.hide: nf_wx_temp, lvgl.widget.hide: nf_wx_cond ]
+            - if:
+                condition: { lambda: 'return id(g_show_climate);' }
+                then: [ lvgl.widget.show: nf_ct_ic, lvgl.widget.show: nf_ct_val, lvgl.widget.show: nf_hum_ic, lvgl.widget.show: nf_hum_val ]
+                else: [ lvgl.widget.hide: nf_ct_ic, lvgl.widget.hide: nf_ct_val, lvgl.widget.hide: nf_hum_ic, lvgl.widget.hide: nf_hum_val ]
+      # Timer badge - kept responsive (cheap) so it appears/updates promptly
       - if:
           condition: { lambda: 'return id(g_timer_active);' }
           then:

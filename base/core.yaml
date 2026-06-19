@@ -593,6 +593,14 @@ globals:
     type: bool
     restore_value: no
     initial_value: 'false'
+  - id: g_home_last_min  # Classic clock: last drawn minute (perf - redraw the clock only on change)
+    type: int
+    restore_value: no
+    initial_value: '-1'
+  - id: g_home_upd_min
+    type: bool
+    restore_value: no
+    initial_value: 'false'
   - id: g_nf_glyph     # current weather MDI glyph (set when the weather state changes; reused by the Neon face)
     type: std::string
     restore_value: no
@@ -2526,19 +2534,24 @@ interval:
       # Battery: while charging - "filling" animation; when full (≥99%) - static full icon.
       - lambda: 'if (id(g_charging)) id(g_chg_anim) = (id(g_chg_anim) + 1) % 5;'
       - script.execute: batt_render
-      - lvgl.label.update:
-          id: lbl_clock
-          text: !lambda |-
-            if (!id(ha_time).now().is_valid()) return std::string("--:--");
-            return id(ha_time).now().strftime("%H:%M");
-      - lvgl.label.update:
-          id: lbl_date
-          text: !lambda |-
-            auto t = id(ha_time).now();
-            if (!t.is_valid()) return std::string("");
-            static const char* d[8] = {"","Su","Mo","Tu","We","Th","Fr","Sa"};
-            std::string day = (t.day_of_week >= 1 && t.day_of_week <= 7) ? std::string(d[t.day_of_week]) : std::string("");
-            return t.strftime("%d.%m") + "  " + day;
+      # Clock/date: redraw only when the minute actually changes (not every second)
+      - lambda: |-
+          id(g_home_upd_min) = false;
+          auto t = id(ha_time).now();
+          if (t.is_valid()) { int mn = t.hour * 60 + t.minute; if (mn != id(g_home_last_min)) { id(g_home_last_min) = mn; id(g_home_upd_min) = true; } }
+      - if:
+          condition: { lambda: 'return id(g_home_upd_min);' }
+          then:
+            - lvgl.label.update:
+                id: lbl_clock
+                text: !lambda 'return id(ha_time).now().strftime("%H:%M");'
+            - lvgl.label.update:
+                id: lbl_date
+                text: !lambda |-
+                  auto t = id(ha_time).now();
+                  static const char* d[8] = {"","Su","Mo","Tu","We","Th","Fr","Sa"};
+                  std::string day = (t.day_of_week >= 1 && t.day_of_week <= 7) ? std::string(d[t.day_of_week]) : std::string("");
+                  return t.strftime("%d.%m") + "  " + day;
       # Screen-timer countdown (g_timer_active). From the button: local. From VA: HA calls finished, locally smooth.
       - if:
           condition:
