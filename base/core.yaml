@@ -3197,7 +3197,7 @@ lvgl:
             id: alarm_sub
             align: CENTER
             y: 76
-            text: "tap to stop"
+            text: "Tap to stop"
             text_font: font_artist
             text_color: 0xF0B4B4
             hidden: true
