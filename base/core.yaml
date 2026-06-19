@@ -2336,14 +2336,17 @@ font:
     id: font_med
     size: 22
     glyphsets: [GF_Latin_Core]
+    ignore_missing_glyphs: true   # GF_Latin_Core lists combining accents Roboto's static face lacks - harmless, silence the warning
   - file: "gfonts://Roboto"
     id: font_artist
     size: 16
     glyphsets: [GF_Latin_Core]
+    ignore_missing_glyphs: true
   - file: "gfonts://Roboto"
     id: font_sel
     size: 28
     glyphsets: [GF_Latin_Core]
+    ignore_missing_glyphs: true
   # Material Design icons (for the control tiles) - ESPHome downloads the TTF at compile time
   - file: "https://github.com/Templarian/MaterialDesign-Webfont/raw/v7.4.47/fonts/materialdesignicons-webfont.ttf"
     id: icons34
