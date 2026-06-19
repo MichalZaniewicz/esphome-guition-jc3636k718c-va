@@ -3,6 +3,11 @@
 All notable changes to this project are documented here. The format is based on
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [2.2.3] - 2026-06-19
+
+### Changed
+- Thermostat screen polished: the whole arc is now colour-coded by action (heating / cooling / idle / off), a white head-dot marks the target on the gauge, and a faint depth ring was added.
+
 ## [2.2.2] - 2026-06-19
 
 ### Changed
