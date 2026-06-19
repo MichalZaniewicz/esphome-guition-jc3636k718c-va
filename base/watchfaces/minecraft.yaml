@@ -1,11 +1,10 @@
 # ═════════════════════════════════════════════════════════════════════════════
-#  MINECRAFT watchface (optional, id 3). A blocky scene: sky + a real textured
-#  grass/dirt ground (built from grass_block_side + dirt textures), a blocky pixel font
-#  (pixel-font.ttf) for the time (with the classic drop shadow), a pixel sun + outdoor
-#  temp, and a Minecraft-style heart bar for the battery.
+#  MINECRAFT watchface (optional, id 3). A blocky scene with a day/night cycle:
+#  sky + textured grass/dirt ground, the sun by day / moon + stars by night,
+#  drifting blocky clouds, pixel flowers on the grass, a blocky pixel font for the
+#  time (classic drop shadow), outdoor temp, and a Minecraft heart bar for battery.
 #
-#  Assets (font + ground image) are fetched from this repo at compile time via raw
-#  GitHub URLs - on the BETA branch here; flip /beta/ -> /main/ when merging to main.
+#  Assets fetched via raw GitHub URLs on the BETA branch; flip /beta/ -> /main/ at merge.
 #  Watchface contract: see base/watchfaces/demo.yaml.
 # ═════════════════════════════════════════════════════════════════════════════
 
@@ -26,28 +25,44 @@ font:
     glyphsets: [GF_Latin_Core]
 
 image:
-  - id: img_mc_ground
-    file: https://raw.githubusercontent.com/MichalZaniewicz/esphome-guition-jc3636k718c-va/beta/assets/sprites/minecraft/ground.png
-    type: RGB565
+  - { id: img_mc_ground, file: https://raw.githubusercontent.com/MichalZaniewicz/esphome-guition-jc3636k718c-va/beta/assets/sprites/minecraft/ground.png, type: RGB565 }
+  - { id: img_mc_sun,    file: https://raw.githubusercontent.com/MichalZaniewicz/esphome-guition-jc3636k718c-va/beta/assets/sprites/minecraft/sun.png,    type: RGB565, transparency: alpha_channel }
+  - { id: img_mc_moon,   file: https://raw.githubusercontent.com/MichalZaniewicz/esphome-guition-jc3636k718c-va/beta/assets/sprites/minecraft/moon.png,   type: RGB565, transparency: alpha_channel }
+  - { id: img_mc_cloud,  file: https://raw.githubusercontent.com/MichalZaniewicz/esphome-guition-jc3636k718c-va/beta/assets/sprites/minecraft/cloud.png,  type: RGB565, transparency: alpha_channel }
+  - { id: img_mc_flower, file: https://raw.githubusercontent.com/MichalZaniewicz/esphome-guition-jc3636k718c-va/beta/assets/sprites/minecraft/flower.png, type: RGB565, transparency: alpha_channel }
 
 lvgl:
   pages:
     - id: page_home_mc
-      bg_color: 0x5A9BD4          # day sky
+      bg_color: 0x000000
       widgets:
-        # ── textured grass/dirt ground (drawn first), flush to the bottom edge ──
+        # sky (recoloured day/night) - full screen, behind everything
+        - obj: { id: mc_sky, x: 0, y: 0, width: 360, height: 360, bg_color: 0x5A9BD4, bg_opa: COVER, radius: 0, border_width: 0, clickable: false, scrollable: false }
+        # stars (night only)
+        - obj: { id: mc_star1, x: 44,  y: 64,  width: 6, height: 6, bg_color: 0xEAECF5, bg_opa: COVER, radius: 0, border_width: 0, clickable: false, scrollable: false, hidden: true }
+        - obj: { id: mc_star2, x: 120, y: 42,  width: 6, height: 6, bg_color: 0xEAECF5, bg_opa: COVER, radius: 0, border_width: 0, clickable: false, scrollable: false, hidden: true }
+        - obj: { id: mc_star3, x: 250, y: 48,  width: 6, height: 6, bg_color: 0xEAECF5, bg_opa: COVER, radius: 0, border_width: 0, clickable: false, scrollable: false, hidden: true }
+        - obj: { id: mc_star4, x: 70,  y: 116, width: 5, height: 5, bg_color: 0xC9D0E4, bg_opa: COVER, radius: 0, border_width: 0, clickable: false, scrollable: false, hidden: true }
+        - obj: { id: mc_star5, x: 300, y: 120, width: 5, height: 5, bg_color: 0xC9D0E4, bg_opa: COVER, radius: 0, border_width: 0, clickable: false, scrollable: false, hidden: true }
+        # textured ground (flush to the bottom edge)
         - image: { id: mc_ground, src: img_mc_ground, align: BOTTOM_MID, y: 0 }
-        # ── sky decor: blocky clouds + a pixel sun ──
-        - obj: { id: mc_cloud1, x: 40, y: 58, width: 58, height: 16, bg_color: 0xEFF4FB, bg_opa: COVER, radius: 0, border_width: 0, clickable: false, scrollable: false }
-        - obj: { id: mc_cloud2, x: 30, y: 76, width: 40, height: 14, bg_color: 0xEFF4FB, bg_opa: COVER, radius: 0, border_width: 0, clickable: false, scrollable: false }
-        - obj: { id: mc_sun, align: TOP_RIGHT, x: -42, y: 42, width: 44, height: 44, bg_color: 0xF6E27A, bg_opa: COVER, radius: 0, border_width: 0, clickable: false, scrollable: false }
-        - label: { id: mc_sun_temp, align: TOP_RIGHT, x: -98, y: 54, text: "--°", text_font: font_artist, text_color: 0x16314A }
-        # ── time: dark shadow label behind + white in front (the Minecraft look) ──
-        - label: { id: mc_time_sh, align: CENTER, x: 4, y: -40, text: "00:00", text_font: mc_font_big, text_color: 0x2B4258 }
+        # pixel flowers standing on the grass
+        - image: { id: mc_flower1, src: img_mc_flower, x: 56,  y: 200 }
+        - image: { id: mc_flower2, src: img_mc_flower, x: 282, y: 206 }
+        # drifting blocky clouds (x animated in an interval)
+        - image: { id: mc_cloud1, src: img_mc_cloud, x: 60,  y: 46 }
+        - image: { id: mc_cloud2, src: img_mc_cloud, x: 230, y: 74 }
+        # sun by day / moon by night (top-right)
+        - image: { id: mc_sun,  src: img_mc_sun,  align: TOP_RIGHT, x: -38, y: 38 }
+        - image: { id: mc_moon, src: img_mc_moon, align: TOP_RIGHT, x: -38, y: 38, hidden: true }
+        - label: { id: mc_sun_temp, align: TOP_RIGHT, x: -52, y: 100, text: "--°", text_font: font_artist, text_color: 0x16314A }
+        # time: dark shadow behind + white in front (the Minecraft look)
+        - label: { id: mc_time_sh, align: CENTER, x: 3, y: -41, text: "00:00", text_font: mc_font_big, text_color: 0x1A2A40 }
         - label: { id: mc_time,    align: CENTER, x: 0, y: -44, text: "00:00", text_font: mc_font_big, text_color: 0xFFFFFF }
         - label: { id: mc_date,    align: CENTER, x: 0, y: 14,  text: "",      text_font: mc_font_sm,  text_color: 0xEAF2FB }
-        # ── battery as a Minecraft heart bar (HUD) ──
-        - label: { id: mc_hearts,  align: CENTER, x: 0, y: 42,  text: "",      text_font: icons18,     text_color: 0xE2453F }
+        # battery as a Minecraft heart bar, low on the screen: 5 dark "empty" slots + red fill on top
+        - label: { id: mc_hearts_bg, align: BOTTOM_LEFT, x: 128, y: -16, text: "󰋑󰋑󰋑󰋑󰋑", text_font: icons18, text_color: 0x3A1614 }
+        - label: { id: mc_hearts,    align: BOTTOM_LEFT, x: 128, y: -16, text: "",          text_font: icons18, text_color: 0xE2453F }
 
 interval:
   - interval: 50ms
@@ -63,6 +78,15 @@ interval:
       - if:
           condition: { lambda: 'return id(g_watchface) == 3 && id(g_base) == 0;' }
           then: [ script.execute: mc_render ]
+  - interval: 120ms        # slowly drift the clouds
+    then:
+      - if:
+          condition: { lambda: 'return id(g_watchface) == 3 && id(g_base) == 0;' }
+          then:
+            - lambda: |-
+                uint32_t m = millis(); int w = 470;
+                lv_obj_set_x(id(mc_cloud1), 360 - (int)((m / 70) % w));
+                lv_obj_set_x(id(mc_cloud2), 360 - (int)(((m / 110) + 260) % w));
 
 script:
   - id: mc_render
@@ -79,10 +103,37 @@ script:
             std::string s = day + t.strftime(" %d %b");
             for (auto &c : s) { if (c >= 'a' && c <= 'z') c -= 32; }
             return s;
+      # Day / night cycle (night 20:00-06:00): sky tint, sun<->moon, stars, clouds, temp colour
+      - if:
+          condition: { lambda: 'auto t = id(ha_time).now(); int h = t.is_valid() ? t.hour : 12; return (h < 6 || h >= 20);' }
+          then:
+            - lvgl.widget.update: { id: mc_sky, bg_color: 0x101A33 }
+            - lvgl.widget.hide: mc_sun
+            - lvgl.widget.show: mc_moon
+            - lvgl.widget.hide: mc_cloud1
+            - lvgl.widget.hide: mc_cloud2
+            - lvgl.widget.show: mc_star1
+            - lvgl.widget.show: mc_star2
+            - lvgl.widget.show: mc_star3
+            - lvgl.widget.show: mc_star4
+            - lvgl.widget.show: mc_star5
+            - lvgl.label.update: { id: mc_sun_temp, text_color: 0xC8D2E2 }
+          else:
+            - lvgl.widget.update: { id: mc_sky, bg_color: 0x5A9BD4 }
+            - lvgl.widget.show: mc_sun
+            - lvgl.widget.hide: mc_moon
+            - lvgl.widget.show: mc_cloud1
+            - lvgl.widget.show: mc_cloud2
+            - lvgl.widget.hide: mc_star1
+            - lvgl.widget.hide: mc_star2
+            - lvgl.widget.hide: mc_star3
+            - lvgl.widget.hide: mc_star4
+            - lvgl.widget.hide: mc_star5
+            - lvgl.label.update: { id: mc_sun_temp, text_color: 0x16314A }
+      # Outdoor temp obeys the Show-weather toggle
       - if:
           condition: { lambda: 'return id(g_show_weather);' }
           then:
-            - lvgl.widget.show: mc_sun
             - lvgl.widget.show: mc_sun_temp
             - lvgl.label.update:
                 id: mc_sun_temp
@@ -90,13 +141,12 @@ script:
                   if (!id(wx_temp).has_state()) return std::string("--°");
                   char b[10]; snprintf(b, sizeof(b), "%d°", (int) roundf(id(wx_temp).state)); return std::string(b);
           else:
-            - lvgl.widget.hide: mc_sun
             - lvgl.widget.hide: mc_sun_temp
+      # Battery -> heart bar (5 hearts, each ~20%)
       - lvgl.label.update:
           id: mc_hearts
           text: !lambda |-
             int p = id(g_batt);
-            if (p < 0) return std::string("");
-            int n = (p + 10) / 20; if (n < 0) n = 0; if (n > 5) n = 5;
+            int n = (p < 0) ? 5 : (p + 10) / 20; if (n < 0) n = 0; if (n > 5) n = 5;
             std::string s; for (int i = 0; i < n; i++) s += "󰋑";
             return s;
