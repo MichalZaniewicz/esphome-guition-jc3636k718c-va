@@ -69,6 +69,22 @@ lvgl:
         # battery as a Minecraft heart bar (HUD), low: 5 dark "empty" slots + red fill on top
         - label: { id: mc_hearts_bg, align: BOTTOM_LEFT, x: 128, y: -16, text: "󰋑󰋑󰋑󰋑󰋑", text_font: icons18, text_color: 0x3A1614 }
         - label: { id: mc_hearts,    align: BOTTOM_LEFT, x: 128, y: -16, text: "",          text_font: icons18, text_color: 0xE2453F }
+        # timer badge (active timer - minutes left)
+        - label:
+            id: mc_timer
+            align: TOP_MID
+            y: 6
+            text: ""
+            text_font: montserrat_18
+            text_color: 0xFFFFFF
+            bg_color: 0xFF3B30
+            bg_opa: COVER
+            radius: 12
+            pad_left: 11
+            pad_right: 11
+            pad_top: 4
+            pad_bottom: 4
+            hidden: true
 
 interval:
   - interval: 50ms        # self-show when core requests the home base
@@ -159,3 +175,17 @@ script:
                   - lvgl.widget.hide: mc_star4
                   - lvgl.widget.hide: mc_star5
                   - lvgl.label.update: { id: mc_sun_temp, text_color: 0x16314A }
+      # Timer badge (active timer - minutes left), kept responsive (outside the minute gate)
+      - if:
+          condition: { lambda: 'return id(g_timer_active);' }
+          then:
+            - lvgl.widget.show: mc_timer
+            - lvgl.label.update:
+                id: mc_timer
+                text: !lambda |-
+                  int s = id(g_timer_secs); if (s < 0) s = 0;
+                  int m = (s + 59) / 60;
+                  char b[24]; snprintf(b, sizeof(b), " %d min", m);
+                  return std::string(b);
+          else:
+            - lvgl.widget.hide: mc_timer
