@@ -940,12 +940,14 @@ script:
   - id: facepick_render
     then:
       - lvgl.label.update:
-          id: pick_hint
+          id: pick_name
           text: !lambda |-
             static const char* NAMES[2] = {"Classic", "Neon"};
             int wf = id(g_wf_pick); if (wf < 0 || wf > 1) wf = 0;
-            return std::string("<  ") + NAMES[wf] + "  >\nturn = switch    tap = keep";
-      - lvgl.widget.show: pick_hint
+            std::string s = NAMES[wf];
+            for (auto &c : s) { if (c >= 'a' && c <= 'z') c -= 32; }
+            return s;
+      - lvgl.widget.show: pick_bar
   # Draws the battery indicator on the home screen. Charging: lightning bolt + green +
   # "filling" animation (icon cycles empty→full). On battery: static level icon.
   - id: batt_render
@@ -1994,14 +1996,14 @@ touchscreen:
           - if:   # tap -> keep the previewed face (already applied + persisted), drop to home
               condition: { lambda: 'return id(g_gesture) == 0;' }
               then:
-                - lvgl.widget.hide: pick_hint
+                - lvgl.widget.hide: pick_bar
                 - script.execute: home_roller_build
                 - lambda: 'id(g_mode) = 0; id(g_exit_anim) = 0;'
                 - script.execute: ui_render
           - if:   # swipe-right / hold -> cancel: restore the previous face
               condition: { lambda: 'return id(g_gesture) == 3 || id(g_gesture) == 1;' }
               then:
-                - lvgl.widget.hide: pick_hint
+                - lvgl.widget.hide: pick_bar
                 - lambda: 'id(g_watchface) = id(g_wf_prev);'
                 - script.execute: face_apply
                 - script.execute: home_roller_build
@@ -2938,23 +2940,52 @@ lvgl:
                   text: ""
                   text_font: montserrat_18
                   text_color: 0x6f9a92
-        # Watchface picker hint (overlay, shown only in pick mode 33) - last so it draws on top
-        - label:
-            id: pick_hint
-            align: TOP_MID
-            y: 8
-            text: ""
-            text_font: font_med
-            text_align: CENTER
-            text_color: 0xFFFFFF
-            bg_color: 0x101620
-            bg_opa: 85%
-            radius: 12
-            pad_left: 16
-            pad_right: 16
-            pad_top: 7
-            pad_bottom: 7
+        # Watchface picker overlay (shown only in pick mode 33) - last so it draws on top
+        - obj:
+            id: pick_bar
+            align: BOTTOM_MID
+            y: -12
+            width: 210
+            height: 60
+            radius: 20
+            bg_color: 0x0A0E16
+            bg_opa: 82%
+            border_width: 1
+            border_color: 0xF5B83D
+            border_opa: 35%
+            pad_all: 0
+            clickable: false
+            scrollable: false
             hidden: true
+            widgets:
+              - label:   # left chevron (turn the knob)
+                  id: pick_chevl
+                  align: LEFT_MID
+                  x: 14
+                  text: "<"
+                  text_font: font_sel
+                  text_color: 0x55606E
+              - label:   # right chevron
+                  id: pick_chevr
+                  align: RIGHT_MID
+                  x: -14
+                  text: ">"
+                  text_font: font_sel
+                  text_color: 0x55606E
+              - label:   # face name (set by facepick_render)
+                  id: pick_name
+                  align: CENTER
+                  y: -9
+                  text: ""
+                  text_font: font_sel
+                  text_color: 0xFFFFFF
+              - label:   # subtle hint
+                  id: pick_help
+                  align: CENTER
+                  y: 17
+                  text: "tap to keep"
+                  text_font: font_artist
+                  text_color: 0x6A7280
     - id: page_mode
       bg_color: 0x000000
       widgets:
