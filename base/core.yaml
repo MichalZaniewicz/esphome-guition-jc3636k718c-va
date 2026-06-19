@@ -910,6 +910,7 @@ script:
       - if:
           condition: { lambda: 'return id(g_watchface) == 0;' }
           then:
+            - lambda: 'id(g_wf_req) = false;'   # Classic shows directly - clear any pending request
             - lvgl.page.show: { id: page_home, animation: fade_in, time: 250ms }
             - script.execute: disp_apply
           else:
