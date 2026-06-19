@@ -92,10 +92,10 @@ esphome:
             // core settings list: label + the g_mode each opens. (Screen packages add their
             // own entries under Widgets via the g_wgrp_* / g_wopt_* registry, not here.)
             id(g_set_labels) += "Display";    id(g_set_items)[id(g_set_n)++] = 11;
-            id(g_set_labels) += "\nHome";       id(g_set_items)[id(g_set_n)++] = 12;
+            id(g_set_labels) += "\nHome screen"; id(g_set_items)[id(g_set_n)++] = 12;
             id(g_set_labels) += "\nWidgets";    id(g_set_items)[id(g_set_n)++] = 17;
-            id(g_set_labels) += "\nRing";      id(g_set_items)[id(g_set_n)++] = 16;
-            id(g_set_labels) += "\nAssistant"; id(g_set_items)[id(g_set_n)++] = 13;
+            id(g_set_labels) += "\nLED Ring";  id(g_set_items)[id(g_set_n)++] = 16;
+            id(g_set_labels) += "\nVoice Assistant"; id(g_set_items)[id(g_set_n)++] = 13;
     - priority: 760
       then:
         - lambda: |-
@@ -934,7 +934,7 @@ script:
       - lambda: |-
           static const char* NAMES[2] = {"Classic", "Neon"};
           int wf = id(g_watchface); if (wf < 0 || wf > 1) wf = 0;
-          std::string opts = std::string("Weather\nClimate\nWatchface: ") + NAMES[wf];
+          std::string opts = std::string("Show weather\nShow climate\nWatchface: ") + NAMES[wf];
           lv_roller_set_options(id(home_roller)->obj, opts.c_str(), LV_ROLLER_MODE_NORMAL);
   # Watchface picker (mode 33): update + show the overlay hint with the previewed face name.
   - id: facepick_render
@@ -1214,10 +1214,10 @@ script:
                   if (m == 7) return std::string("INFO");
                   if (m == 9) return std::string("RESTART");
                   if (m == 11) return std::string("DISPLAY");
-                  if (m == 12) return std::string("HOME");
-                  if (m == 13) return std::string("ASSISTANT");
+                  if (m == 12) return std::string("HOME SCREEN");
+                  if (m == 13) return std::string("VOICE ASSISTANT");
                   if (m == 15) return std::string("SYSTEM");
-                  if (m == 16) return std::string("RING");
+                  if (m == 16) return std::string("LED RING");
                   if (m == 17) return std::string("WIDGETS");
                   if (m == 30) return id(g_wcur_name);
                   if (m == 31) return std::string("CONFIRM");
@@ -1229,7 +1229,7 @@ script:
                   return std::string("");
             - if:
                 condition: { lambda: 'return id(g_mode) >= 5;' }
-                then: [lvgl.widget.update: { id: ui_head_bg, bg_color: 0xFFB020 }]
+                then: [lvgl.widget.update: { id: ui_head_bg, bg_color: 0xF5B83D }]
             - if:
                 condition: { lambda: 'return id(g_mode) == 4;' }
                 then: [lvgl.widget.update: { id: ui_head_bg, bg_color: 0xFF5555 }]
@@ -3019,7 +3019,7 @@ lvgl:
             value: 100
             hidden: true
             indicator:
-              bg_color: 0xFFB020
+              bg_color: 0xF5B83D
         # "Display" submenu (mode 11): item roller + status label of the selected one
         - roller:
             id: disp_roller
@@ -3029,20 +3029,20 @@ lvgl:
             visible_row_count: 3
             clickable: false
             text_font: font_med
-            text_color: 0x466761
+            text_color: 0x9AA3B0
             bg_opa: TRANSP
             border_width: 0
             selected:
-              text_color: 0xFFFFFF
-              bg_color: 0xFFB020
-              bg_opa: 30%
-              radius: 10
+              text_color: 0x231803
+              bg_color: 0xF5B83D
+              bg_opa: COVER
+              radius: 14
             options:
               - "Brightness"
               - "Night mode"
               - "Night from"
               - "Night to"
-              - "Screen off"
+              - "Screen auto-off"
             selected_index: 0
             hidden: true
         - label:   # only for "Brightness" (shows %); toggles use disp_switch
@@ -3067,17 +3067,17 @@ lvgl:
             visible_row_count: 3
             clickable: false
             text_font: font_med
-            text_color: 0x466761
+            text_color: 0x9AA3B0
             bg_opa: TRANSP
             border_width: 0
             selected:
-              text_color: 0xFFFFFF
-              bg_color: 0xFFB020
-              bg_opa: 30%
-              radius: 10
+              text_color: 0x231803
+              bg_color: 0xF5B83D
+              bg_opa: COVER
+              radius: 14
             options:    # 3rd line is rebuilt at runtime to "Watchface: <name>" (home_roller_build)
-              - "Weather"
-              - "Climate"
+              - "Show weather"
+              - "Show climate"
               - "Watchface"
             selected_index: 0
             hidden: true
@@ -3089,14 +3089,14 @@ lvgl:
             visible_row_count: 3
             clickable: false
             text_font: font_med
-            text_color: 0x466761
+            text_color: 0x9AA3B0
             bg_opa: TRANSP
             border_width: 0
             selected:
-              text_color: 0xFFFFFF
-              bg_color: 0xFFB020
-              bg_opa: 30%
-              radius: 10
+              text_color: 0x231803
+              bg_color: 0xF5B83D
+              bg_opa: COVER
+              radius: 14
             options:
               - "..."
             selected_index: 0
@@ -3109,14 +3109,14 @@ lvgl:
             visible_row_count: 3
             clickable: false
             text_font: font_med
-            text_color: 0x466761
+            text_color: 0x9AA3B0
             bg_opa: TRANSP
             border_width: 0
             selected:
-              text_color: 0xFFFFFF
-              bg_color: 0xFFB020
-              bg_opa: 30%
-              radius: 10
+              text_color: 0x231803
+              bg_color: 0xF5B83D
+              bg_opa: COVER
+              radius: 14
             options:
               - "..."
             selected_index: 0
@@ -3129,14 +3129,14 @@ lvgl:
             visible_row_count: 3
             clickable: false
             text_font: font_med
-            text_color: 0x466761
+            text_color: 0x9AA3B0
             bg_opa: TRANSP
             border_width: 0
             selected:
-              text_color: 0xFFFFFF
-              bg_color: 0xFFB020
-              bg_opa: 30%
-              radius: 10
+              text_color: 0x231803
+              bg_color: 0xF5B83D
+              bg_opa: COVER
+              radius: 14
             options:
               - "Wake word"
               - "Beep wake word"
@@ -3151,14 +3151,14 @@ lvgl:
             visible_row_count: 3
             clickable: false
             text_font: font_med
-            text_color: 0x466761
+            text_color: 0x9AA3B0
             bg_opa: TRANSP
             border_width: 0
             selected:
-              text_color: 0xFFFFFF
-              bg_color: 0xFFB020
-              bg_opa: 30%
-              radius: 10
+              text_color: 0x231803
+              bg_color: 0xF5B83D
+              bg_opa: COVER
+              radius: 14
             options:
               - "Info"
               - "Battery"
@@ -3174,14 +3174,14 @@ lvgl:
             visible_row_count: 3
             clickable: false
             text_font: font_med
-            text_color: 0x466761
+            text_color: 0x9AA3B0
             bg_opa: TRANSP
             border_width: 0
             selected:
-              text_color: 0xFFFFFF
-              bg_color: 0xFFB020
-              bg_opa: 30%
-              radius: 10
+              text_color: 0x231803
+              bg_color: 0xF5B83D
+              bg_opa: COVER
+              radius: 14
             options:
               - "Assistant"
               - "Timer"
@@ -3200,7 +3200,7 @@ lvgl:
             height: 46
             radius: 0
             border_width: 0
-            bg_color: 0xFFB020
+            bg_color: 0xF5B83D
             bg_opa: COVER
         - label:
             id: ui_head_s
@@ -3218,14 +3218,14 @@ lvgl:
             visible_row_count: 5
             clickable: false
             text_font: font_med
-            text_color: 0x466761
+            text_color: 0x9AA3B0
             bg_opa: TRANSP
             border_width: 0
             selected:
-              text_color: 0xFFFFFF
-              bg_color: 0xFFB020
-              bg_opa: 30%
-              radius: 10
+              text_color: 0x231803
+              bg_color: 0xF5B83D
+              bg_opa: COVER
+              radius: 14
             options:
               - "Display"
               - "Ring"
