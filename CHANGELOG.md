@@ -6,7 +6,7 @@ All notable changes to this project are documented here. The format is based on
 ## [2.2.5] - 2026-06-19
 
 ### Added
-- New **Knobuss** game (optional carousel screen, a knob-steered tube shooter): your ship orbits the rim, you auto-fire inward, foes spiral out from a black-hole core. Turn the knob to aim; every foe that reaches the rim costs a life and bursts in an animated explosion. The ship is a pixel fighter pre-rotated into 16 frames so it always points inward, foes are glowing orbs, a rushing starfield + concentric rings give a cheap 3D-depth tube, and the menu has a "Knobuss" title screen. 3 lives, top-10 scores. Add it to your `screen_order` as `knobuss` (`gyruss` also works). (Art: Lunar Lander pack by Matt Walkden, CC0; see assets/sprites/gyruss/CREDITS.txt.)
+- New **Knobuss** game (optional carousel screen, a knob-steered tube shooter): your ship orbits the rim, you auto-fire inward, foes spiral out from a black-hole core. Turn the knob to aim; every foe that reaches the rim costs a life and bursts in an animated explosion. The ship is a pixel fighter pre-rotated into 16 frames so it always points inward, foes are glowing orbs, a rushing starfield + concentric rings give a cheap 3D-depth tube, and the menu has a "Knobuss" title screen. 3 lives, top-10 scores. Add it to your `screen_order` as `knobuss` (`gyruss` also works). (Art: Lunar Lander pack by Matt Walkden, CC0; see assets/sprites/knobuss/CREDITS.txt.)
 
 ### Fixed
 - Cool Cars ran choppier than the other games: its per-tick position updates were 8 separate widget actions (now one batched lambda, like Snake/Knobuss), and it ticked at 12.5fps (now 20fps with speeds scaled to keep the same pace) - so the motion is much smoother.

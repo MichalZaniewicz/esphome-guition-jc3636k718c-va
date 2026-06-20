@@ -1,4 +1,4 @@
-# Gyruss - optional carousel screen (base id 10). A tube shooter: your ship orbits the rim, you
+# Knobuss - optional carousel screen (base id 10). A Gyruss-style tube shooter: your ship orbits the rim, you
 # auto-fire inward, foes spiral out from the centre. Turn the knob to aim, blast them before they
 # reach you. Remove it: drop this file from your config's package "files:" list. Nothing else to edit.
 # Scores (g_gy_top / g_gy_best) + the "Reset scores" settings action live here - fully self-contained.
@@ -435,134 +435,134 @@ interval:
                       then:
                         - script.execute: gy_hud
 
-# Sprites are pulled from the BETA raw URLs while this lives on beta - flip /beta/ -> /main/ at merge.
-# Third-party art (see assets/sprites/gyruss/CREDITS.txt).
+# Sprites are pulled from the repo /main/ raw URLs at compile time.
+# Third-party art (see assets/sprites/knobuss/CREDITS.txt).
 image:
   - id: img_gy_ship0
-    file: "https://raw.githubusercontent.com/MichalZaniewicz/esphome-guition-jc3636k718c-va/beta/assets/sprites/gyruss/ship0.png"
+    file: "https://raw.githubusercontent.com/MichalZaniewicz/esphome-guition-jc3636k718c-va/main/assets/sprites/knobuss/ship0.png"
     type: RGB565
     transparency: alpha_channel
   - id: img_gy_ship1
-    file: "https://raw.githubusercontent.com/MichalZaniewicz/esphome-guition-jc3636k718c-va/beta/assets/sprites/gyruss/ship1.png"
+    file: "https://raw.githubusercontent.com/MichalZaniewicz/esphome-guition-jc3636k718c-va/main/assets/sprites/knobuss/ship1.png"
     type: RGB565
     transparency: alpha_channel
   - id: img_gy_ship2
-    file: "https://raw.githubusercontent.com/MichalZaniewicz/esphome-guition-jc3636k718c-va/beta/assets/sprites/gyruss/ship2.png"
+    file: "https://raw.githubusercontent.com/MichalZaniewicz/esphome-guition-jc3636k718c-va/main/assets/sprites/knobuss/ship2.png"
     type: RGB565
     transparency: alpha_channel
   - id: img_gy_ship3
-    file: "https://raw.githubusercontent.com/MichalZaniewicz/esphome-guition-jc3636k718c-va/beta/assets/sprites/gyruss/ship3.png"
+    file: "https://raw.githubusercontent.com/MichalZaniewicz/esphome-guition-jc3636k718c-va/main/assets/sprites/knobuss/ship3.png"
     type: RGB565
     transparency: alpha_channel
   - id: img_gy_ship4
-    file: "https://raw.githubusercontent.com/MichalZaniewicz/esphome-guition-jc3636k718c-va/beta/assets/sprites/gyruss/ship4.png"
+    file: "https://raw.githubusercontent.com/MichalZaniewicz/esphome-guition-jc3636k718c-va/main/assets/sprites/knobuss/ship4.png"
     type: RGB565
     transparency: alpha_channel
   - id: img_gy_ship5
-    file: "https://raw.githubusercontent.com/MichalZaniewicz/esphome-guition-jc3636k718c-va/beta/assets/sprites/gyruss/ship5.png"
+    file: "https://raw.githubusercontent.com/MichalZaniewicz/esphome-guition-jc3636k718c-va/main/assets/sprites/knobuss/ship5.png"
     type: RGB565
     transparency: alpha_channel
   - id: img_gy_ship6
-    file: "https://raw.githubusercontent.com/MichalZaniewicz/esphome-guition-jc3636k718c-va/beta/assets/sprites/gyruss/ship6.png"
+    file: "https://raw.githubusercontent.com/MichalZaniewicz/esphome-guition-jc3636k718c-va/main/assets/sprites/knobuss/ship6.png"
     type: RGB565
     transparency: alpha_channel
   - id: img_gy_ship7
-    file: "https://raw.githubusercontent.com/MichalZaniewicz/esphome-guition-jc3636k718c-va/beta/assets/sprites/gyruss/ship7.png"
+    file: "https://raw.githubusercontent.com/MichalZaniewicz/esphome-guition-jc3636k718c-va/main/assets/sprites/knobuss/ship7.png"
     type: RGB565
     transparency: alpha_channel
   - id: img_gy_ship8
-    file: "https://raw.githubusercontent.com/MichalZaniewicz/esphome-guition-jc3636k718c-va/beta/assets/sprites/gyruss/ship8.png"
+    file: "https://raw.githubusercontent.com/MichalZaniewicz/esphome-guition-jc3636k718c-va/main/assets/sprites/knobuss/ship8.png"
     type: RGB565
     transparency: alpha_channel
   - id: img_gy_ship9
-    file: "https://raw.githubusercontent.com/MichalZaniewicz/esphome-guition-jc3636k718c-va/beta/assets/sprites/gyruss/ship9.png"
+    file: "https://raw.githubusercontent.com/MichalZaniewicz/esphome-guition-jc3636k718c-va/main/assets/sprites/knobuss/ship9.png"
     type: RGB565
     transparency: alpha_channel
   - id: img_gy_ship10
-    file: "https://raw.githubusercontent.com/MichalZaniewicz/esphome-guition-jc3636k718c-va/beta/assets/sprites/gyruss/ship10.png"
+    file: "https://raw.githubusercontent.com/MichalZaniewicz/esphome-guition-jc3636k718c-va/main/assets/sprites/knobuss/ship10.png"
     type: RGB565
     transparency: alpha_channel
   - id: img_gy_ship11
-    file: "https://raw.githubusercontent.com/MichalZaniewicz/esphome-guition-jc3636k718c-va/beta/assets/sprites/gyruss/ship11.png"
+    file: "https://raw.githubusercontent.com/MichalZaniewicz/esphome-guition-jc3636k718c-va/main/assets/sprites/knobuss/ship11.png"
     type: RGB565
     transparency: alpha_channel
   - id: img_gy_ship12
-    file: "https://raw.githubusercontent.com/MichalZaniewicz/esphome-guition-jc3636k718c-va/beta/assets/sprites/gyruss/ship12.png"
+    file: "https://raw.githubusercontent.com/MichalZaniewicz/esphome-guition-jc3636k718c-va/main/assets/sprites/knobuss/ship12.png"
     type: RGB565
     transparency: alpha_channel
   - id: img_gy_ship13
-    file: "https://raw.githubusercontent.com/MichalZaniewicz/esphome-guition-jc3636k718c-va/beta/assets/sprites/gyruss/ship13.png"
+    file: "https://raw.githubusercontent.com/MichalZaniewicz/esphome-guition-jc3636k718c-va/main/assets/sprites/knobuss/ship13.png"
     type: RGB565
     transparency: alpha_channel
   - id: img_gy_ship14
-    file: "https://raw.githubusercontent.com/MichalZaniewicz/esphome-guition-jc3636k718c-va/beta/assets/sprites/gyruss/ship14.png"
+    file: "https://raw.githubusercontent.com/MichalZaniewicz/esphome-guition-jc3636k718c-va/main/assets/sprites/knobuss/ship14.png"
     type: RGB565
     transparency: alpha_channel
   - id: img_gy_ship15
-    file: "https://raw.githubusercontent.com/MichalZaniewicz/esphome-guition-jc3636k718c-va/beta/assets/sprites/gyruss/ship15.png"
+    file: "https://raw.githubusercontent.com/MichalZaniewicz/esphome-guition-jc3636k718c-va/main/assets/sprites/knobuss/ship15.png"
     type: RGB565
     transparency: alpha_channel
   - id: img_gy_enemy0
-    file: "https://raw.githubusercontent.com/MichalZaniewicz/esphome-guition-jc3636k718c-va/beta/assets/sprites/gyruss/enemy0.png"
+    file: "https://raw.githubusercontent.com/MichalZaniewicz/esphome-guition-jc3636k718c-va/main/assets/sprites/knobuss/enemy0.png"
     type: RGB565
     transparency: alpha_channel
   - id: img_gy_enemy1
-    file: "https://raw.githubusercontent.com/MichalZaniewicz/esphome-guition-jc3636k718c-va/beta/assets/sprites/gyruss/enemy1.png"
+    file: "https://raw.githubusercontent.com/MichalZaniewicz/esphome-guition-jc3636k718c-va/main/assets/sprites/knobuss/enemy1.png"
     type: RGB565
     transparency: alpha_channel
   - id: img_gy_enemy2
-    file: "https://raw.githubusercontent.com/MichalZaniewicz/esphome-guition-jc3636k718c-va/beta/assets/sprites/gyruss/enemy2.png"
+    file: "https://raw.githubusercontent.com/MichalZaniewicz/esphome-guition-jc3636k718c-va/main/assets/sprites/knobuss/enemy2.png"
     type: RGB565
     transparency: alpha_channel
   - id: img_gy_enemy3
-    file: "https://raw.githubusercontent.com/MichalZaniewicz/esphome-guition-jc3636k718c-va/beta/assets/sprites/gyruss/enemy3.png"
+    file: "https://raw.githubusercontent.com/MichalZaniewicz/esphome-guition-jc3636k718c-va/main/assets/sprites/knobuss/enemy3.png"
     type: RGB565
     transparency: alpha_channel
   - id: img_gy_expl0
-    file: "https://raw.githubusercontent.com/MichalZaniewicz/esphome-guition-jc3636k718c-va/beta/assets/sprites/gyruss/expl0.png"
+    file: "https://raw.githubusercontent.com/MichalZaniewicz/esphome-guition-jc3636k718c-va/main/assets/sprites/knobuss/expl0.png"
     type: RGB565
     transparency: alpha_channel
   - id: img_gy_expl1
-    file: "https://raw.githubusercontent.com/MichalZaniewicz/esphome-guition-jc3636k718c-va/beta/assets/sprites/gyruss/expl1.png"
+    file: "https://raw.githubusercontent.com/MichalZaniewicz/esphome-guition-jc3636k718c-va/main/assets/sprites/knobuss/expl1.png"
     type: RGB565
     transparency: alpha_channel
   - id: img_gy_expl2
-    file: "https://raw.githubusercontent.com/MichalZaniewicz/esphome-guition-jc3636k718c-va/beta/assets/sprites/gyruss/expl2.png"
+    file: "https://raw.githubusercontent.com/MichalZaniewicz/esphome-guition-jc3636k718c-va/main/assets/sprites/knobuss/expl2.png"
     type: RGB565
     transparency: alpha_channel
   - id: img_gy_expl3
-    file: "https://raw.githubusercontent.com/MichalZaniewicz/esphome-guition-jc3636k718c-va/beta/assets/sprites/gyruss/expl3.png"
+    file: "https://raw.githubusercontent.com/MichalZaniewicz/esphome-guition-jc3636k718c-va/main/assets/sprites/knobuss/expl3.png"
     type: RGB565
     transparency: alpha_channel
   - id: img_gy_expl4
-    file: "https://raw.githubusercontent.com/MichalZaniewicz/esphome-guition-jc3636k718c-va/beta/assets/sprites/gyruss/expl4.png"
+    file: "https://raw.githubusercontent.com/MichalZaniewicz/esphome-guition-jc3636k718c-va/main/assets/sprites/knobuss/expl4.png"
     type: RGB565
     transparency: alpha_channel
   - id: img_gy_expl5
-    file: "https://raw.githubusercontent.com/MichalZaniewicz/esphome-guition-jc3636k718c-va/beta/assets/sprites/gyruss/expl5.png"
+    file: "https://raw.githubusercontent.com/MichalZaniewicz/esphome-guition-jc3636k718c-va/main/assets/sprites/knobuss/expl5.png"
     type: RGB565
     transparency: alpha_channel
   - id: img_gy_expl6
-    file: "https://raw.githubusercontent.com/MichalZaniewicz/esphome-guition-jc3636k718c-va/beta/assets/sprites/gyruss/expl6.png"
+    file: "https://raw.githubusercontent.com/MichalZaniewicz/esphome-guition-jc3636k718c-va/main/assets/sprites/knobuss/expl6.png"
     type: RGB565
     transparency: alpha_channel
   - id: img_gy_expl7
-    file: "https://raw.githubusercontent.com/MichalZaniewicz/esphome-guition-jc3636k718c-va/beta/assets/sprites/gyruss/expl7.png"
+    file: "https://raw.githubusercontent.com/MichalZaniewicz/esphome-guition-jc3636k718c-va/main/assets/sprites/knobuss/expl7.png"
     type: RGB565
     transparency: alpha_channel
   - id: img_gy_bullet
-    file: "https://raw.githubusercontent.com/MichalZaniewicz/esphome-guition-jc3636k718c-va/beta/assets/sprites/gyruss/bullet.png"
+    file: "https://raw.githubusercontent.com/MichalZaniewicz/esphome-guition-jc3636k718c-va/main/assets/sprites/knobuss/bullet.png"
     type: RGB565
     transparency: alpha_channel
   - id: img_gy_core
-    file: "https://raw.githubusercontent.com/MichalZaniewicz/esphome-guition-jc3636k718c-va/beta/assets/sprites/gyruss/core.png"
+    file: "https://raw.githubusercontent.com/MichalZaniewicz/esphome-guition-jc3636k718c-va/main/assets/sprites/knobuss/core.png"
     type: RGB565
     transparency: alpha_channel
   - id: img_gy_logo
-    file: "https://raw.githubusercontent.com/MichalZaniewicz/esphome-guition-jc3636k718c-va/beta/assets/sprites/gyruss/knobuss-logo.png"
+    file: "https://raw.githubusercontent.com/MichalZaniewicz/esphome-guition-jc3636k718c-va/main/assets/sprites/knobuss/knobuss-logo.png"
     type: RGB565
   - id: img_gy_life
-    file: "https://raw.githubusercontent.com/MichalZaniewicz/esphome-guition-jc3636k718c-va/beta/assets/sprites/gyruss/life.png"
+    file: "https://raw.githubusercontent.com/MichalZaniewicz/esphome-guition-jc3636k718c-va/main/assets/sprites/knobuss/life.png"
     type: RGB565
     transparency: alpha_channel
 lvgl:

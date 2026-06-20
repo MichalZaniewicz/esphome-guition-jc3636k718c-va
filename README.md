@@ -50,6 +50,7 @@ Everything is navigated with **swipes + taps on the screen** and the **rotary kn
 | <img src="assets/screens/timer.png" width="170"> | **Timer**<br>Set by knob or voice; big countdown with a colour-coded depleting ring (green → amber → red) and a head-dot, SET / RUNNING / PAUSED status, pause/stop, and a fancy alarm screen when it finishes. |
 | <img src="assets/screens/cool-cars.png" width="170"> | **Cool Cars**<br>A lane-racing arcade game - the knob steers, dodge traffic and grab coins. |
 | <img src="assets/screens/space-wars.png" width="170"> | **Space Wars**<br>A vertical space shooter - the knob steers, auto-fire, survive the waves. |
+| <img src="assets/screens/knobuss.png" width="170"> | **Knobuss**<br>A **Gyruss clone**: your ship orbits the rim and auto-fires inward while foes spiral out of a black-hole core - turn the knob to aim, blast them before they reach you. 3 lives, top-10 scores. |
 | <img src="assets/screens/snake.png" width="170"> | **Snake 360**<br>A smooth-steering 360-degree snake - turn the knob to steer the head and the body trails behind, across the whole round screen. |
 | <img src="assets/screens/settings.png" width="170"> | **Settings** (swipe down)<br>Display, Home screen, Widgets, LED Ring, Voice Assistant, System; turn the knob to scroll, tap to enter. |
 | <img src="assets/screens/demo.png" width="170"> | **Demo**<br>A small, heavily commented example screen (tap flips black ↔ white) to copy when building your own. |
@@ -103,6 +104,7 @@ base/                      # pulled as a remote package at compile time (no need
     timer.yaml             #   timer screen in the carousel
     cool-cars.yaml         #   "Cool Cars" game
     space-wars.yaml        #   "Space Wars" game
+    knobuss.yaml           #   "Knobuss" game (Gyruss-style tube shooter, knob aims)
     snake.yaml             #   "Snake 360" game (knob steers)
     weather.yaml           #   weather (today + 7-day radial dial)
     thermostat.yaml        #   thermostat (climate.* dial; knob sets target, tap on/off)
@@ -116,6 +118,7 @@ assets/                    # fetched from GitHub at compile time (no need to cop
   sounds/                  # wake.wav + alarm.wav
   sprites/cool-cars/       # "Cool Cars" game graphics
   sprites/space-wars/      # "Space Wars" game graphics
+  sprites/knobuss/         # "Knobuss" game graphics (ship/foes/explosion/core/logo)
   sprites/snake/           # "Snake" menu logo
   sprites/weather/         # animated weather icon frames
 scripts/

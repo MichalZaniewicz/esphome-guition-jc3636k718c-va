@@ -89,7 +89,7 @@ packages:
       - base/screens/cool-cars.yaml    # optional: Cool Cars game
       - base/screens/space-wars.yaml   # optional: Space Wars game
       - base/screens/snake.yaml        # optional: Snake game (knob steers)
-      - base/screens/gyruss.yaml       # optional: Knobuss tube shooter (knob aims, auto-fire)
+      - base/screens/knobuss.yaml      # optional: Knobuss - a Gyruss-style tube shooter (knob aims, auto-fire)
       - base/screens/weather.yaml      # optional: weather (today + 7-day, knob scrolls days)
       - base/screens/thermostat.yaml   # optional: thermostat (climate.* entity; knob sets target, tap on/off)
       - base/screens/sensors.yaml      # optional: sensors glance (1-6 HA entities, knob cycles)
