@@ -79,6 +79,19 @@ Full docs live in the **[wiki](https://github.com/MichalZaniewicz/esphome-guitio
 
 Release history: [CHANGELOG.md](CHANGELOG.md).
 
+## Buying one (AliExpress)
+
+Search for the exact model number and verify the listing matches:
+
+- Model: **Guition JC3636K718** (look for this in the title/photos)
+- ESP32-S3, **16 MB flash**, **octal PSRAM**
+- 1.8" round **360×360**, driver **ST77916**
+- touch **CST816**, rotary **knob**, speaker + mic, **LED ring**
+
+⚠️ **Heads-up:** there's a near-identical board, the **JC3636W518**, with a *different
+pinout*. Make sure the listing says **K718**, not W518. More detail on the
+[Hardware](https://github.com/MichalZaniewicz/esphome-guition-jc3636k718c-va/wiki/Hardware) wiki page.
+
 ## Quick start
 
 1. Copy `secrets.example.yaml` → `secrets.yaml` and fill in your Wi-Fi.
