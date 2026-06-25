@@ -3,6 +3,11 @@
 All notable changes to this project are documented here. The format is based on
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [2.2.6] - 2026-06-25
+
+### Fixed
+- Neon watchface: temperature degree sign showed as `Âº` (double-encoded in source); now renders `°` like Classic.
+
 ## [2.2.5] - 2026-06-19
 
 ### Added

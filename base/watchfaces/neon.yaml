@@ -199,8 +199,8 @@ script:
             - lvgl.label.update:
                 id: nf_wx_temp
                 text: !lambda |-
-                  if (!id(wx_temp).has_state()) return std::string("--Â°");
-                  char b[10]; snprintf(b, sizeof(b), "%dÂ°", (int) roundf(id(wx_temp).state)); return std::string(b);
+                  if (!id(wx_temp).has_state()) return std::string("--°");
+                  char b[10]; snprintf(b, sizeof(b), "%d°", (int) roundf(id(wx_temp).state)); return std::string(b);
             - lvgl.label.update:
                 id: nf_date
                 text: !lambda |-
@@ -210,7 +210,7 @@ script:
                   return t.strftime("%d %b") + "   " + day;
             - lvgl.label.update:
                 id: nf_ct_val
-                text: !lambda 'if (!id(room_temp).has_state()) return std::string("--"); char b[12]; snprintf(b, sizeof(b), "%.1fÂ°", id(room_temp).state); return std::string(b);'
+                text: !lambda 'if (!id(room_temp).has_state()) return std::string("--"); char b[12]; snprintf(b, sizeof(b), "%.1f°", id(room_temp).state); return std::string(b);'
             - lvgl.label.update:
                 id: nf_hum_val
                 text: !lambda 'if (!id(room_hum).has_state()) return std::string("--"); char b[8]; snprintf(b, sizeof(b), "%d%%", (int) roundf(id(room_hum).state)); return std::string(b);'
