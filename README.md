@@ -94,6 +94,8 @@ pinout*. Make sure the listing says **K718**, not W518. More detail on the
 
 ## Quick start
 
+> **Requires ESPHome 2025.5.0+** - the LED ring uses `use_dma`, added in that release. Older versions fail to compile with `[use_dma] is an invalid option for [light.esp32_rmt_led_strip]`.
+
 1. Copy `secrets.example.yaml` → `secrets.yaml` and fill in your Wi-Fi.
 2. Copy **`guition-va.yaml`** and **`partitions.csv`** so they sit together with `secrets.yaml`. Edit the `substitutions:` at the top of `guition-va.yaml` (HA URL + your entity IDs + the four control tiles). That thin file is the only firmware file you keep - the core and all screens are **pulled from GitHub at compile time** (see its `packages:` block), as are the fonts, images and sounds.
 3. Choose which screens compile in via the `files:` list and their left-to-right order via `screen_order`, both in `guition-va.yaml`.
