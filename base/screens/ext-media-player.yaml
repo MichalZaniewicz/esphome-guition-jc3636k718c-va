@@ -132,7 +132,7 @@ lvgl:
         - label:
             id: ext_lbl_name
             align: CENTER
-            y: -80
+            y: -130
             text: "${ext_name}"
             text_font: font_med
             text_color: 0x9FC7BE
