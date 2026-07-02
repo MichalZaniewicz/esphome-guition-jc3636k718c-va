@@ -6,12 +6,12 @@
 #
 # Setup steps:
 #   1. Add these substitutions to guition-va.yaml:
-#        ext_name:           "PC"           # label shown on the screen
-#        ext_play_entity:    button.your_play_pause
-#        ext_prev_entity:    button.your_previous
-#        ext_next_entity:    button.your_next
-#        ext_mute_entity:    button.your_mute
-#        ext_vol_up_entity:  button.your_volume_up
+#        ext_name:            "PC"           # label shown on the screen header
+#        ext_play_entity:     button.your_play_pause
+#        ext_prev_entity:     button.your_previous_track
+#        ext_next_entity:     button.your_next_track
+#        ext_mute_entity:     button.your_mute
+#        ext_vol_up_entity:   button.your_volume_up
 #        ext_vol_down_entity: button.your_volume_down
 #
 #   2. Add this file to the packages files: list in guition-va.yaml:
@@ -112,30 +112,40 @@ lvgl:
             clickable: false
             scrollable: false
 
-        # Screen header
+        # Dim scrim (same as player screen for visual consistency)
+        - obj:
+            align: CENTER
+            width: 360
+            height: 360
+            radius: 0
+            border_width: 0
+            bg_color: 0x000000
+            bg_opa: 42%
+
+        # Screen header: audio icon + device name
         - label:
             align: CENTER
-            y: -100
-            text: ""           # LV_SYMBOL_AUDIO
+            y: -88
+            text: ""
             text_font: montserrat_34
             text_color: 0x2FE6CF
         - label:
             id: ext_lbl_name
             align: CENTER
-            y: -62
+            y: -80
             text: "${ext_name}"
-            text_font: font_artist
-            text_color: 0x6f9a92
+            text_font: font_med
+            text_color: 0x9FC7BE
 
         # Knob hint at the bottom
         - label:
             align: CENTER
-            y: 100
-            text: "  volume"   # LV_SYMBOL_VOLUME_MAX
+            y: 130
+            text: "knob = volume"
             text_font: font_artist
             text_color: 0x3A4450
 
-        # --- Transport buttons (same layout as player screen) ---
+        # --- Transport buttons (same layout and style as player screen) ---
 
         # Previous track
         - button:
@@ -154,7 +164,7 @@ lvgl:
                   action: button.press
                   data: { entity_id: "${ext_prev_entity}" }
             widgets:
-              - label: { align: CENTER, text: "", text_font: montserrat_22, text_color: 0xCFEAE4 }
+              - label: { align: CENTER, text: "", text_font: montserrat_22, text_color: 0xCFEAE4 }
 
         # Play / Pause (large central button)
         - button:
@@ -173,7 +183,7 @@ lvgl:
                   action: button.press
                   data: { entity_id: "${ext_play_entity}" }
             widgets:
-              - label: { align: CENTER, text: "", text_font: montserrat_28, text_color: 0x06201C }
+              - label: { align: CENTER, text: "", text_font: montserrat_28, text_color: 0x06201C }
 
         # Next track
         - button:
@@ -192,7 +202,7 @@ lvgl:
                   action: button.press
                   data: { entity_id: "${ext_next_entity}" }
             widgets:
-              - label: { align: CENTER, text: "", text_font: montserrat_22, text_color: 0xCFEAE4 }
+              - label: { align: CENTER, text: "", text_font: montserrat_22, text_color: 0xCFEAE4 }
 
         # Mute (below transport row, red accent)
         - button:
@@ -212,4 +222,4 @@ lvgl:
                   action: button.press
                   data: { entity_id: "${ext_mute_entity}" }
             widgets:
-              - label: { align: CENTER, text: "", text_font: montserrat_22, text_color: 0xFF6B60 }
+              - label: { align: CENTER, text: "", text_font: montserrat_22, text_color: 0xFF6B60 }
