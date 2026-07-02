@@ -49,6 +49,7 @@ substitutions:
   tile4_icon: "power"
   tile4_name: "Socket"
 
+
   # Sensors screen (knob cycles): up to 6 read-only HA entities, shown one at a time, big.
   # Set as many glanceN as you want; leave the rest at their default (a non-existent entity)
   # and they're skipped. Icon name is optional (same set as the tiles); empty = no icon.
@@ -71,9 +72,21 @@ substitutions:
   glance6_name: ""
   glance6_icon: ""
 
+  # External Media Player screen (carousel name "ext"): controls any media player
+  # via HA button entities - HASS.agent, Kodi, a TV, or any device with HA buttons.
+  # Knob = volume. Tap prev/play-pause/next/mute on screen.
+  # Omit these if you are not using the ext-media-player screen.
+  ext_name: "PC"                                    # label shown on the screen header
+  ext_play_entity: button.your_play_pause           # HA button entity for play/pause
+  ext_prev_entity: button.your_previous_track       # HA button entity for previous
+  ext_next_entity: button.your_next_track           # HA button entity for next
+  ext_mute_entity: button.your_mute                 # HA button entity for mute toggle
+  ext_vol_up_entity: button.your_volume_up          # HA button entity for volume up
+  ext_vol_down_entity: button.your_volume_down      # HA button entity for volume down
+
   # Carousel order, left to right. Reorder/remove names freely; screens you did not
   # include in "files:" below are skipped automatically.
-  screen_order: "clock,player,timer,cars,space,snake,knobuss,weather,thermostat,sensors,demo"
+  screen_order: "clock,player,timer,cars,space,snake,knobuss,weather,thermostat,sensors,demo,ext"
 
 packages:
   core:
@@ -93,6 +106,7 @@ packages:
       - base/screens/weather.yaml      # optional: weather (today + 7-day, knob scrolls days)
       - base/screens/thermostat.yaml   # optional: thermostat (climate.* entity; knob sets target, tap on/off)
       - base/screens/sensors.yaml      # optional: sensors glance (1-6 HA entities, knob cycles)
+      - base/screens/ext-media-player.yaml # optional: external media player (knob = volume, tap prev/play/next/mute)
       - base/screens/demo.yaml         # optional: commented example screen (TAP ME!) + Widgets settings
       # Watchfaces (optional home-screen looks; Classic is built into core and always available).
       # Comment one out to drop it; pick the active one in Settings > Home > Watchface.

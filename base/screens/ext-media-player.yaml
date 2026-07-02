@@ -1,0 +1,215 @@
+###############################################################################
+# External Media Player - optional carousel screen (base id 11, carousel name "ext")
+# Controls any external media player via HA button entities - HASS.agent, Kodi,
+# a TV, Hi-Fi amp, or anything that exposes transport + volume as HA buttons.
+# Knob = volume up/down. Buttons: prev / play-pause / next / mute.
+#
+# Setup steps:
+#   1. Add these substitutions to guition-va.yaml:
+#        ext_name:           "PC"           # label shown on the screen
+#        ext_play_entity:    button.your_play_pause
+#        ext_prev_entity:    button.your_previous
+#        ext_next_entity:    button.your_next
+#        ext_mute_entity:    button.your_mute
+#        ext_vol_up_entity:  button.your_volume_up
+#        ext_vol_down_entity: button.your_volume_down
+#
+#   2. Add this file to the packages files: list in guition-va.yaml:
+#        - base/screens/ext-media-player.yaml
+#
+#   3. Add "ext" to screen_order in guition-va.yaml:
+#        screen_order: "clock,player,timer,ext,cars,space,weather,demo"
+#
+#   4. Add "ext" to the carousel token map in base/core.yaml:
+#        else if (tok == "ext") id = 11;
+#      (add this after the "knobuss" line)
+###############################################################################
+
+esphome:
+  on_boot:
+    - priority: 645
+      then:
+        - lambda: 'id(g_present)[11] = true;'   # register in carousel
+
+globals:
+  - id: g_ext_lasttap      # tap de-duplication (same pattern as demo screen)
+    type: int
+    restore_value: no
+    initial_value: '0'
+  - id: g_ext_knob_last    # last knob delta value we handled
+    type: int
+    restore_value: no
+    initial_value: '0'
+
+script:
+  - id: ext_vol_up
+    then:
+      - homeassistant.action:
+          action: button.press
+          data:
+            entity_id: "${ext_vol_up_entity}"
+  - id: ext_vol_down
+    then:
+      - homeassistant.action:
+          action: button.press
+          data:
+            entity_id: "${ext_vol_down_entity}"
+
+interval:
+  # Carousel navigation: show this page when selected in the carousel
+  - interval: 50ms
+    then:
+      - if:
+          condition: { lambda: 'return id(g_nav_req) && id(g_base)==11;' }
+          then:
+            - lambda: |-
+                id(g_nav_req) = false;
+                id(g_ext_lasttap) = id(g_tap_seq);   // sync tap counter so arriving never counts as a tap
+                id(g_knob_delta) = 0;                // reset delta on entry
+                id(g_ext_knob_last) = 0;
+                id(g_knob_capture) = true;            // capture knob for external volume
+            - if: { condition: { lambda: 'return id(g_nav_anim)==0;' }, then: [lvgl.page.show: { id: page_ext, animation: move_left,   time: 250ms }] }
+            - if: { condition: { lambda: 'return id(g_nav_anim)==1;' }, then: [lvgl.page.show: { id: page_ext, animation: move_right,  time: 250ms }] }
+            - if: { condition: { lambda: 'return id(g_nav_anim)==2;' }, then: [lvgl.page.show: { id: page_ext, animation: move_top,    time: 250ms }] }
+            - if: { condition: { lambda: 'return id(g_nav_anim)==3;' }, then: [lvgl.page.show: { id: page_ext, animation: move_bottom, time: 250ms }] }
+
+  # Knob handling: 80ms poll (same cadence as demo screen)
+  - interval: 80ms
+    then:
+      # Release knob capture when we leave this screen
+      - if:
+          condition: { lambda: 'return id(g_base) != 11 && id(g_knob_capture);' }
+          then:
+            - lambda: 'id(g_knob_capture) = false; id(g_knob_delta) = 0;'
+      # Volume up (knob turned right)
+      - if:
+          condition: { lambda: 'return id(g_base)==11 && id(g_knob_delta) > id(g_ext_knob_last);' }
+          then:
+            - lambda: 'id(g_ext_knob_last) = id(g_knob_delta);'
+            - script.execute: ext_vol_up
+      # Volume down (knob turned left)
+      - if:
+          condition: { lambda: 'return id(g_base)==11 && id(g_knob_delta) < id(g_ext_knob_last);' }
+          then:
+            - lambda: 'id(g_ext_knob_last) = id(g_knob_delta);'
+            - script.execute: ext_vol_down
+
+lvgl:
+  pages:
+    - id: page_ext
+      bg_color: 0x000000
+      widgets:
+        # Outer ring for depth (matches other screens)
+        - obj:
+            align: CENTER
+            width: 340
+            height: 340
+            radius: 170
+            bg_opa: TRANSP
+            border_width: 2
+            border_color: 0x1A1F2A
+            border_opa: 70%
+            clickable: false
+            scrollable: false
+
+        # Screen header
+        - label:
+            align: CENTER
+            y: -100
+            text: ""           # LV_SYMBOL_AUDIO
+            text_font: montserrat_34
+            text_color: 0x2FE6CF
+        - label:
+            id: ext_lbl_name
+            align: CENTER
+            y: -62
+            text: "${ext_name}"
+            text_font: font_artist
+            text_color: 0x6f9a92
+
+        # Knob hint at the bottom
+        - label:
+            align: CENTER
+            y: 100
+            text: "  volume"   # LV_SYMBOL_VOLUME_MAX
+            text_font: font_artist
+            text_color: 0x3A4450
+
+        # --- Transport buttons (same layout as player screen) ---
+
+        # Previous track
+        - button:
+            id: ext_btn_prev
+            align: CENTER
+            x: -84
+            y: 6
+            width: 50
+            height: 50
+            radius: 25
+            bg_color: 0x223230
+            bg_opa: COVER
+            border_width: 0
+            on_click:
+              - homeassistant.action:
+                  action: button.press
+                  data: { entity_id: "${ext_prev_entity}" }
+            widgets:
+              - label: { align: CENTER, text: "", text_font: montserrat_22, text_color: 0xCFEAE4 }
+
+        # Play / Pause (large central button)
+        - button:
+            id: ext_btn_play
+            align: CENTER
+            x: 0
+            y: 6
+            width: 74
+            height: 74
+            radius: 37
+            bg_color: 0x2FE6CF
+            bg_opa: COVER
+            border_width: 0
+            on_click:
+              - homeassistant.action:
+                  action: button.press
+                  data: { entity_id: "${ext_play_entity}" }
+            widgets:
+              - label: { align: CENTER, text: "", text_font: montserrat_28, text_color: 0x06201C }
+
+        # Next track
+        - button:
+            id: ext_btn_next
+            align: CENTER
+            x: 84
+            y: 6
+            width: 50
+            height: 50
+            radius: 25
+            bg_color: 0x223230
+            bg_opa: COVER
+            border_width: 0
+            on_click:
+              - homeassistant.action:
+                  action: button.press
+                  data: { entity_id: "${ext_next_entity}" }
+            widgets:
+              - label: { align: CENTER, text: "", text_font: montserrat_22, text_color: 0xCFEAE4 }
+
+        # Mute (below transport row, red accent)
+        - button:
+            id: ext_btn_mute
+            align: CENTER
+            x: 0
+            y: 82
+            width: 50
+            height: 50
+            radius: 25
+            bg_color: 0x2A1010
+            bg_opa: COVER
+            border_width: 1
+            border_color: 0x5A2020
+            on_click:
+              - homeassistant.action:
+                  action: button.press
+                  data: { entity_id: "${ext_mute_entity}" }
+            widgets:
+              - label: { align: CENTER, text: "", text_font: montserrat_22, text_color: 0xFF6B60 }
