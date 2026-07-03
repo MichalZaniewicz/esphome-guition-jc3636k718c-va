@@ -25,6 +25,8 @@ It started as "my kid needs a physical timer" and turned into a whole puck. 🙂
 - **Boot splash** - a short "HELLO!" greeting with a spinning ring on startup, then the clock.
 - **Music player** - `speaker` media player visible in HA / Music Assistant, with
   album art, title/artist, transport buttons and a progress bar.
+- **External media player** - a transport screen for any device with HA button entities
+  (HASS.agent, Kodi, a TV, Hi-Fi amp); knob controls volume, buttons send prev / play-pause / next / mute.
 - **Timers** - set by knob or by voice; big countdown with a depleting ring,
   pause/stop, and an alarm (sound + on-screen + LED) when it finishes.
 - **Device control** - a tiles screen toggling your lights/switches.
@@ -54,6 +56,7 @@ Everything is navigated with **swipes + taps on the screen** and the **rotary kn
 | <img src="assets/screens/knobuss.png" width="170"> | **Knobuss**<br>A **Gyruss clone**: your ship orbits the rim and auto-fires inward while foes spiral out of a black-hole core - turn the knob to aim and shoot them down. **Every foe that reaches the rim costs a life** (it bursts in an explosion). 3 lives, top-10 scores. |
 | <img src="assets/screens/settings.png" width="170"> | **Settings** (swipe down)<br>Display, Home screen, Widgets, LED Ring, Voice Assistant, System; turn the knob to scroll, tap to enter. |
 | <img src="assets/screens/demo.png" width="170"> | **Demo**<br>A small, heavily commented example screen (tap flips black ↔ white) to copy when building your own. |
+| *(no screenshot yet)* | **External Media Player** *(optional)*<br>Controls any external media player — HASS.agent, Kodi, a TV, or any device that exposes transport controls as HA button entities. Prev / play-pause / next / mute buttons matching the Player screen style; turn the knob to adjust volume. Add `ext` to `screen_order` and configure six button entity substitutions. |
 
 > Optional screens (player, timer, games, weather, thermostat, sensors, demo) are pickable - choose which compile in and their order; see [Configuration](https://github.com/MichalZaniewicz/esphome-guition-jc3636k718c-va/wiki/Configuration).
 
@@ -125,6 +128,7 @@ base/                      # pulled as a remote package at compile time (no need
     thermostat.yaml        #   thermostat (climate.* dial; knob sets target, tap on/off)
     sensors.yaml           #   sensors glance (1-6 HA entities, knob cycles)
     demo.yaml              #   commented example screen
+    ext-media-player.yaml  #   external media player (any device with HA button entities; knob = volume)
     weather.ha-helper.yaml #   HA template sensor that feeds the weather screen
   watchfaces/              # optional home-screen looks (Classic is built into core)
     neon.yaml              #   "Neon" watchface - big two-tone digits + neon rings
