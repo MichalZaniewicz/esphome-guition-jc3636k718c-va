@@ -1,0 +1,390 @@
+# ═════════════════════════════════════════════════════════════════════════════
+#  FORTNITE-STYLE watchface (optional, id 4). A battle-royale HUD look: the round
+#  screen IS the map - a purple storm ring around a dark "safe zone" circle, a big
+#  chunky condensed clock, a gold match line, and the two classic HUD bars:
+#
+#     shield (blue)  = battery %            (turns gold while charging)
+#     health (green) = how much of the day is left  (drains as the day goes)
+#     "N ALIVE"      = minutes left in the current hour (counts down like a match)
+#     mats row       = room temperature + humidity (obeys "Show climate")
+#
+#  The background is ONE baked image (assets/sprites/fortnite/bg.png): the wallpaper
+#  crop, the haze behind the clock/bars and the purple storm rim are all painted into
+#  it by scripts/gen_fortnite_bg.py - so the firmware draws one bitmap instead of a
+#  stack of widgets. Swap in your own wallpaper by re-running that script. Everything
+#  on top is plain LVGL + a Google font (Anton).
+#
+#  PERFORMANCE: the 1s tick only computes the minute; every heavy redraw is gated
+#  behind a real minute change. The timer badge stays outside the gate so it reacts
+#  immediately.
+#
+#  Watchface contract: see base/watchfaces/demo.yaml.
+# ═════════════════════════════════════════════════════════════════════════════
+
+esphome:
+  on_boot:
+    - priority: 655
+      then:
+        - lambda: 'id(g_wf_present)[4] = true; id(g_wf_name)[4] = "Fortnite";'
+
+globals:
+  - { id: g_fn_last_min, type: int,  restore_value: no, initial_value: '-1' }   # perf: redraw only on minute change
+  - { id: g_fn_upd_min,  type: bool, restore_value: no, initial_value: 'false' }
+  - { id: g_fn_last_chg, type: int,  restore_value: no, initial_value: '-1' }   # charging state, to recolour the shield bar
+
+font:
+  # Anton - a heavy condensed face, the closest free stand-in for the game's HUD type
+  - file: { type: gfonts, family: "Anton" }
+    id: font_fn_big
+    size: 88
+    glyphs: "0123456789:"
+  - file: { type: gfonts, family: "Anton" }
+    id: font_fn_sm
+    size: 22
+    glyphs: " %0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+
+image:
+  # Baked background (wallpaper + scrims + storm rim), fetched at compile time
+  - id: img_fn_bg
+    file: https://raw.githubusercontent.com/MichalZaniewicz/esphome-guition-jc3636k718c-va/main/assets/sprites/fortnite/bg.png
+    type: RGB565
+
+lvgl:
+  pages:
+    - id: page_home_fn
+      bg_color: 0x0A0E24
+      widgets:
+        - image: { id: fn_bg, src: img_fn_bg, align: CENTER, clickable: false }
+
+        # ── top: players alive (minutes left in the hour) ─────────────────────
+        - obj:   # tiny drawn player marker (head)
+            id: fn_ply_head
+            align: CENTER
+            x: -58
+            y: -141
+            width: 7
+            height: 7
+            radius: 4
+            bg_color: 0xFFD24A
+            bg_opa: COVER
+            border_width: 0
+            clickable: false
+            scrollable: false
+        - obj:   # ... and shoulders
+            id: fn_ply_body
+            align: CENTER
+            x: -58
+            y: -133
+            width: 15
+            height: 8
+            radius: 4
+            bg_color: 0xFFD24A
+            bg_opa: COVER
+            border_width: 0
+            clickable: false
+            scrollable: false
+        - label:
+            id: fn_players
+            align: CENTER
+            x: 16
+            y: -136
+            text: "100 ALIVE"
+            text_font: font_fn_sm
+            text_color: 0xFFD24A
+
+        # ── weather (obeys "Show weather") ────────────────────────────────────
+        - label:
+            id: fn_wx_ic
+            align: CENTER
+            x: -34
+            y: -90
+            text: "󰖕"
+            text_font: icons34
+            text_color: 0x9FD9F0
+        - label:
+            id: fn_wx_temp
+            align: CENTER
+            x: 30
+            y: -91
+            text: "--°"
+            text_font: font_sel
+            text_color: 0xFFFFFF
+
+        # ── the clock: hard shadow + white front (the HUD look) ───────────────
+        - label:
+            id: fn_time_sh
+            align: CENTER
+            x: 4
+            y: -18
+            text: "00:00"
+            text_font: font_fn_big
+            text_color: 0x2A0B52
+        - label:
+            id: fn_time
+            align: CENTER
+            x: 0
+            y: -22
+            text: "00:00"
+            text_font: font_fn_big
+            text_color: 0xFFFFFF
+        - label:   # date, in the gold "match" colour
+            id: fn_date
+            align: CENTER
+            y: 44
+            text: ""
+            text_font: font_fn_sm
+            text_color: 0xFFD24A
+
+        # ── HUD bar 1: shield = battery ───────────────────────────────────────
+        - obj:   # shield chip (drawn, no icon font needed)
+            id: fn_sh_chip
+            align: CENTER
+            x: -110
+            y: 79
+            width: 15
+            height: 17
+            radius: 5
+            bg_color: 0x27C6F5
+            bg_opa: COVER
+            border_width: 0
+            clickable: false
+            scrollable: false
+        - bar:
+            id: fn_bar_sh
+            align: CENTER
+            x: 6
+            y: 79
+            width: 180
+            height: 14
+            radius: 7
+            bg_color: 0x101B3E
+            bg_opa: COVER
+            border_width: 0
+            min_value: 0
+            max_value: 100
+            value: 0
+            indicator:
+              bg_color: 0x27C6F5
+              radius: 7
+        - label:
+            id: fn_sh_pct
+            align: CENTER
+            x: 124
+            y: 79
+            text: "--"
+            text_font: font_artist
+            text_color: 0x8FD8F5
+
+        # ── HUD bar 2: health = day remaining ─────────────────────────────────
+        - label:
+            id: fn_hp_ic
+            align: CENTER
+            x: -110
+            y: 105
+            text: "󰋑"
+            text_font: icons18
+            text_color: 0x7CE04B
+        - bar:
+            id: fn_bar_hp
+            align: CENTER
+            x: 6
+            y: 105
+            width: 180
+            height: 14
+            radius: 7
+            bg_color: 0x101B3E
+            bg_opa: COVER
+            border_width: 0
+            min_value: 0
+            max_value: 100
+            value: 100
+            indicator:
+              bg_color: 0x7CE04B
+              radius: 7
+        - label:
+            id: fn_hp_pct
+            align: CENTER
+            x: 124
+            y: 105
+            text: "--"
+            text_font: font_artist
+            text_color: 0x9FE08A
+
+        # ── mats row: room temp + humidity (obeys "Show climate") ─────────────
+        - label:
+            id: fn_mat1_ic
+            align: CENTER
+            x: -62
+            y: 132
+            text: "󰔏"
+            text_font: icons18
+            text_color: 0xFF8A5C
+        - label:
+            id: fn_mat1
+            align: CENTER
+            x: -28
+            y: 132
+            text: "--"
+            text_font: font_artist
+            text_color: 0xCBD3E4
+        - label:
+            id: fn_mat2_ic
+            align: CENTER
+            x: 26
+            y: 132
+            text: "󰖎"
+            text_font: icons18
+            text_color: 0x3FA9D6
+        - label:
+            id: fn_mat2
+            align: CENTER
+            x: 56
+            y: 132
+            text: "--"
+            text_font: font_artist
+            text_color: 0xCBD3E4
+
+        # ── timer badge (storm-purple pill; replaces the "alive" line) ────────
+        - label:
+            id: fn_timer
+            align: TOP_MID
+            y: 20
+            text: ""
+            text_font: montserrat_18
+            text_color: 0xFFFFFF
+            bg_color: 0x7B2FF7
+            bg_opa: COVER
+            radius: 14
+            pad_left: 12
+            pad_right: 12
+            pad_top: 5
+            pad_bottom: 5
+            hidden: true
+
+interval:
+  - interval: 50ms        # self-show when core requests the home base
+    then:
+      - if:
+          condition: { lambda: 'return id(g_wf_req) && id(g_watchface) == 4;' }
+          then:
+            - lambda: 'id(g_wf_req) = false; id(g_fn_last_min) = -1; id(g_fn_last_chg) = -1;'   # force a full redraw on entry
+            # slide in matching the carousel direction (like Classic / the screens) - no laggy fade
+            - if: { condition: { lambda: 'return id(g_nav_anim)==0;' }, then: [lvgl.page.show: { id: page_home_fn, animation: move_left,   time: 250ms }] }
+            - if: { condition: { lambda: 'return id(g_nav_anim)==1;' }, then: [lvgl.page.show: { id: page_home_fn, animation: move_right,  time: 250ms }] }
+            - if: { condition: { lambda: 'return id(g_nav_anim)==2;' }, then: [lvgl.page.show: { id: page_home_fn, animation: move_top,    time: 250ms }] }
+            - if: { condition: { lambda: 'return id(g_nav_anim)==3;' }, then: [lvgl.page.show: { id: page_home_fn, animation: move_bottom, time: 250ms }] }
+            - script.execute: fn_render
+  - interval: 1s          # cheap tick - only redraws on a real change
+    then:
+      - if:
+          condition: { lambda: 'return id(g_watchface) == 4 && id(g_base) == 0;' }
+          then: [ script.execute: fn_render ]
+
+script:
+  - id: fn_render
+    then:
+      # Cheap tick: did the minute actually change?
+      - lambda: |-
+          id(g_fn_upd_min) = false;
+          auto t = id(ha_time).now();
+          if (!t.is_valid()) return;
+          int mn = t.hour * 60 + t.minute;
+          if (mn != id(g_fn_last_min)) { id(g_fn_last_min) = mn; id(g_fn_upd_min) = true; }
+      - if:
+          condition: { lambda: 'return id(g_fn_upd_min);' }
+          then:
+            - lvgl.label.update: { id: fn_time,    text: !lambda 'return id(ha_time).now().strftime("%H:%M");' }
+            - lvgl.label.update: { id: fn_time_sh, text: !lambda 'return id(ha_time).now().strftime("%H:%M");' }
+            - lvgl.label.update:
+                id: fn_date
+                text: !lambda |-
+                  auto t = id(ha_time).now();
+                  static const char* d[8] = {"","SUN","MON","TUE","WED","THU","FRI","SAT"};
+                  std::string day = (t.day_of_week >= 1 && t.day_of_week <= 7) ? std::string(d[t.day_of_week]) : std::string("");
+                  std::string s = day + t.strftime(" %d %b");
+                  for (auto &c : s) { if (c >= 'a' && c <= 'z') c -= 32; }
+                  return s;
+            # "players alive" = minutes left in this hour (60 at :00, 1 at :59)
+            - lvgl.label.update:
+                id: fn_players
+                text: !lambda |-
+                  int left = 60 - id(ha_time).now().minute;
+                  if (left < 1) left = 1;
+                  char b[20]; snprintf(b, sizeof(b), "%d ALIVE", left);
+                  return std::string(b);
+            # Shield = battery (unknown -> empty bar, dashes)
+            - lvgl.bar.update:
+                id: fn_bar_sh
+                value: !lambda 'int p = id(g_batt); if (p < 0) p = 0; if (p > 100) p = 100; return p;'
+            - lvgl.label.update:
+                id: fn_sh_pct
+                text: !lambda |-
+                  int p = id(g_batt);
+                  if (p < 0) return std::string("--");
+                  char b[8]; snprintf(b, sizeof(b), "%d", p); return std::string(b);
+            # Health = how much of the day is left
+            - lambda: |-
+                auto t = id(ha_time).now();
+                int left = 100 - ((t.hour * 60 + t.minute) * 100) / 1440;
+                if (left < 0) left = 0; if (left > 100) left = 100;
+                lv_bar_set_value(id(fn_bar_hp), left, LV_ANIM_OFF);
+                char b[8]; snprintf(b, sizeof(b), "%d", left);
+                lv_label_set_text(id(fn_hp_pct), b);
+            # Weather obeys the Display toggle
+            - if:
+                condition: { lambda: 'return id(g_show_weather);' }
+                then:
+                  - lvgl.widget.show: fn_wx_ic
+                  - lvgl.widget.show: fn_wx_temp
+                  - lvgl.label.update: { id: fn_wx_ic, text: !lambda 'return id(g_nf_glyph).empty() ? std::string("󰖕") : id(g_nf_glyph);' }
+                  - lvgl.label.update:
+                      id: fn_wx_temp
+                      text: !lambda |-
+                        if (!id(wx_temp).has_state()) return std::string("--°");
+                        char b[10]; snprintf(b, sizeof(b), "%d°", (int) roundf(id(wx_temp).state)); return std::string(b);
+                else: [ lvgl.widget.hide: fn_wx_ic, lvgl.widget.hide: fn_wx_temp ]
+            # Mats row obeys the Climate toggle
+            - if:
+                condition: { lambda: 'return id(g_show_climate);' }
+                then:
+                  - lvgl.widget.show: fn_mat1_ic
+                  - lvgl.widget.show: fn_mat1
+                  - lvgl.widget.show: fn_mat2_ic
+                  - lvgl.widget.show: fn_mat2
+                  - lvgl.label.update:
+                      id: fn_mat1
+                      text: !lambda 'if (!id(room_temp).has_state()) return std::string("--"); char b[12]; snprintf(b, sizeof(b), "%.1f°", id(room_temp).state); return std::string(b);'
+                  - lvgl.label.update:
+                      id: fn_mat2
+                      text: !lambda 'if (!id(room_hum).has_state()) return std::string("--"); char b[8]; snprintf(b, sizeof(b), "%d%%", (int) roundf(id(room_hum).state)); return std::string(b);'
+                else: [ lvgl.widget.hide: fn_mat1_ic, lvgl.widget.hide: fn_mat1, lvgl.widget.hide: fn_mat2_ic, lvgl.widget.hide: fn_mat2 ]
+      # Charging: the shield bar + chip go gold (cheap, so it is outside the minute gate)
+      - lambda: |-
+          int chg = id(g_charging) ? 1 : 0;
+          if (chg != id(g_fn_last_chg)) {
+            id(g_fn_last_chg) = chg;
+            lv_color_t c = lv_color_hex(chg ? 0xFFD24A : 0x27C6F5);
+            lv_obj_set_style_bg_color(id(fn_bar_sh), c, LV_PART_INDICATOR);
+            lv_obj_set_style_bg_color(id(fn_sh_chip), c, LV_PART_MAIN);
+            lv_obj_set_style_text_color(id(fn_sh_pct), c, LV_PART_MAIN);
+          }
+      # Timer badge - responsive; it takes the top slot from the "alive" line
+      - if:
+          condition: { lambda: 'return id(g_timer_active);' }
+          then:
+            - lvgl.widget.hide: fn_players
+            - lvgl.widget.hide: fn_ply_head
+            - lvgl.widget.hide: fn_ply_body
+            - lvgl.widget.show: fn_timer
+            - lvgl.label.update:
+                id: fn_timer
+                text: !lambda |-
+                  int s = id(g_timer_secs); if (s < 0) s = 0;
+                  int m = (s + 59) / 60;
+                  char b[24]; snprintf(b, sizeof(b), " %d min", m);
+                  return std::string(b);
+          else:
+            - lvgl.widget.hide: fn_timer
+            - lvgl.widget.show: fn_players
+            - lvgl.widget.show: fn_ply_head
+            - lvgl.widget.show: fn_ply_body

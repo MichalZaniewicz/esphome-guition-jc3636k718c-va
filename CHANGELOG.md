@@ -3,6 +3,11 @@
 All notable changes to this project are documented here. The format is based on
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [2.2.7] - 2026-07-25
+
+### Added
+- New **Fortnite** watchface (optional, `base/watchfaces/fortnite.yaml`): a battle-royale HUD over a wallpaper background. Shield bar = battery (gold while charging), health bar = how much of the day is left, "N ALIVE" = minutes left in the hour, bottom row = room temperature + humidity. The background is one baked image (`assets/sprites/fortnite/bg.png`) - re-bake it from any wallpaper with `scripts/gen_fortnite_bg.py`.
+
 ## [2.2.6] - 2026-06-25
 
 ### Fixed

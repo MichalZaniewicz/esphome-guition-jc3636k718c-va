@@ -27,9 +27,9 @@
 # ═════════════════════════════════════════════════════════════════════════════
 
 # ── 1. REGISTER the face at boot ──────────────────────────────────────────────
-# Pick a UNIQUE id (0 = Classic, 1 = Neon are taken; use 2, 3, ...). The name is
-# what shows in the picker. Priority 655 runs after core but before the boot
-# finalize that validates the saved choice.
+# Pick a UNIQUE id (0 = Classic, 1 = Neon, 2 = this Demo, 3 = Minecraft, 4 = Fortnite are
+# taken; use 5, 6, 7). The name is what shows in the picker. Priority 655 runs after core
+# but before the boot finalize that validates the saved choice.
 esphome:
   on_boot:
     - priority: 655

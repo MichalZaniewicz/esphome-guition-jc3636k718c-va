@@ -38,7 +38,7 @@ which silently removes any <img> placed inside it. -->
 - **Timers** - set by knob or by voice; big countdown with a depleting ring,
   pause/stop, and an alarm (sound + on-screen + LED) when it finishes.
 - **Device control** - a tiles screen toggling your lights/switches.
-- **Home screen** - clock, date, battery, weather + room temp/humidity, with a **selectable watchface** look (Classic, Neon, or your own).
+- **Home screen** - clock, date, battery, weather + room temp/humidity, with a **selectable watchface** look (Classic, Neon, Minecraft, Fortnite, or your own).
 - **More screens** (all optional, knob-driven) - a weather forecast dial, a thermostat for
   any `climate` entity, and a configurable multi-sensor glance.
 - **LED ring** - controllable from HA *and* reactive: assistant (comet/spinner/wave),
@@ -69,11 +69,16 @@ Everything is navigated with **swipes + taps on the screen** and the **rotary kn
 
 ## Watchfaces
 
-The home screen has a **selectable look**. Open **Settings → Home → Watchface** and the knob previews each face live, full-screen - tap to keep. **Classic** is built in; **Neon** (big neon digits), **Minecraft** (a blocky day/night scene) and a heavily-commented **Demo** template are optional files you switch on in your config, and you can copy Demo to build your own (see [Configuration](https://github.com/MichalZaniewicz/esphome-guition-jc3636k718c-va/wiki/Configuration)).
+The home screen has a **selectable look**. Open **Settings → Home → Watchface** and the knob previews each face live, full-screen - tap to keep. **Classic** is built in; **Neon** (big neon digits), **Minecraft** (a blocky day/night scene), **Fortnite** (a battle-royale HUD over a wallpaper) and a heavily-commented **Demo** template are optional files you switch on in your config, and you can copy Demo to build your own (see [Configuration](https://github.com/MichalZaniewicz/esphome-guition-jc3636k718c-va/wiki/Configuration)).
 
-| Classic (built-in) | Neon | Minecraft | Demo (template) |
-|:---:|:---:|:---:|:---:|
-| <img src="assets/screens/home.png" width="150"> | <img src="assets/screens/watchface-neon.png" width="150"> | <img src="assets/screens/watchface-minecraft.png" width="150"> | <img src="assets/screens/watchface-demo.png" width="150"> |
+| Classic (built-in) | Neon | Minecraft | Fortnite | Demo (template) |
+|:---:|:---:|:---:|:---:|:---:|
+| <img src="assets/screens/home.png" width="140"> | <img src="assets/screens/watchface-neon.png" width="140"> | <img src="assets/screens/watchface-minecraft.png" width="140"> | <img src="assets/screens/watchface-fortnite.png" width="140"> | <img src="assets/screens/watchface-demo.png" width="140"> |
+
+On the **Fortnite** face the game HUD carries real data: the blue shield bar is the battery (gold
+while charging), the green health bar is how much of the day is left, the "N ALIVE" counter is the
+minutes left in the current hour, and the bottom row is room temperature + humidity. The background
+is one baked image - point `scripts/gen_fortnite_bg.py` at any wallpaper of yours to reskin it.
 
 ## Documentation
 
@@ -139,6 +144,7 @@ base/                      # pulled as a remote package at compile time (no need
   watchfaces/              # optional home-screen looks (Classic is built into core)
     neon.yaml              #   "Neon" watchface - big two-tone digits + neon rings
     minecraft.yaml         #   "Minecraft" watchface - blocky day/night scene + pixel clock
+    fortnite.yaml          #   "Fortnite" watchface - battle-royale HUD over a wallpaper
     demo.yaml              #   "Demo" watchface - minimal, heavily-commented template to copy
 assets/                    # fetched from GitHub at compile time (no need to copy locally)
   header.jpg               # banner
@@ -149,11 +155,13 @@ assets/                    # fetched from GitHub at compile time (no need to cop
   sprites/snake/           # "Snake" menu logo
   sprites/knobuss/         # "Knobuss" game graphics (ship/foes/explosion/core/logo)
   sprites/minecraft/       # "Minecraft" watchface graphics (sun/moon/ground/flower)
+  sprites/fortnite/        # "Fortnite" watchface background (bg.png, baked by a script)
   sprites/weather/         # animated weather icon frames
 scripts/
   make_sounds.py           # (re)generate the wav sounds
   gen_weather.py           # (re)generate the animated weather icon frames
   gen_snake.py             # (re)generate the snake sprites
+  gen_fortnite_bg.py       # bake a wallpaper into the "Fortnite" watchface background
   esplog.py                # stream device logs over the native API
 skill/                     # Claude Code skill: hardware spec + gotchas
 ```

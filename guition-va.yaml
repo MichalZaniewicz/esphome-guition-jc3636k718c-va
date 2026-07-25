@@ -98,6 +98,7 @@ packages:
       # Comment one out to drop it; pick the active one in Settings > Home > Watchface.
       - base/watchfaces/neon.yaml      # optional: Neon - big two-tone digits + neon rings
       - base/watchfaces/minecraft.yaml # optional: Minecraft - blocky scene + pixel clock
+      - base/watchfaces/fortnite.yaml  # optional: Fortnite - battle-royale HUD over a wallpaper
       - base/watchfaces/demo.yaml      # optional: Demo - minimal, heavily-commented template to copy
     refresh: 0s        # always pull the latest beta (set to e.g. 1d once it stabilizes)
 
