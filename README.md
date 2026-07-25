@@ -17,6 +17,16 @@ It started as "my kid needs a physical timer" and turned into a whole puck. 🙂
   <video src="https://github.com/user-attachments/assets/e945f4ec-b80f-4740-9130-ed93bd2ab31b" controls width="400"></video>
 </div>
 
+> [!TIP]
+> ⭐ **Enjoying this project?** Every star is real motivation for me to keep
+> developing it :)
+
+<!-- The badge lives OUTSIDE the alert on purpose: Home Assistant rewrites a
+GitHub alert into <ha-alert> and drops every child whose textContent is empty,
+which silently removes any <img> placed inside it. -->
+
+[![Star this repo](https://img.shields.io/github/stars/MichalZaniewicz/esphome-guition-jc3636k718c-va?style=for-the-badge&logo=github&label=STAR%20THIS%20REPO&labelColor=555555&color=ffc107)](https://github.com/MichalZaniewicz/esphome-guition-jc3636k718c-va)
+
 ## What it does
 
 - **Voice assistant** - on-device wake word ("Alexa") via `micro_wake_word`, full
