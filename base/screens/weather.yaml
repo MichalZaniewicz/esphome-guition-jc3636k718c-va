@@ -79,227 +79,283 @@ font:
     glyphs: ["󰖙", "󰖔", "󰖕", "󰖑", "󰖝", "󰖓", "󰖖", "󰖗", "󰖘", "󰖐"]
 
 image:
-  - id: img_wx_sun0
+  - platform: file
+    id: img_wx_sun0
     file: "https://raw.githubusercontent.com/MichalZaniewicz/esphome-guition-jc3636k718c-va/main/assets/sprites/weather/sun0.png"
     type: RGB565
     transparency: alpha_channel
-  - id: img_wx_sun1
+  - platform: file
+    id: img_wx_sun1
     file: "https://raw.githubusercontent.com/MichalZaniewicz/esphome-guition-jc3636k718c-va/main/assets/sprites/weather/sun1.png"
     type: RGB565
     transparency: alpha_channel
-  - id: img_wx_sun2
+  - platform: file
+    id: img_wx_sun2
     file: "https://raw.githubusercontent.com/MichalZaniewicz/esphome-guition-jc3636k718c-va/main/assets/sprites/weather/sun2.png"
     type: RGB565
     transparency: alpha_channel
-  - id: img_wx_sun3
+  - platform: file
+    id: img_wx_sun3
     file: "https://raw.githubusercontent.com/MichalZaniewicz/esphome-guition-jc3636k718c-va/main/assets/sprites/weather/sun3.png"
     type: RGB565
     transparency: alpha_channel
-  - id: img_wx_sun4
+  - platform: file
+    id: img_wx_sun4
     file: "https://raw.githubusercontent.com/MichalZaniewicz/esphome-guition-jc3636k718c-va/main/assets/sprites/weather/sun4.png"
     type: RGB565
     transparency: alpha_channel
-  - id: img_wx_sun5
+  - platform: file
+    id: img_wx_sun5
     file: "https://raw.githubusercontent.com/MichalZaniewicz/esphome-guition-jc3636k718c-va/main/assets/sprites/weather/sun5.png"
     type: RGB565
     transparency: alpha_channel
-  - id: img_wx_sun6
+  - platform: file
+    id: img_wx_sun6
     file: "https://raw.githubusercontent.com/MichalZaniewicz/esphome-guition-jc3636k718c-va/main/assets/sprites/weather/sun6.png"
     type: RGB565
     transparency: alpha_channel
-  - id: img_wx_sun7
+  - platform: file
+    id: img_wx_sun7
     file: "https://raw.githubusercontent.com/MichalZaniewicz/esphome-guition-jc3636k718c-va/main/assets/sprites/weather/sun7.png"
     type: RGB565
     transparency: alpha_channel
-  - id: img_wx_partly0
+  - platform: file
+    id: img_wx_partly0
     file: "https://raw.githubusercontent.com/MichalZaniewicz/esphome-guition-jc3636k718c-va/main/assets/sprites/weather/partly0.png"
     type: RGB565
     transparency: alpha_channel
-  - id: img_wx_partly1
+  - platform: file
+    id: img_wx_partly1
     file: "https://raw.githubusercontent.com/MichalZaniewicz/esphome-guition-jc3636k718c-va/main/assets/sprites/weather/partly1.png"
     type: RGB565
     transparency: alpha_channel
-  - id: img_wx_partly2
+  - platform: file
+    id: img_wx_partly2
     file: "https://raw.githubusercontent.com/MichalZaniewicz/esphome-guition-jc3636k718c-va/main/assets/sprites/weather/partly2.png"
     type: RGB565
     transparency: alpha_channel
-  - id: img_wx_partly3
+  - platform: file
+    id: img_wx_partly3
     file: "https://raw.githubusercontent.com/MichalZaniewicz/esphome-guition-jc3636k718c-va/main/assets/sprites/weather/partly3.png"
     type: RGB565
     transparency: alpha_channel
-  - id: img_wx_partly4
+  - platform: file
+    id: img_wx_partly4
     file: "https://raw.githubusercontent.com/MichalZaniewicz/esphome-guition-jc3636k718c-va/main/assets/sprites/weather/partly4.png"
     type: RGB565
     transparency: alpha_channel
-  - id: img_wx_partly5
+  - platform: file
+    id: img_wx_partly5
     file: "https://raw.githubusercontent.com/MichalZaniewicz/esphome-guition-jc3636k718c-va/main/assets/sprites/weather/partly5.png"
     type: RGB565
     transparency: alpha_channel
-  - id: img_wx_partly6
+  - platform: file
+    id: img_wx_partly6
     file: "https://raw.githubusercontent.com/MichalZaniewicz/esphome-guition-jc3636k718c-va/main/assets/sprites/weather/partly6.png"
     type: RGB565
     transparency: alpha_channel
-  - id: img_wx_partly7
+  - platform: file
+    id: img_wx_partly7
     file: "https://raw.githubusercontent.com/MichalZaniewicz/esphome-guition-jc3636k718c-va/main/assets/sprites/weather/partly7.png"
     type: RGB565
     transparency: alpha_channel
-  - id: img_wx_moon0
+  - platform: file
+    id: img_wx_moon0
     file: "https://raw.githubusercontent.com/MichalZaniewicz/esphome-guition-jc3636k718c-va/main/assets/sprites/weather/moon0.png"
     type: RGB565
     transparency: alpha_channel
-  - id: img_wx_moon1
+  - platform: file
+    id: img_wx_moon1
     file: "https://raw.githubusercontent.com/MichalZaniewicz/esphome-guition-jc3636k718c-va/main/assets/sprites/weather/moon1.png"
     type: RGB565
     transparency: alpha_channel
-  - id: img_wx_moon2
+  - platform: file
+    id: img_wx_moon2
     file: "https://raw.githubusercontent.com/MichalZaniewicz/esphome-guition-jc3636k718c-va/main/assets/sprites/weather/moon2.png"
     type: RGB565
     transparency: alpha_channel
-  - id: img_wx_moon3
+  - platform: file
+    id: img_wx_moon3
     file: "https://raw.githubusercontent.com/MichalZaniewicz/esphome-guition-jc3636k718c-va/main/assets/sprites/weather/moon3.png"
     type: RGB565
     transparency: alpha_channel
-  - id: img_wx_moon4
+  - platform: file
+    id: img_wx_moon4
     file: "https://raw.githubusercontent.com/MichalZaniewicz/esphome-guition-jc3636k718c-va/main/assets/sprites/weather/moon4.png"
     type: RGB565
     transparency: alpha_channel
-  - id: img_wx_moon5
+  - platform: file
+    id: img_wx_moon5
     file: "https://raw.githubusercontent.com/MichalZaniewicz/esphome-guition-jc3636k718c-va/main/assets/sprites/weather/moon5.png"
     type: RGB565
     transparency: alpha_channel
-  - id: img_wx_moon6
+  - platform: file
+    id: img_wx_moon6
     file: "https://raw.githubusercontent.com/MichalZaniewicz/esphome-guition-jc3636k718c-va/main/assets/sprites/weather/moon6.png"
     type: RGB565
     transparency: alpha_channel
-  - id: img_wx_moon7
+  - platform: file
+    id: img_wx_moon7
     file: "https://raw.githubusercontent.com/MichalZaniewicz/esphome-guition-jc3636k718c-va/main/assets/sprites/weather/moon7.png"
     type: RGB565
     transparency: alpha_channel
-  - id: img_wx_cloud0
+  - platform: file
+    id: img_wx_cloud0
     file: "https://raw.githubusercontent.com/MichalZaniewicz/esphome-guition-jc3636k718c-va/main/assets/sprites/weather/cloud0.png"
     type: RGB565
     transparency: alpha_channel
-  - id: img_wx_cloud1
+  - platform: file
+    id: img_wx_cloud1
     file: "https://raw.githubusercontent.com/MichalZaniewicz/esphome-guition-jc3636k718c-va/main/assets/sprites/weather/cloud1.png"
     type: RGB565
     transparency: alpha_channel
-  - id: img_wx_cloud2
+  - platform: file
+    id: img_wx_cloud2
     file: "https://raw.githubusercontent.com/MichalZaniewicz/esphome-guition-jc3636k718c-va/main/assets/sprites/weather/cloud2.png"
     type: RGB565
     transparency: alpha_channel
-  - id: img_wx_cloud3
+  - platform: file
+    id: img_wx_cloud3
     file: "https://raw.githubusercontent.com/MichalZaniewicz/esphome-guition-jc3636k718c-va/main/assets/sprites/weather/cloud3.png"
     type: RGB565
     transparency: alpha_channel
-  - id: img_wx_cloud4
+  - platform: file
+    id: img_wx_cloud4
     file: "https://raw.githubusercontent.com/MichalZaniewicz/esphome-guition-jc3636k718c-va/main/assets/sprites/weather/cloud4.png"
     type: RGB565
     transparency: alpha_channel
-  - id: img_wx_cloud5
+  - platform: file
+    id: img_wx_cloud5
     file: "https://raw.githubusercontent.com/MichalZaniewicz/esphome-guition-jc3636k718c-va/main/assets/sprites/weather/cloud5.png"
     type: RGB565
     transparency: alpha_channel
-  - id: img_wx_cloud6
+  - platform: file
+    id: img_wx_cloud6
     file: "https://raw.githubusercontent.com/MichalZaniewicz/esphome-guition-jc3636k718c-va/main/assets/sprites/weather/cloud6.png"
     type: RGB565
     transparency: alpha_channel
-  - id: img_wx_cloud7
+  - platform: file
+    id: img_wx_cloud7
     file: "https://raw.githubusercontent.com/MichalZaniewicz/esphome-guition-jc3636k718c-va/main/assets/sprites/weather/cloud7.png"
     type: RGB565
     transparency: alpha_channel
-  - id: img_wx_rain0
+  - platform: file
+    id: img_wx_rain0
     file: "https://raw.githubusercontent.com/MichalZaniewicz/esphome-guition-jc3636k718c-va/main/assets/sprites/weather/rain0.png"
     type: RGB565
     transparency: alpha_channel
-  - id: img_wx_rain1
+  - platform: file
+    id: img_wx_rain1
     file: "https://raw.githubusercontent.com/MichalZaniewicz/esphome-guition-jc3636k718c-va/main/assets/sprites/weather/rain1.png"
     type: RGB565
     transparency: alpha_channel
-  - id: img_wx_rain2
+  - platform: file
+    id: img_wx_rain2
     file: "https://raw.githubusercontent.com/MichalZaniewicz/esphome-guition-jc3636k718c-va/main/assets/sprites/weather/rain2.png"
     type: RGB565
     transparency: alpha_channel
-  - id: img_wx_rain3
+  - platform: file
+    id: img_wx_rain3
     file: "https://raw.githubusercontent.com/MichalZaniewicz/esphome-guition-jc3636k718c-va/main/assets/sprites/weather/rain3.png"
     type: RGB565
     transparency: alpha_channel
-  - id: img_wx_rain4
+  - platform: file
+    id: img_wx_rain4
     file: "https://raw.githubusercontent.com/MichalZaniewicz/esphome-guition-jc3636k718c-va/main/assets/sprites/weather/rain4.png"
     type: RGB565
     transparency: alpha_channel
-  - id: img_wx_rain5
+  - platform: file
+    id: img_wx_rain5
     file: "https://raw.githubusercontent.com/MichalZaniewicz/esphome-guition-jc3636k718c-va/main/assets/sprites/weather/rain5.png"
     type: RGB565
     transparency: alpha_channel
-  - id: img_wx_rain6
+  - platform: file
+    id: img_wx_rain6
     file: "https://raw.githubusercontent.com/MichalZaniewicz/esphome-guition-jc3636k718c-va/main/assets/sprites/weather/rain6.png"
     type: RGB565
     transparency: alpha_channel
-  - id: img_wx_rain7
+  - platform: file
+    id: img_wx_rain7
     file: "https://raw.githubusercontent.com/MichalZaniewicz/esphome-guition-jc3636k718c-va/main/assets/sprites/weather/rain7.png"
     type: RGB565
     transparency: alpha_channel
-  - id: img_wx_storm0
+  - platform: file
+    id: img_wx_storm0
     file: "https://raw.githubusercontent.com/MichalZaniewicz/esphome-guition-jc3636k718c-va/main/assets/sprites/weather/storm0.png"
     type: RGB565
     transparency: alpha_channel
-  - id: img_wx_storm1
+  - platform: file
+    id: img_wx_storm1
     file: "https://raw.githubusercontent.com/MichalZaniewicz/esphome-guition-jc3636k718c-va/main/assets/sprites/weather/storm1.png"
     type: RGB565
     transparency: alpha_channel
-  - id: img_wx_storm2
+  - platform: file
+    id: img_wx_storm2
     file: "https://raw.githubusercontent.com/MichalZaniewicz/esphome-guition-jc3636k718c-va/main/assets/sprites/weather/storm2.png"
     type: RGB565
     transparency: alpha_channel
-  - id: img_wx_storm3
+  - platform: file
+    id: img_wx_storm3
     file: "https://raw.githubusercontent.com/MichalZaniewicz/esphome-guition-jc3636k718c-va/main/assets/sprites/weather/storm3.png"
     type: RGB565
     transparency: alpha_channel
-  - id: img_wx_storm4
+  - platform: file
+    id: img_wx_storm4
     file: "https://raw.githubusercontent.com/MichalZaniewicz/esphome-guition-jc3636k718c-va/main/assets/sprites/weather/storm4.png"
     type: RGB565
     transparency: alpha_channel
-  - id: img_wx_storm5
+  - platform: file
+    id: img_wx_storm5
     file: "https://raw.githubusercontent.com/MichalZaniewicz/esphome-guition-jc3636k718c-va/main/assets/sprites/weather/storm5.png"
     type: RGB565
     transparency: alpha_channel
-  - id: img_wx_storm6
+  - platform: file
+    id: img_wx_storm6
     file: "https://raw.githubusercontent.com/MichalZaniewicz/esphome-guition-jc3636k718c-va/main/assets/sprites/weather/storm6.png"
     type: RGB565
     transparency: alpha_channel
-  - id: img_wx_storm7
+  - platform: file
+    id: img_wx_storm7
     file: "https://raw.githubusercontent.com/MichalZaniewicz/esphome-guition-jc3636k718c-va/main/assets/sprites/weather/storm7.png"
     type: RGB565
     transparency: alpha_channel
-  - id: img_wx_snow0
+  - platform: file
+    id: img_wx_snow0
     file: "https://raw.githubusercontent.com/MichalZaniewicz/esphome-guition-jc3636k718c-va/main/assets/sprites/weather/snow0.png"
     type: RGB565
     transparency: alpha_channel
-  - id: img_wx_snow1
+  - platform: file
+    id: img_wx_snow1
     file: "https://raw.githubusercontent.com/MichalZaniewicz/esphome-guition-jc3636k718c-va/main/assets/sprites/weather/snow1.png"
     type: RGB565
     transparency: alpha_channel
-  - id: img_wx_snow2
+  - platform: file
+    id: img_wx_snow2
     file: "https://raw.githubusercontent.com/MichalZaniewicz/esphome-guition-jc3636k718c-va/main/assets/sprites/weather/snow2.png"
     type: RGB565
     transparency: alpha_channel
-  - id: img_wx_snow3
+  - platform: file
+    id: img_wx_snow3
     file: "https://raw.githubusercontent.com/MichalZaniewicz/esphome-guition-jc3636k718c-va/main/assets/sprites/weather/snow3.png"
     type: RGB565
     transparency: alpha_channel
-  - id: img_wx_snow4
+  - platform: file
+    id: img_wx_snow4
     file: "https://raw.githubusercontent.com/MichalZaniewicz/esphome-guition-jc3636k718c-va/main/assets/sprites/weather/snow4.png"
     type: RGB565
     transparency: alpha_channel
-  - id: img_wx_snow5
+  - platform: file
+    id: img_wx_snow5
     file: "https://raw.githubusercontent.com/MichalZaniewicz/esphome-guition-jc3636k718c-va/main/assets/sprites/weather/snow5.png"
     type: RGB565
     transparency: alpha_channel
-  - id: img_wx_snow6
+  - platform: file
+    id: img_wx_snow6
     file: "https://raw.githubusercontent.com/MichalZaniewicz/esphome-guition-jc3636k718c-va/main/assets/sprites/weather/snow6.png"
     type: RGB565
     transparency: alpha_channel
-  - id: img_wx_snow7
+  - platform: file
+    id: img_wx_snow7
     file: "https://raw.githubusercontent.com/MichalZaniewicz/esphome-guition-jc3636k718c-va/main/assets/sprites/weather/snow7.png"
     type: RGB565
     transparency: alpha_channel

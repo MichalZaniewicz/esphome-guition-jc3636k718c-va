@@ -131,7 +131,8 @@ def fruit_setters():
 
 def fruit_images():
     return "\n".join(
-f"""  - id: img_sn_fruit{k}
+f"""  - platform: file
+    id: img_sn_fruit{k}
     file: "{BASE}fruit{k}.png"
     type: RGB565
     transparency: alpha_channel""" for k in range(NFRUIT))
@@ -517,11 +518,13 @@ interval:
                   - script.execute: sn_hud
 
 image:
-  - id: img_sn_logo
+  - platform: file
+    id: img_sn_logo
     file: "{BASE}snake-logo.png"
     type: RGB565
 {fruit_images()}
-  - id: img_sn_skull
+  - platform: file
+    id: img_sn_skull
     file: "{BASE}skull.png"
     type: RGB565
     transparency: alpha_channel

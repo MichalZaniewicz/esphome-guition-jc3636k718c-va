@@ -3,6 +3,11 @@
 All notable changes to this project are documented here. The format is based on
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [2.2.8] - 2026-07-26
+
+### Changed
+- Images moved to the platform form ESPHome 2026.7.0 introduced (`- platform: file`, `- platform: online_image`); the old `image:` / `online_image:` blocks warned at validation and go away in 2027.1.0. **Minimum ESPHome is now 2026.7.0.**
+
 ## [2.2.7] - 2026-07-25
 
 ### Added

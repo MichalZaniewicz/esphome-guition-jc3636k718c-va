@@ -35,10 +35,10 @@ font:
     glyphs: " 0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ"   # date only (uppercased) - no GF_Latin_Core, avoids missing-glyph warnings
 
 image:
-  - { id: img_mc_ground, file: https://raw.githubusercontent.com/MichalZaniewicz/esphome-guition-jc3636k718c-va/main/assets/sprites/minecraft/ground.png, type: RGB565 }
-  - { id: img_mc_sun,    file: https://raw.githubusercontent.com/MichalZaniewicz/esphome-guition-jc3636k718c-va/main/assets/sprites/minecraft/sun.png,    type: RGB565, transparency: alpha_channel }
-  - { id: img_mc_moon,   file: https://raw.githubusercontent.com/MichalZaniewicz/esphome-guition-jc3636k718c-va/main/assets/sprites/minecraft/moon.png,   type: RGB565, transparency: alpha_channel }
-  - { id: img_mc_flower, file: https://raw.githubusercontent.com/MichalZaniewicz/esphome-guition-jc3636k718c-va/main/assets/sprites/minecraft/flower.png, type: RGB565, transparency: alpha_channel }
+  - { platform: file, id: img_mc_ground, file: https://raw.githubusercontent.com/MichalZaniewicz/esphome-guition-jc3636k718c-va/main/assets/sprites/minecraft/ground.png, type: RGB565 }
+  - { platform: file, id: img_mc_sun,    file: https://raw.githubusercontent.com/MichalZaniewicz/esphome-guition-jc3636k718c-va/main/assets/sprites/minecraft/sun.png,    type: RGB565, transparency: alpha_channel }
+  - { platform: file, id: img_mc_moon,   file: https://raw.githubusercontent.com/MichalZaniewicz/esphome-guition-jc3636k718c-va/main/assets/sprites/minecraft/moon.png,   type: RGB565, transparency: alpha_channel }
+  - { platform: file, id: img_mc_flower, file: https://raw.githubusercontent.com/MichalZaniewicz/esphome-guition-jc3636k718c-va/main/assets/sprites/minecraft/flower.png, type: RGB565, transparency: alpha_channel }
 
 lvgl:
   pages:

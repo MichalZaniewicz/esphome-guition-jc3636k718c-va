@@ -45,7 +45,8 @@ font:
 
 image:
   # Baked background (wallpaper + scrims + storm rim), fetched at compile time
-  - id: img_fn_bg
+  - platform: file
+    id: img_fn_bg
     file: https://raw.githubusercontent.com/MichalZaniewicz/esphome-guition-jc3636k718c-va/main/assets/sprites/fortnite/bg.png
     type: RGB565
 

@@ -28,8 +28,9 @@ http_request:
 
 # Album art fetched dynamically from HA (entity_picture is a signed URL)
 
-online_image:
-  - id: album_art
+image:
+  - platform: online_image
+    id: album_art
     url: "${ha_base_url}/"
     format: JPEG
     type: RGB565

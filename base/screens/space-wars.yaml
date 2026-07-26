@@ -326,45 +326,56 @@ interval:
 
 image:
   # Space Wars
-  - id: img_spacebg
+  - platform: file
+    id: img_spacebg
     file: "https://raw.githubusercontent.com/MichalZaniewicz/esphome-guition-jc3636k718c-va/main/assets/sprites/space-wars/spacebg.png"
     type: RGB565
-  - id: img_logo2
+  - platform: file
+    id: img_logo2
     file: "https://raw.githubusercontent.com/MichalZaniewicz/esphome-guition-jc3636k718c-va/main/assets/sprites/space-wars/logo2.png"
     type: RGB565
-  - id: img_sp
+  - platform: file
+    id: img_sp
     file: "https://raw.githubusercontent.com/MichalZaniewicz/esphome-guition-jc3636k718c-va/main/assets/sprites/space-wars/player.png"
     type: RGB565
     transparency: alpha_channel
-  - id: img_se1
+  - platform: file
+    id: img_se1
     file: "https://raw.githubusercontent.com/MichalZaniewicz/esphome-guition-jc3636k718c-va/main/assets/sprites/space-wars/enemy1.png"
     type: RGB565
     transparency: alpha_channel
-  - id: img_se2
+  - platform: file
+    id: img_se2
     file: "https://raw.githubusercontent.com/MichalZaniewicz/esphome-guition-jc3636k718c-va/main/assets/sprites/space-wars/enemy2.png"
     type: RGB565
     transparency: alpha_channel
-  - id: img_exp0
+  - platform: file
+    id: img_exp0
     file: "https://raw.githubusercontent.com/MichalZaniewicz/esphome-guition-jc3636k718c-va/main/assets/sprites/space-wars/exp0.png"
     type: RGB565
     transparency: alpha_channel
-  - id: img_exp1
+  - platform: file
+    id: img_exp1
     file: "https://raw.githubusercontent.com/MichalZaniewicz/esphome-guition-jc3636k718c-va/main/assets/sprites/space-wars/exp1.png"
     type: RGB565
     transparency: alpha_channel
-  - id: img_exp2
+  - platform: file
+    id: img_exp2
     file: "https://raw.githubusercontent.com/MichalZaniewicz/esphome-guition-jc3636k718c-va/main/assets/sprites/space-wars/exp2.png"
     type: RGB565
     transparency: alpha_channel
-  - id: img_exp3
+  - platform: file
+    id: img_exp3
     file: "https://raw.githubusercontent.com/MichalZaniewicz/esphome-guition-jc3636k718c-va/main/assets/sprites/space-wars/exp3.png"
     type: RGB565
     transparency: alpha_channel
-  - id: img_exp4
+  - platform: file
+    id: img_exp4
     file: "https://raw.githubusercontent.com/MichalZaniewicz/esphome-guition-jc3636k718c-va/main/assets/sprites/space-wars/exp4.png"
     type: RGB565
     transparency: alpha_channel
-  - id: img_exp5
+  - platform: file
+    id: img_exp5
     file: "https://raw.githubusercontent.com/MichalZaniewicz/esphome-guition-jc3636k718c-va/main/assets/sprites/space-wars/exp5.png"
     type: RGB565
     transparency: alpha_channel

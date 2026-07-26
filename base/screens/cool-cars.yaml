@@ -404,34 +404,42 @@ interval:
                 lv_obj_align(id(db1), LV_ALIGN_CENTER, d1,  27);
 
 image:
-  - id: img_road2
+  - platform: file
+    id: img_road2
     file: "https://raw.githubusercontent.com/MichalZaniewicz/esphome-guition-jc3636k718c-va/main/assets/sprites/cool-cars/road2.png"
     type: RGB565
-  - id: img_p
+  - platform: file
+    id: img_p
     file: "https://raw.githubusercontent.com/MichalZaniewicz/esphome-guition-jc3636k718c-va/main/assets/sprites/cool-cars/pcar2.png"
     type: RGB565
     transparency: alpha_channel
-  - id: img_cop
+  - platform: file
+    id: img_cop
     file: "https://raw.githubusercontent.com/MichalZaniewicz/esphome-guition-jc3636k718c-va/main/assets/sprites/cool-cars/ocop2.png"
     type: RGB565
     transparency: alpha_channel
-  - id: img_mus
+  - platform: file
+    id: img_mus
     file: "https://raw.githubusercontent.com/MichalZaniewicz/esphome-guition-jc3636k718c-va/main/assets/sprites/cool-cars/omus2.png"
     type: RGB565
     transparency: alpha_channel
-  - id: img_sed
+  - platform: file
+    id: img_sed
     file: "https://raw.githubusercontent.com/MichalZaniewicz/esphome-guition-jc3636k718c-va/main/assets/sprites/cool-cars/osed2.png"
     type: RGB565
     transparency: alpha_channel
-  - id: img_coin
+  - platform: file
+    id: img_coin
     file: "https://raw.githubusercontent.com/MichalZaniewicz/esphome-guition-jc3636k718c-va/main/assets/sprites/cool-cars/coin.png"
     type: RGB565
     transparency: alpha_channel
-  - id: img_cone
+  - platform: file
+    id: img_cone
     file: "https://raw.githubusercontent.com/MichalZaniewicz/esphome-guition-jc3636k718c-va/main/assets/sprites/cool-cars/cone.png"
     type: RGB565
     transparency: alpha_channel
-  - id: img_logo
+  - platform: file
+    id: img_logo
     file: "https://raw.githubusercontent.com/MichalZaniewicz/esphome-guition-jc3636k718c-va/main/assets/sprites/cool-cars/logo.png"
     type: RGB565
 

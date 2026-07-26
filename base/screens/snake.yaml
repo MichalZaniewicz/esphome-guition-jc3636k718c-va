@@ -433,58 +433,72 @@ interval:
                   - script.execute: sn_hud
 
 image:
-  - id: img_sn_logo
+  - platform: file
+    id: img_sn_logo
     file: "https://raw.githubusercontent.com/MichalZaniewicz/esphome-guition-jc3636k718c-va/main/assets/sprites/snake/snake-logo.png"
     type: RGB565
-  - id: img_sn_fruit0
+  - platform: file
+    id: img_sn_fruit0
     file: "https://raw.githubusercontent.com/MichalZaniewicz/esphome-guition-jc3636k718c-va/main/assets/sprites/snake/fruit0.png"
     type: RGB565
     transparency: alpha_channel
-  - id: img_sn_fruit1
+  - platform: file
+    id: img_sn_fruit1
     file: "https://raw.githubusercontent.com/MichalZaniewicz/esphome-guition-jc3636k718c-va/main/assets/sprites/snake/fruit1.png"
     type: RGB565
     transparency: alpha_channel
-  - id: img_sn_fruit2
+  - platform: file
+    id: img_sn_fruit2
     file: "https://raw.githubusercontent.com/MichalZaniewicz/esphome-guition-jc3636k718c-va/main/assets/sprites/snake/fruit2.png"
     type: RGB565
     transparency: alpha_channel
-  - id: img_sn_fruit3
+  - platform: file
+    id: img_sn_fruit3
     file: "https://raw.githubusercontent.com/MichalZaniewicz/esphome-guition-jc3636k718c-va/main/assets/sprites/snake/fruit3.png"
     type: RGB565
     transparency: alpha_channel
-  - id: img_sn_fruit4
+  - platform: file
+    id: img_sn_fruit4
     file: "https://raw.githubusercontent.com/MichalZaniewicz/esphome-guition-jc3636k718c-va/main/assets/sprites/snake/fruit4.png"
     type: RGB565
     transparency: alpha_channel
-  - id: img_sn_fruit5
+  - platform: file
+    id: img_sn_fruit5
     file: "https://raw.githubusercontent.com/MichalZaniewicz/esphome-guition-jc3636k718c-va/main/assets/sprites/snake/fruit5.png"
     type: RGB565
     transparency: alpha_channel
-  - id: img_sn_fruit6
+  - platform: file
+    id: img_sn_fruit6
     file: "https://raw.githubusercontent.com/MichalZaniewicz/esphome-guition-jc3636k718c-va/main/assets/sprites/snake/fruit6.png"
     type: RGB565
     transparency: alpha_channel
-  - id: img_sn_fruit7
+  - platform: file
+    id: img_sn_fruit7
     file: "https://raw.githubusercontent.com/MichalZaniewicz/esphome-guition-jc3636k718c-va/main/assets/sprites/snake/fruit7.png"
     type: RGB565
     transparency: alpha_channel
-  - id: img_sn_fruit8
+  - platform: file
+    id: img_sn_fruit8
     file: "https://raw.githubusercontent.com/MichalZaniewicz/esphome-guition-jc3636k718c-va/main/assets/sprites/snake/fruit8.png"
     type: RGB565
     transparency: alpha_channel
-  - id: img_sn_fruit9
+  - platform: file
+    id: img_sn_fruit9
     file: "https://raw.githubusercontent.com/MichalZaniewicz/esphome-guition-jc3636k718c-va/main/assets/sprites/snake/fruit9.png"
     type: RGB565
     transparency: alpha_channel
-  - id: img_sn_fruit10
+  - platform: file
+    id: img_sn_fruit10
     file: "https://raw.githubusercontent.com/MichalZaniewicz/esphome-guition-jc3636k718c-va/main/assets/sprites/snake/fruit10.png"
     type: RGB565
     transparency: alpha_channel
-  - id: img_sn_fruit11
+  - platform: file
+    id: img_sn_fruit11
     file: "https://raw.githubusercontent.com/MichalZaniewicz/esphome-guition-jc3636k718c-va/main/assets/sprites/snake/fruit11.png"
     type: RGB565
     transparency: alpha_channel
-  - id: img_sn_skull
+  - platform: file
+    id: img_sn_skull
     file: "https://raw.githubusercontent.com/MichalZaniewicz/esphome-guition-jc3636k718c-va/main/assets/sprites/snake/skull.png"
     type: RGB565
     transparency: alpha_channel
