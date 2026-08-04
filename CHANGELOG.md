@@ -3,6 +3,11 @@
 All notable changes to this project are documented here. The format is based on
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [2.2.9] - 2026-08-04
+
+### Changed
+- Display driver moved from `qspi_dbi` (deprecated upstream, no removal date yet) to `mipi_spi` (`bus_mode: quad`); same init sequence and pins, no behavior change intended.
+
 ## [2.2.8] - 2026-07-26
 
 ### Changed

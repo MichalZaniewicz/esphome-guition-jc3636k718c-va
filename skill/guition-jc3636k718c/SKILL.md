@@ -43,11 +43,13 @@ microSD (SD_MMC):        CLK=39 CMD=38 D0=40 D1=41 D2=48 D3=47
 
 ## ESPHome component choices that work
 
-- **Display:** `display: platform: qspi_dbi`, `model: CUSTOM`, `data_rate: 80MHz`,
-  `invert_colors: true`, `color_order: rgb`, with the full `init_sequence` from
-  `base/core.yaml` (ends with `3A=55` for RGB565, `21` invert, `11` sleep-out,
-  120 ms delay, `29` display-on). The native ST77916 model was dev-only; CUSTOM +
-  manual init runs on stable ESPHome.
+- **Display:** `display: platform: mipi_spi`, `model: CUSTOM`, `bus_mode: quad`,
+  `data_rate: 80MHz`, `invert_colors: true`, `color_order: rgb`, with the full
+  `init_sequence` from `base/core.yaml` (ends with `3A=55` for RGB565, `21` invert,
+  `11` sleep-out, 120 ms delay, `29` display-on). The native ST77916 model was
+  dev-only; CUSTOM + manual init runs on stable ESPHome. (`qspi_dbi` was the
+  platform before v2.2.9; it's deprecated upstream, no predefined ST77916 model
+  exists on `mipi_spi` either.)
 - **SPI:** `type: quad`, `clk_pin: 11`, `data_pins: [13,14,15,16]`. **CS/RST go on the
   `display:` block** (`cs_pin: 12`, `reset_pin: GPIO17`), not on `spi:`.
 - **Touch:** `touchscreen: platform: cst816`, `interrupt_pin: 7`, `reset_pin: 8`,
