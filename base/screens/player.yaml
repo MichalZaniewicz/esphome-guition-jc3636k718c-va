@@ -145,7 +145,7 @@ interval:
           text: !lambda |-
             int p = id(g_pos), d = id(g_dur);
             if (d <= 0) return std::string("");
-            char b[20]; snprintf(b, sizeof(b), "%d:%02d | %d:%02d", p/60, p%60, d/60, d%60);
+            char b[32]; snprintf(b, sizeof(b), "%d:%02d | %d:%02d", p/60, p%60, d/60, d%60);
             return std::string(b);
       - lvgl.bar.update:
           id: prog_bar

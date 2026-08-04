@@ -204,7 +204,7 @@ script:
   - id: gy_hud
     then:
       - lvgl.label.update: { id: lbl_gy_score, text: !lambda 'char b[12]; snprintf(b,sizeof(b),"%d",id(g_gy_score)); return std::string(b);' }
-      - lvgl.label.update: { id: lbl_gy_lives, text: !lambda 'char b[16]; snprintf(b,sizeof(b),"LIVES  %d",id(g_gy_lives)<0?0:id(g_gy_lives)); return std::string(b);' }
+      - lvgl.label.update: { id: lbl_gy_lives, text: !lambda 'char b[24]; snprintf(b,sizeof(b),"LIVES  %d",id(g_gy_lives)<0?0:id(g_gy_lives)); return std::string(b);' }
   # park every gameplay widget off-screen
   - id: gy_clear
     then:

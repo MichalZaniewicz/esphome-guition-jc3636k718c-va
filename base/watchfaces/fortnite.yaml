@@ -322,7 +322,7 @@ script:
                 text: !lambda |-
                   int p = id(g_batt);
                   if (p < 0) return std::string("--");
-                  char b[8]; snprintf(b, sizeof(b), "%d", p); return std::string(b);
+                  char b[16]; snprintf(b, sizeof(b), "%d", p); return std::string(b);
             # Health = how much of the day is left
             - lambda: |-
                 auto t = id(ha_time).now();

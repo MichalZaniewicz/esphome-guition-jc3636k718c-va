@@ -962,7 +962,7 @@ script:
               return std::string("") + fr[id(g_chg_anim) % 5];
             }
             std::string ic = p > 87 ? "" : p > 62 ? "" : p > 37 ? "" : p > 12 ? "" : "";
-            char bf[12]; snprintf(bf, sizeof(bf), " %d%%", p);
+            char bf[16]; snprintf(bf, sizeof(bf), " %d%%", p);
             return ic + bf;
       - if:
           condition:
@@ -1184,7 +1184,7 @@ script:
                   if (m == 2) { snprintf(b, sizeof(b), "%d min", id(g_set_min)); return std::string(b); }
                   if (m == 6) { snprintf(b, sizeof(b), "%d%%", id(g_bright)); return std::string(b); }
                   if (m == 9) return std::string("Restart?");
-                  if (m == 23) { if (id(g_batt) < 0) return std::string("--"); char b[8]; snprintf(b, sizeof(b), "%d%%", id(g_batt)); return std::string(b); }
+                  if (m == 23) { if (id(g_batt) < 0) return std::string("--"); snprintf(b, sizeof(b), "%d%%", id(g_batt)); return std::string(b); }
                   if (m == 24) { const char* L[5]={"Never","15s","30s","1min","5min"}; return std::string(L[id(g_blank_idx) % 5]); }
                   if (m == 25) { char b[8]; snprintf(b, sizeof(b), "%02d:00", id(g_night_from)); return std::string(b); }
                   if (m == 26) { char b[8]; snprintf(b, sizeof(b), "%02d:00", id(g_night_to)); return std::string(b); }
