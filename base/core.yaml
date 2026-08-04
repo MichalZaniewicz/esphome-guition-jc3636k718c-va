@@ -1699,14 +1699,16 @@ light:
     id: backlight_light
     restore_mode: ALWAYS_ON
   # LED ring on the knob: WS2812, 13 LEDs, GRB, data=GPIO0.
-  # GPIO0 is also the BOOT/strapping pin - it works as a WS2812 output after boot
-  # (ESPHome may warn about a strapping pin; that's normal on this board).
+  # GPIO0 is also the BOOT/strapping pin - it works as a WS2812 output after boot,
+  # confirmed safe on this board, hence ignore_strapping_warning below.
   # Controllable from HA (on/off, color, brightness, effects). Reactions (assistant/timer/alarm)
   # temporarily override the ring by priority and return to the HA state - see the ring_update script.
   - platform: esp32_rmt_led_strip
     id: ring_light
     name: "${friendly_name} Ring"
-    pin: GPIO0
+    pin:
+      number: GPIO0
+      ignore_strapping_warning: true
     num_leds: 13
     rgb_order: GRB
     chipset: WS2812
