@@ -73,10 +73,12 @@ microSD (SD_MMC):        CLK=39 CMD=38 D0=40 D1=41 D2=48 D3=47
    clean LOW pulse per detent. Read two independent `binary_sensor` `on_press` instead.
    The knob can't be pressed (GPIO0 is BOOT) - trigger actions with a screen tap.
 
-2. **Strapping-pin warnings are expected and harmless.** ESPHome warns (unconditionally,
-   no per-pin suppress) about **GPIO0** (WS2812 ring), **GPIO3** (DAC BCK), **GPIO45**
-   (DAC WS/LRCK) and **GPIO46** (DAC MUTE) - all are ESP32-S3 strapping pins used per the
-   vendor pinout. They work fine after boot; ignore the warnings. Separately, silence
+2. **Strapping-pin warnings are expected and harmless.** **GPIO0** (WS2812 ring), **GPIO3**
+   (DAC BCK), **GPIO45** (DAC WS/LRCK) and **GPIO46** (DAC MUTE) are all ESP32-S3
+   strapping pins used per the vendor pinout - they work fine after boot. There IS a
+   per-pin suppress (`ignore_strapping_warning: true`, needs the extended `pin: {number:
+   ..., ignore_strapping_warning: true}` form, not the short `pin: GPIOxx`) - the config
+   uses it on all four since 2.2.9, so the warnings no longer print. Separately, silence
    gfonts "missing glyphs" warnings with `ignore_missing_glyphs: true` (GF_Latin_Core lists
    combining accents the static Roboto face lacks), or list exact `glyphs:` for pixel/icon fonts.
 

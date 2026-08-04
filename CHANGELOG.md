@@ -7,6 +7,9 @@ All notable changes to this project are documented here. The format is based on
 
 ### Changed
 - Display driver moved from `qspi_dbi` (deprecated upstream, no removal date yet) to `mipi_spi` (`bus_mode: quad`); same init sequence and pins, no behavior change intended.
+- Silenced the strapping-pin warnings on GPIO0 (LED ring), GPIO46 (DAC mute), GPIO3 and GPIO45 (DAC I2S BCK/WS) with `ignore_strapping_warning: true` - all confirmed-safe schematic pins, previously just documented in comments.
+- Removed `platformio_options: board_build.*` (flash_mode/f_flash/f_cpu) - Arduino/PlatformIO-only, silently ignored under the native ESP-IDF toolchain, warned every build for nothing.
+- Widened a few `snprintf` buffers (player time, Fortnite battery %, Knobuss lives, home-screen battery %) to clear `-Wformat-truncation`; no functional change, the real values never approached the old buffer sizes.
 
 ## [2.2.8] - 2026-07-26
 
