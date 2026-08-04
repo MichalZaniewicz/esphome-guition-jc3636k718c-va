@@ -71,10 +71,6 @@ substitutions:
 esphome:
   name: ${name}
   friendly_name: ${friendly_name}
-  platformio_options:
-    board_build.flash_mode: dio
-    board_build.f_flash: 80000000L
-    board_build.f_cpu: 240000000L
   on_boot:
     - priority: 800
       then:
@@ -306,15 +302,21 @@ time:
 ###############################################################################
 switch:
   - platform: gpio
-    pin: GPIO46
+    pin:
+      number: GPIO46
+      ignore_strapping_warning: true
     name: "DAC unmute"
     id: dac_unmute
     restore_mode: ALWAYS_ON   # HIGH = not muted
 
 i2s_audio:
   - id: i2s_out            # DAC PCM5100A
-    i2s_bclk_pin: GPIO3
-    i2s_lrclk_pin: GPIO45
+    i2s_bclk_pin:
+      number: GPIO3
+      ignore_strapping_warning: true
+    i2s_lrclk_pin:
+      number: GPIO45
+      ignore_strapping_warning: true
   - id: i2s_in             # PDM microphone: clock=GPIO5
     i2s_lrclk_pin: GPIO5
 
