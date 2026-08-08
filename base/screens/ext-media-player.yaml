@@ -98,6 +98,18 @@ sensor:
           text: !lambda |-
             char buf[8]; snprintf(buf, sizeof(buf), "%d%%", (int) roundf(x * 100.0f)); return std::string(buf);
 
+# Mute-state readback (same optional entity again) - toggles the mute button's icon between
+# LV_SYMBOL_MUTE (speaker+X) and LV_SYMBOL_VOLUME_MAX (speaker+waves), same idea as play/pause.
+binary_sensor:
+  - platform: homeassistant
+    id: ext_mute_sensor
+    entity_id: ${ext_volume_entity}
+    attribute: is_volume_muted
+    on_state:
+      - lvgl.label.update:
+          id: ext_lbl_mute
+          text: !lambda 'return x ? std::string("") : std::string("");'
+
 # Playback state readback (same optional entity as the volume sensor above) - drives the
 # 3-bar equalizer in the header: animates while "playing", sits flat otherwise.
 text_sensor:
@@ -338,7 +350,7 @@ lvgl:
                   action: button.press
                   data: { entity_id: "${ext_mute_entity}" }
             widgets:
-              - label: { align: CENTER, text: "", text_font: montserrat_22, text_color: 0xFF6B60 }
+              - label: { id: ext_lbl_mute, align: CENTER, text: "", text_font: montserrat_22, text_color: 0xFF6B60 }
 
         # Volume overlay (amber - distinct from the core's teal one for the puck's own speaker).
         # Hidden by default; ext_flash_volume shows it for ~2s on each knob detent. Needs
