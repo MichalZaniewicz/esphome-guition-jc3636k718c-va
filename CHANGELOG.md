@@ -10,6 +10,7 @@ All notable changes to this project are documented here. The format is based on
 
 ### Fixed
 - External Media Player screen was clobbering knob capture on **other** screens: its 80ms interval unconditionally cleared `g_knob_capture` whenever it wasn't the active screen, running regardless of which screen actually was active. Weather and Thermostat set capture once on entry and don't re-assert it every tick (unlike the games), so ~80ms after swiping onto either one, the knob silently fell back to plain volume control instead of scrolling days / setting the target. Capture release on leaving a screen is already core's job (cleared on every swipe, before `show_base` runs) - removed the redundant, buggy copy.
+- Ext screen's equalizer bars moved in slow motion: the per-bar value formula (`(millis()/period) % 70`) looked like cheap deterministic jitter but was actually a slow ramp - a full cycle took 6.8-11.4s depending on the bar, so they crept up and down over several seconds instead of jittering. Replaced with a genuine random value per tick. Volume overlay also had no dim scrim and its % label sat on top of the device name label, both fixed.
 
 ## [2.2.9] - 2026-08-04
 

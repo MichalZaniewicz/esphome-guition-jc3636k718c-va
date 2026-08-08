@@ -157,18 +157,19 @@ interval:
             - script.execute: ext_flash_volume
 
   # Equalizer animation: only while this screen is showing AND the device is playing.
-  # Different divisors per bar so they don't move in lockstep - cheap deterministic jitter,
-  # no need for real randomness. animated: false matters here - LVGL bars animate value
-  # changes by default (~300ms tween), and updating faster than that tween can finish just
-  # makes it perpetually restart and stutter instead of looking lively.
-  - interval: 250ms
+  # A genuine random jump per bar per tick, not a formula - the previous "(millis()/97) % 70"
+  # looked like a deterministic-jitter shortcut but was actually a slow ramp: a full cycle
+  # took 70*97 = 6790ms (9.2s / 11.4s for the other two bars), i.e. bars crept up and down
+  # over several seconds instead of jittering. animated: false still matters (LVGL bars
+  # animate value changes by default, ~300ms tween) so a fast tick doesn't stutter.
+  - interval: 150ms
     then:
       - if:
           condition: { lambda: 'return id(g_base)==11 && id(g_ext_playing);' }
           then:
-            - lvgl.bar.update: { id: ext_eq_bar1, value: !lambda 'return 20 + ((int)(millis()/97))  % 70;', animated: false }
-            - lvgl.bar.update: { id: ext_eq_bar2, value: !lambda 'return 20 + ((int)(millis()/131)) % 70;', animated: false }
-            - lvgl.bar.update: { id: ext_eq_bar3, value: !lambda 'return 20 + ((int)(millis()/163)) % 70;', animated: false }
+            - lvgl.bar.update: { id: ext_eq_bar1, value: !lambda 'return 20 + (rand() % 70);', animated: false }
+            - lvgl.bar.update: { id: ext_eq_bar2, value: !lambda 'return 20 + (rand() % 70);', animated: false }
+            - lvgl.bar.update: { id: ext_eq_bar3, value: !lambda 'return 20 + (rand() % 70);', animated: false }
 
 lvgl:
   pages:
