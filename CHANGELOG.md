@@ -8,6 +8,9 @@ All notable changes to this project are documented here. The format is based on
 ### Added
 - New **External Media Player** screen (optional, `base/screens/ext-media-player.yaml`, carousel id 11): prev/play-pause/next/mute buttons and knob-driven volume for any device with HA `button.*` entities - HASS.agent, Kodi, a TV, a Hi-Fi amp. Contributed by [Justblair](https://github.com/Justblair) (PR #5). Optional `ext_volume_entity` feeds a live volume arc on the screen (amber, distinct from the core's teal one for the puck's own speaker) - the six control buttons are one-way presses, so this read-only entity is what makes the level visible. Same entity also drives a 3-bar equalizer in the header (animates while playing, flat otherwise), replacing the static icon.
 
+### Fixed
+- External Media Player screen was clobbering knob capture on **other** screens: its 80ms interval unconditionally cleared `g_knob_capture` whenever it wasn't the active screen, running regardless of which screen actually was active. Weather and Thermostat set capture once on entry and don't re-assert it every tick (unlike the games), so ~80ms after swiping onto either one, the knob silently fell back to plain volume control instead of scrolling days / setting the target. Capture release on leaving a screen is already core's job (cleared on every swipe, before `show_base` runs) - removed the redundant, buggy copy.
+
 ## [2.2.9] - 2026-08-04
 
 ### Changed
