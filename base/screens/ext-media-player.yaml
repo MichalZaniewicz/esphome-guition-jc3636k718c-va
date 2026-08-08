@@ -70,11 +70,15 @@ script:
       - if:
           condition: { lambda: 'return id(g_ext_vol_known);' }
           then:
+            - lvgl.widget.hide: ext_hint_lbl
+            - lvgl.widget.show: ext_vol_dim
             - lvgl.widget.show: ext_vol_arc
             - lvgl.widget.show: ext_vol_label
             - delay: 2000ms
+            - lvgl.widget.hide: ext_vol_dim
             - lvgl.widget.hide: ext_vol_arc
             - lvgl.widget.hide: ext_vol_label
+            - lvgl.widget.show: ext_hint_lbl
 
 # Volume readback (optional): ${ext_volume_entity} is read-only, separate from the six
 # button entities above which only ever get pressed, never queried. Leave the substitution
@@ -105,9 +109,9 @@ text_sensor:
       - if:
           condition: { lambda: 'return x != "playing";' }
           then:
-            - lvgl.bar.update: { id: ext_eq_bar1, value: 15 }
-            - lvgl.bar.update: { id: ext_eq_bar2, value: 15 }
-            - lvgl.bar.update: { id: ext_eq_bar3, value: 15 }
+            - lvgl.bar.update: { id: ext_eq_bar1, value: 15, animated: false }
+            - lvgl.bar.update: { id: ext_eq_bar2, value: 15, animated: false }
+            - lvgl.bar.update: { id: ext_eq_bar3, value: 15, animated: false }
 
 interval:
   # Carousel navigation: show this page when selected in the carousel
@@ -151,15 +155,17 @@ interval:
 
   # Equalizer animation: only while this screen is showing AND the device is playing.
   # Different divisors per bar so they don't move in lockstep - cheap deterministic jitter,
-  # no need for real randomness.
-  - interval: 180ms
+  # no need for real randomness. animated: false matters here - LVGL bars animate value
+  # changes by default (~300ms tween), and updating faster than that tween can finish just
+  # makes it perpetually restart and stutter instead of looking lively.
+  - interval: 250ms
     then:
       - if:
           condition: { lambda: 'return id(g_base)==11 && id(g_ext_playing);' }
           then:
-            - lvgl.bar.update: { id: ext_eq_bar1, value: !lambda 'return 20 + ((int)(millis()/97))  % 70;' }
-            - lvgl.bar.update: { id: ext_eq_bar2, value: !lambda 'return 20 + ((int)(millis()/131)) % 70;' }
-            - lvgl.bar.update: { id: ext_eq_bar3, value: !lambda 'return 20 + ((int)(millis()/163)) % 70;' }
+            - lvgl.bar.update: { id: ext_eq_bar1, value: !lambda 'return 20 + ((int)(millis()/97))  % 70;', animated: false }
+            - lvgl.bar.update: { id: ext_eq_bar2, value: !lambda 'return 20 + ((int)(millis()/131)) % 70;', animated: false }
+            - lvgl.bar.update: { id: ext_eq_bar3, value: !lambda 'return 20 + ((int)(millis()/163)) % 70;', animated: false }
 
 lvgl:
   pages:
@@ -241,8 +247,10 @@ lvgl:
             text_font: font_med
             text_color: 0x9FC7BE
 
-        # Knob hint at the bottom
+        # Knob hint at the bottom - hidden while the volume overlay shows (same slot, swapped
+        # for the % readout - no point telling you to turn the knob while you're doing it)
         - label:
+            id: ext_hint_lbl
             align: CENTER
             y: 130
             text: "Turn knob for volume"
@@ -331,6 +339,17 @@ lvgl:
         # Volume overlay (amber - distinct from the core's teal one for the puck's own speaker).
         # Hidden by default; ext_flash_volume shows it for ~2s on each knob detent. Needs
         # ext_volume_entity set to update the value - otherwise it just never has anything to show.
+        # Dim scrim under the arc/label for contrast (core's overlay has the same under vol_arc).
+        - obj:
+            id: ext_vol_dim
+            align: CENTER
+            width: 360
+            height: 360
+            radius: 0
+            border_width: 0
+            bg_color: 0x000000
+            bg_opa: 55%
+            hidden: true
         - arc:
             id: ext_vol_arc
             align: CENTER
@@ -348,10 +367,12 @@ lvgl:
             indicator:
               arc_color: 0xF5B83D
               arc_width: 8
+        # Same slot as the knob hint below (ext_hint_lbl) - flash script swaps one for the
+        # other instead of stacking them, since the header (name label) is already taken.
         - label:
             id: ext_vol_label
-            align: TOP_MID
-            y: 40
+            align: CENTER
+            y: 130
             hidden: true
             text: "50%"
             text_color: 0xFFD27A
