@@ -79,6 +79,16 @@ script:
             - lvgl.widget.hide: ext_vol_arc
             - lvgl.widget.hide: ext_vol_label
             - lvgl.widget.show: ext_hint_lbl
+  # Tap the overlay to dismiss it early - same idea as core's vol_hide_now/vol_dim. First
+  # tap just dismisses (consistent with the core overlay); a second tap then reaches
+  # whatever's underneath, same as tapping through the core's volume overlay does.
+  - id: ext_vol_dismiss_now
+    then:
+      - script.stop: ext_flash_volume
+      - lvgl.widget.hide: ext_vol_dim
+      - lvgl.widget.hide: ext_vol_arc
+      - lvgl.widget.hide: ext_vol_label
+      - lvgl.widget.show: ext_hint_lbl
 
 # Volume readback (optional): ${ext_volume_entity} is read-only, separate from the six
 # button entities above which only ever get pressed, never queried. Leave the substitution
@@ -368,8 +378,8 @@ lvgl:
             bg_color: 0x000000
             bg_opa: 55%
             hidden: true
-            clickable: false   # decorative only - z-ordered above the buttons, would otherwise
-                                # swallow taps on them for the full 2s the overlay is shown
+            on_click:
+              - script.execute: ext_vol_dismiss_now
         - arc:
             id: ext_vol_arc
             align: CENTER
