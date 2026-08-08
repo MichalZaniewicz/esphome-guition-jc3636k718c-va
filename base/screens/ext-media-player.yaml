@@ -106,6 +106,9 @@ text_sensor:
     entity_id: ${ext_volume_entity}
     on_value:
       - lambda: 'id(g_ext_playing) = (x == "playing");'
+      - lvgl.label.update:
+          id: ext_lbl_play
+          text: !lambda 'return id(g_ext_playing) ? std::string("") : std::string("");'
       - if:
           condition: { lambda: 'return x != "playing";' }
           then:
@@ -295,7 +298,7 @@ lvgl:
                   action: button.press
                   data: { entity_id: "${ext_play_entity}" }
             widgets:
-              - label: { align: CENTER, text: "", text_font: montserrat_28, text_color: 0x06201C }
+              - label: { id: ext_lbl_play, align: CENTER, text: "", text_font: montserrat_28, text_color: 0x06201C }
 
         # Next track
         - button:
