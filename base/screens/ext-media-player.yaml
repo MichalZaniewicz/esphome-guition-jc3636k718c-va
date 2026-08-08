@@ -13,6 +13,8 @@
 #        ext_mute_entity:     button.your_mute
 #        ext_vol_up_entity:   button.your_volume_up
 #        ext_vol_down_entity: button.your_volume_down
+#        ext_volume_entity:   media_player.your_device   # optional: read-only, for the volume arc
+#                                                          # (any entity with a volume_level attribute)
 #
 #   2. Add this file to the packages files: list in guition-va.yaml:
 #        - base/screens/ext-media-player.yaml
@@ -36,6 +38,10 @@ globals:
     type: int
     restore_value: no
     initial_value: '0'
+  - id: g_ext_vol_known    # true once ext_volume_entity has pushed a real value (gates the overlay)
+    type: bool
+    restore_value: no
+    initial_value: 'false'
 
 script:
   - id: ext_vol_up
@@ -50,6 +56,39 @@ script:
           action: button.press
           data:
             entity_id: "${ext_vol_down_entity}"
+  # Volume overlay for THIS screen only (amber, vs. the core's teal one for the puck's own
+  # speaker) - shown for ~2s on each knob detent, same restart-timer pattern as core's flash_volume.
+  - id: ext_flash_volume
+    mode: restart
+    then:
+      # Skip entirely until ext_volume_entity has pushed at least one real value - otherwise
+      # this would flash a static, meaningless "50%" on every knob turn.
+      - if:
+          condition: { lambda: 'return id(g_ext_vol_known);' }
+          then:
+            - lvgl.widget.show: ext_vol_arc
+            - lvgl.widget.show: ext_vol_label
+            - delay: 2000ms
+            - lvgl.widget.hide: ext_vol_arc
+            - lvgl.widget.hide: ext_vol_label
+
+# Volume readback (optional): ${ext_volume_entity} is read-only, separate from the six
+# button entities above which only ever get pressed, never queried. Leave the substitution
+# at its unused default and this sensor just stays "unavailable" - arc/label never update.
+sensor:
+  - platform: homeassistant
+    id: ext_vol_sensor
+    entity_id: ${ext_volume_entity}
+    attribute: volume_level
+    on_value:
+      - lambda: 'id(g_ext_vol_known) = true;'
+      - lvgl.arc.update:
+          id: ext_vol_arc
+          value: !lambda 'return x * 100.0;'
+      - lvgl.label.update:
+          id: ext_vol_label
+          text: !lambda |-
+            char buf[8]; snprintf(buf, sizeof(buf), "%d%%", (int) roundf(x * 100.0f)); return std::string(buf);
 
 interval:
   # Carousel navigation: show this page when selected in the carousel
@@ -82,12 +121,14 @@ interval:
           then:
             - lambda: 'id(g_ext_knob_last) = id(g_knob_delta);'
             - script.execute: ext_vol_up
+            - script.execute: ext_flash_volume
       # Volume down (knob turned left)
       - if:
           condition: { lambda: 'return id(g_base)==11 && id(g_knob_delta) < id(g_ext_knob_last);' }
           then:
             - lambda: 'id(g_ext_knob_last) = id(g_knob_delta);'
             - script.execute: ext_vol_down
+            - script.execute: ext_flash_volume
 
 lvgl:
   pages:
@@ -218,3 +259,32 @@ lvgl:
                   data: { entity_id: "${ext_mute_entity}" }
             widgets:
               - label: { align: CENTER, text: "", text_font: montserrat_22, text_color: 0xFF6B60 }
+
+        # Volume overlay (amber - distinct from the core's teal one for the puck's own speaker).
+        # Hidden by default; ext_flash_volume shows it for ~2s on each knob detent. Needs
+        # ext_volume_entity set to update the value - otherwise it just never has anything to show.
+        - arc:
+            id: ext_vol_arc
+            align: CENTER
+            width: 350
+            height: 350
+            arc_width: 8
+            min_value: 0
+            max_value: 100
+            value: 50
+            start_angle: 135
+            end_angle: 45
+            adjustable: false
+            hidden: true
+            arc_color: 0x4A3510
+            indicator:
+              arc_color: 0xF5B83D
+              arc_width: 8
+        - label:
+            id: ext_vol_label
+            align: TOP_MID
+            y: 40
+            hidden: true
+            text: "50%"
+            text_color: 0xFFD27A
+            text_font: montserrat_20

@@ -82,6 +82,8 @@ substitutions:
   ext_mute_entity: button.your_mute                 # HA button entity for mute toggle
   ext_vol_up_entity: button.your_volume_up          # HA button entity for volume up
   ext_vol_down_entity: button.your_volume_down      # HA button entity for volume down
+  ext_volume_entity: media_player.va_ext_volume_unused  # optional: read-only volume level (amber
+                                                     # arc on the screen); leave unset to skip it
 
   # Carousel order, left to right. Reorder/remove names freely; screens you did not
   # include in "files:" below are skipped automatically.
