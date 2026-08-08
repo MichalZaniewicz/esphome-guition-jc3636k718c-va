@@ -153,19 +153,21 @@ interval:
   # plain volume control. Games are immune because they re-assert capture every tick themselves.
   - interval: 80ms
     then:
-      # Volume up (knob turned right)
+      # One press per detent, not one press per tick - a fast flick can move g_knob_delta by
+      # several detents within one 80ms window, and thermostat/sensors both consume the full
+      # magnitude (scale-by-delta / loop-per-detent) rather than snapping straight to the
+      # latest value. Capped at 5/tick so a big flick can't flood HA with button presses.
       - if:
-          condition: { lambda: 'return id(g_base)==11 && id(g_knob_delta) > id(g_ext_knob_last);' }
+          condition: { lambda: 'return id(g_base)==11 && id(g_knob_delta) != id(g_ext_knob_last);' }
           then:
-            - lambda: 'id(g_ext_knob_last) = id(g_knob_delta);'
-            - script.execute: ext_vol_up
-            - script.execute: ext_flash_volume
-      # Volume down (knob turned left)
-      - if:
-          condition: { lambda: 'return id(g_base)==11 && id(g_knob_delta) < id(g_ext_knob_last);' }
-          then:
-            - lambda: 'id(g_ext_knob_last) = id(g_knob_delta);'
-            - script.execute: ext_vol_down
+            - lambda: |-
+                int diff = id(g_knob_delta) - id(g_ext_knob_last);
+                id(g_ext_knob_last) = id(g_knob_delta);
+                int steps = diff > 0 ? diff : -diff;
+                if (steps > 5) steps = 5;
+                for (int i = 0; i < steps; i++) {
+                  if (diff > 0) id(ext_vol_up).execute(); else id(ext_vol_down).execute();
+                }
             - script.execute: ext_flash_volume
 
   # Equalizer animation: only while this screen is showing AND the device is playing.
@@ -366,6 +368,8 @@ lvgl:
             bg_color: 0x000000
             bg_opa: 55%
             hidden: true
+            clickable: false   # decorative only - z-ordered above the buttons, would otherwise
+                                # swallow taps on them for the full 2s the overlay is shown
         - arc:
             id: ext_vol_arc
             align: CENTER

@@ -6,11 +6,12 @@ All notable changes to this project are documented here. The format is based on
 ## [2.2.10] - 2026-08-08
 
 ### Added
-- New **External Media Player** screen (optional, `base/screens/ext-media-player.yaml`, carousel id 11): prev/play-pause/next/mute buttons and knob-driven volume for any device with HA `button.*` entities - HASS.agent, Kodi, a TV, a Hi-Fi amp. Contributed by [Justblair](https://github.com/Justblair) (PR #5). Optional `ext_volume_entity` feeds a live volume arc on the screen (amber, distinct from the core's teal one for the puck's own speaker) - the six control buttons are one-way presses, so this read-only entity is what makes the level visible. Same entity also drives a 3-bar equalizer in the header (animates while playing, flat otherwise), replacing the static icon, plus live icon toggling on the play/pause and mute buttons (same idea as `player.yaml`'s `lbl_play`).
+- New **External Media Player** screen (optional, `base/screens/ext-media-player.yaml`, carousel id 11): prev/play-pause/next/mute buttons and knob-driven volume for any device with HA `button.*` entities - HASS.agent, Kodi, a TV, a Hi-Fi amp. Contributed by [Justblair](https://github.com/Justblair) (PR #5).
+- Optional `ext_volume_entity`: read-only feed for a volume arc (amber, distinct from the core's teal one), a 3-bar equalizer, and live play/pause/mute icons on the External Media Player screen.
 
 ### Fixed
-- External Media Player screen was clobbering knob capture on **other** screens: its 80ms interval unconditionally cleared `g_knob_capture` whenever it wasn't the active screen, running regardless of which screen actually was active. Weather and Thermostat set capture once on entry and don't re-assert it every tick (unlike the games), so ~80ms after swiping onto either one, the knob silently fell back to plain volume control instead of scrolling days / setting the target. Capture release on leaving a screen is already core's job (cleared on every swipe, before `show_base` runs) - removed the redundant, buggy copy.
-- Ext screen's equalizer bars moved in slow motion: the per-bar value formula (`(millis()/period) % 70`) looked like cheap deterministic jitter but was actually a slow ramp - a full cycle took 6.8-11.4s depending on the bar, so they crept up and down over several seconds instead of jittering. Replaced with a genuine random value per tick. Volume overlay also had no dim scrim and its % label sat on top of the device name label, both fixed.
+- External Media Player screen no longer clobbers knob capture on other screens (was clearing `g_knob_capture` on every tick regardless of which screen was active - broke Weather/Thermostat, which set capture once on entry instead of re-asserting it every tick like the games do).
+- External Media Player: fast knob turns now send one button press per detent instead of one per 80ms tick (capped at 5/tick); the volume overlay dim scrim no longer swallows taps on the transport buttons; equalizer bars no longer move in slow motion (were a slow ramp, not jitter); volume overlay now has a dim scrim and no longer overlaps the device name label.
 
 ## [2.2.9] - 2026-08-04
 
