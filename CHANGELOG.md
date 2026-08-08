@@ -3,6 +3,11 @@
 All notable changes to this project are documented here. The format is based on
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [2.2.10] - 2026-08-08
+
+### Added
+- New **External Media Player** screen (optional, `base/screens/ext-media-player.yaml`, carousel id 11): prev/play-pause/next/mute buttons and knob-driven volume for any device with HA `button.*` entities - HASS.agent, Kodi, a TV, a Hi-Fi amp. Contributed by [Justblair](https://github.com/Justblair) (PR #5).
+
 ## [2.2.9] - 2026-08-04
 
 ### Changed

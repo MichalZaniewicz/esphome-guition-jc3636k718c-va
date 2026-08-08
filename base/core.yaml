@@ -66,7 +66,7 @@ substitutions:
   glance6_icon: ""
   forecast_entity: sensor.va_weekly_forecast   # weather screen forecast (HA helper, see base/screens/weather.ha-helper.yaml)
   # Carousel screen order (left-to-right). Screens not included in the build are skipped.
-  screen_order: "clock,player,timer,cars,space,snake,knobuss,weather,thermostat,sensors,demo"
+  screen_order: "clock,player,timer,cars,space,snake,knobuss,weather,thermostat,sensors,ext,demo"
 
 esphome:
   name: ${name}
@@ -154,6 +154,7 @@ esphome:
               else if (tok == "sensors") id = 8;
               else if (tok == "snake") id = 9;
               else if (tok == "gyruss" || tok == "knobuss") id = 10;
+              else if (tok == "ext") id = 11;
               if (id >= 0 && id < 16 && id(g_present)[id]) id(g_order)[id(g_order_n)++] = id;
               if (comma == std::string::npos) break;
               pos = comma + 1;
