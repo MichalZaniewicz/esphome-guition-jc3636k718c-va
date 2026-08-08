@@ -6,7 +6,7 @@ All notable changes to this project are documented here. The format is based on
 ## [2.2.10] - 2026-08-08
 
 ### Added
-- New **External Media Player** screen (optional, `base/screens/ext-media-player.yaml`, carousel id 11): prev/play-pause/next/mute buttons and knob-driven volume for any device with HA `button.*` entities - HASS.agent, Kodi, a TV, a Hi-Fi amp. Contributed by [Justblair](https://github.com/Justblair) (PR #5). Optional `ext_volume_entity` feeds a live volume arc on the screen (amber, distinct from the core's teal one for the puck's own speaker) - the six control buttons are one-way presses, so this read-only entity is what makes the level visible.
+- New **External Media Player** screen (optional, `base/screens/ext-media-player.yaml`, carousel id 11): prev/play-pause/next/mute buttons and knob-driven volume for any device with HA `button.*` entities - HASS.agent, Kodi, a TV, a Hi-Fi amp. Contributed by [Justblair](https://github.com/Justblair) (PR #5). Optional `ext_volume_entity` feeds a live volume arc on the screen (amber, distinct from the core's teal one for the puck's own speaker) - the six control buttons are one-way presses, so this read-only entity is what makes the level visible. Same entity also drives a 3-bar equalizer in the header (animates while playing, flat otherwise), replacing the static icon.
 
 ## [2.2.9] - 2026-08-04
 

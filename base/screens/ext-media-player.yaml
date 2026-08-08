@@ -42,6 +42,10 @@ globals:
     type: bool
     restore_value: no
     initial_value: 'false'
+  - id: g_ext_playing    # true when ext_volume_entity's state == "playing" (drives the equalizer bars)
+    type: bool
+    restore_value: no
+    initial_value: 'false'
 
 script:
   - id: ext_vol_up
@@ -90,6 +94,21 @@ sensor:
           text: !lambda |-
             char buf[8]; snprintf(buf, sizeof(buf), "%d%%", (int) roundf(x * 100.0f)); return std::string(buf);
 
+# Playback state readback (same optional entity as the volume sensor above) - drives the
+# 3-bar equalizer in the header: animates while "playing", sits flat otherwise.
+text_sensor:
+  - platform: homeassistant
+    id: ext_state_sensor
+    entity_id: ${ext_volume_entity}
+    on_value:
+      - lambda: 'id(g_ext_playing) = (x == "playing");'
+      - if:
+          condition: { lambda: 'return x != "playing";' }
+          then:
+            - lvgl.bar.update: { id: ext_eq_bar1, value: 15 }
+            - lvgl.bar.update: { id: ext_eq_bar2, value: 15 }
+            - lvgl.bar.update: { id: ext_eq_bar3, value: 15 }
+
 interval:
   # Carousel navigation: show this page when selected in the carousel
   - interval: 50ms
@@ -130,6 +149,18 @@ interval:
             - script.execute: ext_vol_down
             - script.execute: ext_flash_volume
 
+  # Equalizer animation: only while this screen is showing AND the device is playing.
+  # Different divisors per bar so they don't move in lockstep - cheap deterministic jitter,
+  # no need for real randomness.
+  - interval: 180ms
+    then:
+      - if:
+          condition: { lambda: 'return id(g_base)==11 && id(g_ext_playing);' }
+          then:
+            - lvgl.bar.update: { id: ext_eq_bar1, value: !lambda 'return 20 + ((int)(millis()/97))  % 70;' }
+            - lvgl.bar.update: { id: ext_eq_bar2, value: !lambda 'return 20 + ((int)(millis()/131)) % 70;' }
+            - lvgl.bar.update: { id: ext_eq_bar3, value: !lambda 'return 20 + ((int)(millis()/163)) % 70;' }
+
 lvgl:
   pages:
     - id: page_ext
@@ -158,13 +189,50 @@ lvgl:
             bg_color: 0x000000
             bg_opa: 42%
 
-        # Screen header: audio icon + device name
-        - label:
+        # Screen header: equalizer (3 bars, animates while playing) + device name.
+        # Without ext_volume_entity set, bars just sit at their static default height.
+        - bar:
+            id: ext_eq_bar1
             align: CENTER
+            x: -14
             y: -88
-            text: ""
-            text_font: montserrat_34
-            text_color: 0x2FE6CF
+            width: 6
+            height: 22
+            min_value: 0
+            max_value: 100
+            value: 15
+            border_width: 0
+            bg_color: 0x1A2A28
+            indicator:
+              bg_color: 0x2FE6CF
+        - bar:
+            id: ext_eq_bar2
+            align: CENTER
+            x: 0
+            y: -88
+            width: 6
+            height: 22
+            min_value: 0
+            max_value: 100
+            value: 45
+            border_width: 0
+            bg_color: 0x1A2A28
+            indicator:
+              bg_color: 0x2FE6CF
+        - bar:
+            id: ext_eq_bar3
+            align: CENTER
+            x: 14
+            y: -88
+            width: 6
+            height: 22
+            min_value: 0
+            max_value: 100
+            value: 30
+            border_width: 0
+            bg_color: 0x1A2A28
+            indicator:
+              bg_color: 0x2FE6CF
         - label:
             id: ext_lbl_name
             align: CENTER
