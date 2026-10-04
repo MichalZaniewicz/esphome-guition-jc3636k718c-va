@@ -60,7 +60,7 @@ microSD (SD_MMC):        CLK=39 CMD=38 D0=40 D1=41 D2=48 D3=47
   16 kHz). DAC **MUTE on GPIO46** must be held HIGH → a `switch: gpio` with
   `restore_mode: ALWAYS_ON`.
 - **LED ring:** `light: esp32_rmt_led_strip`, `pin: GPIO0`, `num_leds: 13`,
-  `rgb_order: GRB`, `chipset: WS2812`, `rmt_symbols: 64`.
+  `channel_colors: GRB` (ESPHome 2026.8.0+; older uses `rgb_order: GRB`), `chipset: WS2812`, `rmt_symbols: 64`.
 - **Knob:** two `binary_sensor: gpio` (GPIO2 and GPIO1), `inverted: true` + `pullup`,
   act on `on_press`. See gotcha.
 - **esp32:** `flash_size: 16MB`, `partitions: partitions.csv`, framework `esp-idf`.

@@ -1713,7 +1713,7 @@ light:
       number: GPIO0
       ignore_strapping_warning: true
     num_leds: 13
-    rgb_order: GRB
+    channel_colors: GRB
     chipset: WS2812
     rmt_symbols: 128
     use_dma: true                     # feed RMT via DMA (no CPU interrupts) so heavy display work

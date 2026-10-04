@@ -3,6 +3,11 @@
 All notable changes to this project are documented here. The format is based on
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [2.2.11] - 2026-10-04
+
+### Changed
+- LED ring: `rgb_order: GRB` → `channel_colors: GRB` (`rgb_order` is deprecated, removed in ESPHome 2027.3.0). **Minimum ESPHome is now 2026.8.0.**
+
 ## [2.2.10] - 2026-08-08
 
 ### Added
