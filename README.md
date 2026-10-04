@@ -11,21 +11,23 @@ an always-on core plus optional screen packages you pick from one thin config.
 
 It started as "my kid needs a physical timer" and turned into a whole puck. 🙂
 
-## Demo
-
-<div align="center">
-  <video src="https://github.com/user-attachments/assets/e945f4ec-b80f-4740-9130-ed93bd2ab31b" controls width="400"></video>
-</div>
-
 > [!TIP]
 > ⭐ **Enjoying this project?** Every star is real motivation for me to keep
 > developing it :)
+>
+> ☕ Want to say thanks another way? You can [buy me a coffee](https://buymeacoffee.com/zanula).
 
 <!-- The badge lives OUTSIDE the alert on purpose: Home Assistant rewrites a
 GitHub alert into <ha-alert> and drops every child whose textContent is empty,
 which silently removes any <img> placed inside it. -->
 
-[![Star this repo](https://img.shields.io/github/stars/MichalZaniewicz/esphome-guition-jc3636k718c-va?style=for-the-badge&logo=github&label=STAR%20THIS%20REPO&labelColor=555555&color=ffc107)](https://github.com/MichalZaniewicz/esphome-guition-jc3636k718c-va)
+[![Star this repo](https://img.shields.io/github/stars/MichalZaniewicz/esphome-guition-jc3636k718c-va?style=for-the-badge&logo=github&label=STAR%20THIS%20REPO&labelColor=555555&color=ffc107)](https://github.com/MichalZaniewicz/esphome-guition-jc3636k718c-va) [![Buy me a coffee](https://img.shields.io/badge/BUY%20ME%20A%20COFFEE-FFDD00?style=for-the-badge&logo=buymeacoffee&logoColor=black)](https://buymeacoffee.com/zanula)
+
+## Demo
+
+<div align="center">
+  <video src="https://github.com/user-attachments/assets/e945f4ec-b80f-4740-9130-ed93bd2ab31b" controls width="400"></video>
+</div>
 
 ## What it does
 
