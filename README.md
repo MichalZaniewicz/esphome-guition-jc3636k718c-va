@@ -23,7 +23,6 @@ which silently removes any <img> placed inside it. -->
 
 [![Star this repo](https://img.shields.io/github/stars/MichalZaniewicz/esphome-guition-jc3636k718c-va?style=for-the-badge&logo=github&label=STAR%20THIS%20REPO&labelColor=555555&color=ffc107)](https://github.com/MichalZaniewicz/esphome-guition-jc3636k718c-va) [![Buy me a coffee](https://img.shields.io/badge/BUY%20ME%20A%20COFFEE-FFDD00?style=for-the-badge&logo=buymeacoffee&logoColor=black)](https://buymeacoffee.com/zanula)
 
-
 ## What it does
 
 https://github.com/user-attachments/assets/cab18716-7045-48d5-b8d8-a5a373724a16
@@ -53,10 +52,6 @@ Everything is navigated with **swipes + taps on the screen** and the **rotary kn
 ## Demo
 
 https://github.com/user-attachments/assets/7a49c788-a0b8-4900-b894-ac61022430d0
-
-
-
-
 
 ## Screens
 
