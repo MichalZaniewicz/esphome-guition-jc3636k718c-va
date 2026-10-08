@@ -25,9 +25,11 @@ which silently removes any <img> placed inside it. -->
 
 ## Demo
 
-<div align="center">
-  <video src="https://github.com/user-attachments/assets/e945f4ec-b80f-4740-9130-ed93bd2ab31b" controls width="400"></video>
-</div>
+
+
+https://github.com/user-attachments/assets/230e5b15-abda-4170-9818-f685710a0171
+
+
 
 ## What it does
 
