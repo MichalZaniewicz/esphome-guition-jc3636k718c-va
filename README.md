@@ -52,6 +52,11 @@ Everything is navigated with **swipes + taps on the screen** and the **rotary kn
 
 ## Demo
 
+https://github.com/user-attachments/assets/7a49c788-a0b8-4900-b894-ac61022430d0
+
+
+
+
 
 ## Screens
 
