@@ -26,7 +26,7 @@ which silently removes any <img> placed inside it. -->
 
 ## What it does
 
-[https://github.com/user-attachments/assets/230e5b15-abda-4170-9818-f685710a0171](https://github.com/user-attachments/assets/cab18716-7045-48d5-b8d8-a5a373724a16)
+https://github.com/user-attachments/assets/cab18716-7045-48d5-b8d8-a5a373724a16
 
 - **Voice assistant** - on-device wake word ("Alexa") via `micro_wake_word`, full
   Home Assistant Assist pipeline (STT / LLM / TTS), wake beep + music ducking. You can also
