@@ -1834,7 +1834,12 @@ touchscreen:
         condition: { lambda: 'return id(g_disp_off);' }
         then:
           - light.turn_on: { id: backlight_light, brightness: !lambda 'return id(g_bright) / 100.0f;' }
-          - lambda: 'id(g_disp_off) = false; id(g_wake_consume) = true;'
+          - lambda: |-
+              id(g_disp_off) = false; id(g_wake_consume) = true;
+              // g_wake_consume only covers our gesture router; LVGL buttons (timer stop, player...)
+              // read the touch on their own. Make LVGL ignore this press until release (no CLICKED).
+              for (lv_indev_t *i = lv_indev_get_next(NULL); i; i = lv_indev_get_next(i))
+                if (lv_indev_get_type(i) == LV_INDEV_TYPE_POINTER) lv_indev_wait_release(i);
   on_update:
     - lambda: |-
         if (!touches.empty()) {

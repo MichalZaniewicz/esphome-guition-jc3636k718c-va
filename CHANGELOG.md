@@ -3,6 +3,11 @@
 All notable changes to this project are documented here. The format is based on
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [2.2.12] - 2026-10-20
+
+### Fixed
+- Tap that wakes a blanked screen no longer presses the hidden button under it (e.g. stopped the timer).
+
 ## [2.2.11] - 2026-10-04
 
 ### Changed
